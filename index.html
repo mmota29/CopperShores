@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Copper Shores Tools</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header>
+  <h1>Copper Shores – Table Tools</h1>
+  <nav id="tabs">
+    <button data-tab="quests">Quests</button>
+    <button data-tab="loot">Loot</button>
+    <button data-tab="roster">Roster</button>
+    <button data-tab="notes">Notes</button>
+    <button data-tab="initiative">Initiative</button>
+  </nav>
+</header>
+
+<main>
+  <!-- Quests -->
+  <section id="quests" class="panel">
+    <form id="quest-form" class="row">
+      <input required name="title" placeholder="Quest title" />
+      <select name="status">
+        <option>Open</option><option>In Progress</option><option>Completed</option>
+      </select>
+      <input name="assignees" placeholder="Assignees (comma-separated)" />
+      <input name="notes" placeholder="Notes" />
+      <button>Add</button>
+    </form>
+    <table id="quest-table">
+      <thead><tr><th>Title</th><th>Status</th><th>Assignees</th><th>Notes</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- Loot -->
+  <section id="loot" class="panel">
+    <form id="loot-form" class="row">
+      <input required name="item" placeholder="Item" />
+      <input required name="qty" type="number" min="1" value="1" />
+      <input name="gp" type="number" step="0.01" placeholder="GP value" />
+      <input name="owner" placeholder="Owner / Split" />
+      <button>Add</button>
+    </form>
+    <table id="loot-table">
+      <thead><tr><th>Item</th><th>Qty</th><th>GP</th><th>Owner</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <div class="total">Total GP: <span id="total-gp">0</span></div>
+  </section>
+
+  <!-- Roster -->
+  <section id="roster" class="panel">
+    <form id="roster-form" class="row">
+      <input required name="name" placeholder="Name" />
+      <input name="role" placeholder="Role (Boatswain, Cook…)" />
+      <input name="notes" placeholder="Notes" />
+      <button>Add</button>
+    </form>
+    <table id="roster-table">
+      <thead><tr><th>Name</th><th>Role</th><th>Notes</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- Notes -->
+  <section id="notes" class="panel">
+    <form id="note-form" class="row">
+      <input required name="text" placeholder="Session note…" />
+      <button>Add</button>
+    </form>
+    <ul id="note-list"></ul>
+  </section>
+
+  <!-- Initiative -->
+  <section id="initiative" class="panel">
+    <form id="init-form" class="row">
+      <input required name="name" placeholder="Name" />
+      <input required name="init" type="number" placeholder="Init" />
+      <input name="hp" type="number" placeholder="HP" />
+      <button>Add</button>
+      <button type="button" id="sort-init">Sort ↓</button>
+      <button type="button" id="clear-init">Clear</button>
+    </form>
+    <table id="init-table">
+      <thead><tr><th>Name</th><th>Init</th><th>HP</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+</main>
+
+<footer>
+  <button id="export">Export JSON</button>
+  <label class="import">
+    Import JSON <input type="file" id="import" accept="application/json" hidden />
+  </label>
+  <button id="reset" class="danger">Reset All</button>
+  <span class="muted">Data is stored in your browser (localStorage).</span>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

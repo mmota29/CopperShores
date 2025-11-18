@@ -1,216 +1,157 @@
-// ---- Simple store in localStorage with one key ----
-const KEY = "dnd.table.v1";
-const initial = { quests: [], loot: [], roster: [], notes: [], initiative: [] };
+// === Copper Shores – core data & helpers (backend for the homepage) ===
 
-const store = {
-  load()  { try { return JSON.parse(localStorage.getItem(KEY)) || {...initial}; } catch { return {...initial}; } },
-  save(s) { localStorage.setItem(KEY, JSON.stringify(s)); }
-};
-let state = store.load();
-const $ = s => document.querySelector(s);
-const $$ = s => Array.from(document.querySelectorAll(s));
+// Key in localStorage so we can extend later without clobbering old stuff
+const STORAGE_KEY = "coppershores.home.v1";
 
-// ---- Tabs ----
-const tabButtons = $$("#tabs button");
-const panels = $$(".panel");
-function show(id){ 
-  panels.forEach(p=>p.classList.toggle("active", p.id===id));
-  tabButtons.forEach(b=>b.classList.toggle("active", b.dataset.tab===id)); 
-}
-tabButtons.forEach(b=>b.onclick = ()=> show(b.dataset.tab));
-show("quests");
+// ---- Initial state (what the app knows on first load) ----
+const initialState = {
+  campaignName: "Copper Shores",
 
-// ---- Render helpers ----
-function tr(cells){ const tr=document.createElement("tr"); cells.forEach(td=>tr.appendChild(td)); return tr; }
-function td(text){ const d=document.createElement("td"); d.textContent=text; return d; }
-function delBtn(onclick){ const b=document.createElement("button"); b.textContent="✕"; b.onclick=onclick; const d=document.createElement("td"); d.appendChild(b); return d; }
+  partyMembers: [
+    { character: "Gill",    player: "Michael" },
+    { character: "Corelia", player: "Gabi"    },
+    { character: "Rhaekar", player: "Tyler"   },
+    { character: "Blue",    player: "Mia"     },
+    { character: "Riven",   player: "Shawn"   }
+  ],
 
-// ---- Quests ----
-const qForm = $("#quest-form"), qBody = $("#quest-table tbody");
-function renderQuests(){
-  qBody.innerHTML = "";
-  state.quests.forEach((q,i)=>{
-    const assignees = (q.assignees||"").split(",").map(s=>s.trim()).filter(Boolean).join(", ");
-    const row = tr([
-      td(q.title), 
-      td(q.status), 
-      td(assignees), 
-      td(q.notes||""), 
-      delBtn(()=>{state.quests.splice(i,1); saveRender();})
-    ]);
-    if (q.status === "Completed") 
-      row.querySelectorAll("td").forEach(td=>td.classList.add("muted"));
-    qBody.appendChild(row);
-  });
-}
-qForm.onsubmit = e=>{
-  e.preventDefault();
-  const f = new FormData(qForm);
-  state.quests.push({ 
-    title:f.get("title"), 
-    status:f.get("status"), 
-    assignees:f.get("assignees"), 
-    notes:f.get("notes") 
-  });
-  qForm.reset(); 
-  saveRender();
+  dungeonMaster: {
+    name: "George"
+  },
+
+  // Simple snapshot for the homepage only.
+  // We can expand this into a full money system later.
+  money: {
+    partyGP: 0,
+    shipGP: 0
+  },
+
+  // Navigation buttons to show on the homepage.
+  // "route" will matter later when we add multiple pages.
+  navigation: [
+    { label: "Roster",     route: "roster"     },
+    { label: "Money",      route: "money"      },
+    { label: "Ship",       route: "ship"       },
+    { label: "Quests",     route: "quests"     },
+    { label: "Loot",       route: "loot"       },
+    { label: "Notes",      route: "notes"      },
+    { label: "Initiative", route: "initiative" }
+  ]
 };
 
-// ---- Loot ----
-const lForm = $("#loot-form"), lBody = $("#loot-table tbody"), totalGP = $("#total-gp");
-function renderLoot(){
-  lBody.innerHTML = "";
-  let total = 0;
-  state.loot.forEach((L,i)=>{
-    const gp = Number(L.gp||0)*(Number(L.qty||1));
-    total += gp;
-    lBody.appendChild(tr([
-      td(L.item), 
-      td(L.qty||1), 
-      td(gp.toFixed(2)), 
-      td(L.owner||""), 
-      delBtn(()=>{state.loot.splice(i,1); saveRender();})
-    ]));
-  });
-  totalGP.textContent = total.toFixed(2);
-}
-lForm.onsubmit = e=>{
-  e.preventDefault();
-  const f = new FormData(lForm);
-  state.loot.push({ 
-    item:f.get("item"), 
-    qty:Number(f.get("qty")||1), 
-    gp:Number(f.get("gp")||0), 
-    owner:f.get("owner") 
-  });
-  lForm.reset(); 
-  saveRender();
-};
+// ---- Load / save helpers ----
 
-// ---- Roster ----
-const rForm = $("#roster-form"), rBody = $("#roster-table tbody");
-function renderRoster(){
-  rBody.innerHTML = "";
-  state.roster.forEach((R,i)=>{
-    rBody.appendChild(tr([
-      td(R.name), 
-      td(R.role||""), 
-      td(R.notes||""), 
-      delBtn(()=>{state.roster.splice(i,1); saveRender();})
-    ]));
-  });
-}
-rForm.onsubmit = e=>{
-  e.preventDefault();
-  const f = new FormData(rForm);
-  state.roster.push({ 
-    name:f.get("name"), 
-    role:f.get("role"), 
-    notes:f.get("notes") 
-  });
-  rForm.reset(); 
-  saveRender();
-};
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return structuredClone(initialState);
 
-// ---- Notes ----
-const nForm = $("#note-form"), nList = $("#note-list");
-function renderNotes(){
-  nList.innerHTML = "";
-  state.notes.slice().reverse().forEach((N)=>{
-    const li = document.createElement("li");
-    li.innerHTML = `<span class="badge">${new Date(N.ts).toLocaleString()}</span> ${N.text}`;
-    const del = document.createElement("button"); 
-    del.textContent = "✕"; 
-    del.style.marginLeft="8px";
-    del.onclick = ()=>{ 
-      const i = state.notes.findIndex(x=>x.ts===N.ts); 
-      state.notes.splice(i,1); 
-      saveRender(); 
+    const parsed = JSON.parse(raw);
+
+    // Merge with initial, so if we add fields later they get defaults
+    return {
+      ...structuredClone(initialState),
+      ...parsed,
+      money: { ...initialState.money, ...(parsed.money || {}) },
+      dungeonMaster: { ...initialState.dungeonMaster, ...(parsed.dungeonMaster || {}) },
+      partyMembers: parsed.partyMembers || structuredClone(initialState.partyMembers),
+      navigation: parsed.navigation || structuredClone(initialState.navigation)
     };
-    li.appendChild(del);
-    nList.appendChild(li);
-  });
-}
-nForm.onsubmit = e=>{
-  e.preventDefault();
-  const f = new FormData(nForm);
-  state.notes.push({ text:f.get("text"), ts: Date.now() });
-  nForm.reset(); 
-  saveRender();
-};
-
-// ---- Initiative ----
-const iForm = $("#init-form"), iBody = $("#init-table tbody");
-function renderInit(){
-  iBody.innerHTML = "";
-  state.initiative.forEach((I,i)=>{
-    iBody.appendChild(tr([
-      td(I.name), 
-      td(I.init), 
-      td(I.hp ?? ""), 
-      delBtn(()=>{state.initiative.splice(i,1); saveRender();})
-    ]));
-  });
-}
-iForm.onsubmit = e=>{
-  e.preventDefault();
-  const f = new FormData(iForm);
-  state.initiative.push({ 
-    name:f.get("name"), 
-    init:Number(f.get("init")), 
-    hp: f.get("hp") ? Number(f.get("hp")) : null 
-  });
-  iForm.reset(); 
-  saveRender();
-};
-
-$("#sort-init").onclick = ()=>{
-  state.initiative.sort((a,b)=>b.init - a.init);
-  saveRender();
-};
-$("#clear-init").onclick = ()=>{
-  state.initiative = [];
-  saveRender();
-};
-
-// ---- Export / Import / Reset ----
-$("#export").onclick = ()=>{
-  const blob = new Blob([JSON.stringify(state, null, 2)], {type:"application/json"});
-  const a = document.createElement("a"); 
-  a.href = URL.createObjectURL(blob);
-  a.download = "dnd-table.json"; 
-  a.click();
-};
-
-$("#import").onchange = async (e)=>{
-  const file = e.target.files[0]; 
-  if(!file) return;
-  const text = await file.text(); 
-  const next = JSON.parse(text);
-  state = { ...initial, ...next }; 
-  saveRender();
-  e.target.value = "";
-};
-
-$("#reset").onclick = ()=>{
-  if (confirm("Reset all data?")) { 
-    state = {...initial}; 
-    saveRender(); 
+  } catch (err) {
+    console.error("Failed to load Copper Shores state:", err);
+    return structuredClone(initialState);
   }
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+// This is the single live state object your app will use.
+let state = loadState();
+
+// ---- Read-only getters (for the homepage UI to use later) ----
+
+function getCampaignName() {
+  return state.campaignName;
+}
+
+function getPartyMembers() {
+  // Return a copy so outside code can't accidentally mutate state directly
+  return state.partyMembers.map(m => ({ ...m }));
+}
+
+function getDungeonMaster() {
+  return { ...state.dungeonMaster };
+}
+
+function getMoneySnapshot() {
+  return { ...state.money };
+}
+
+function getNavigationButtons() {
+  return state.navigation.map(n => ({ ...n }));
+}
+
+// ---- Simple update helpers (for when we add forms later) ----
+
+function setPartyGold(gp) {
+  const value = Number(gp);
+  if (Number.isNaN(value) || value < 0) return;
+  state.money.partyGP = value;
+  saveState();
+}
+
+function setShipGold(gp) {
+  const value = Number(gp);
+  if (Number.isNaN(value) || value < 0) return;
+  state.money.shipGP = value;
+  saveState();
+}
+
+function setDungeonMasterName(name) {
+  if (!name || !name.trim()) return;
+  state.dungeonMaster.name = name.trim();
+  saveState();
+}
+
+function addPartyMember(character, player) {
+  if (!character || !character.trim()) return;
+  if (!player || !player.trim()) return;
+
+  state.partyMembers.push({
+    character: character.trim(),
+    player: player.trim()
+  });
+
+  saveState();
+}
+
+function removePartyMember(character) {
+  state.partyMembers = state.partyMembers.filter(
+    m => m.character.toLowerCase() !== String(character).toLowerCase()
+  );
+  saveState();
+}
+
+// Optional reset function for debugging or a "factory reset" button later
+function resetCopperShoresState() {
+  state = structuredClone(initialState);
+  saveState();
+}
+
+// If you want to debug in the console later:
+window.copperShoresBackend = {
+  getCampaignName,
+  getPartyMembers,
+  getDungeonMaster,
+  getMoneySnapshot,
+  getNavigationButtons,
+  setPartyGold,
+  setShipGold,
+  setDungeonMasterName,
+  addPartyMember,
+  removePartyMember,
+  resetCopperShoresState
 };
 
-// ---- Persist + Render ----
-function saveRender(){ 
-  store.save(state); 
-  render(); 
-}
-
-function render(){ 
-  renderQuests(); 
-  renderLoot(); 
-  renderRoster(); 
-  renderNotes(); 
-  renderInit(); 
-}
-
-render();

@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Copper Shores</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles/main.css" />
 </head>
 <body>
   <div class="page">
@@ -28,14 +28,16 @@
       <!-- Navigation buttons (decorative for now) -->
       <section class="card">
         <h2>Navigation</h2>
-        <p class="muted">These buttons don’t go anywhere yet – they’re just the main sections this site will have.</p>
+        <p class="muted">
+          These buttons don’t go anywhere yet – they’re just the main sections this site will have.
+        </p>
         <div id="nav-buttons" class="nav-grid"></div>
       </section>
     </main>
   </div>
 
   <!-- Backend logic -->
-  <script src="app.js"></script>
+  <script src="js/state.js"></script>
 
   <!-- Frontend render logic -->
   <script>
@@ -78,10 +80,10 @@
         b.className = "nav-btn";
         b.type = "button";
         b.textContent = btn.label;
-        // Later: hook up real navigation here using btn.route
         navContainer.appendChild(b);
       });
     });
   </script>
 </body>
 </html>
+

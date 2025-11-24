@@ -40,50 +40,6 @@
   <script src="js/state.js"></script>
 
   <!-- Frontend render logic -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const backend = window.copperShoresBackend;
-      if (!backend) {
-        console.error("Copper Shores backend not found.");
-        return;
-      }
-
-      // Title
-      const titleEl = document.getElementById("campaign-title");
-      titleEl.textContent = backend.getCampaignName();
-
-      // DM
-      const dm = backend.getDungeonMaster();
-      const dmEl = document.getElementById("dm-name");
-      dmEl.textContent = dm.name || "Unknown";
-
-      // Party
-      const party = backend.getPartyMembers();
-      const partyList = document.getElementById("party-list");
-      partyList.innerHTML = "";
-      party.forEach(member => {
-        const li = document.createElement("li");
-        li.className = "list-item";
-        li.innerHTML = `
-          <span class="char-name">${member.character}</span>
-          <span class="player-name">– ${member.player}</span>
-        `;
-        partyList.appendChild(li);
-      });
-
-      // Navigation buttons
-      const nav = backend.getNavigationButtons();
-      const navContainer = document.getElementById("nav-buttons");
-      navContainer.innerHTML = "";
-      nav.forEach(btn => {
-        const b = document.createElement("button");
-        b.className = "nav-btn";
-        b.type = "button";
-        b.textContent = btn.label;
-        navContainer.appendChild(b);
-      });
-    });
-  </script>
+  <script src="js/home.js"></script>
 </body>
 </html>
-

@@ -6,24 +6,33 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // Title
+  // --- Grab DOM elements ---
   const titleEl = document.getElementById("campaign-title");
+  const dmEl = document.getElementById("dm-name");
+  const partyList = document.getElementById("party-list");
+  const rosterList = document.getElementById("roster-list");
+  const navContainer = document.getElementById("nav-buttons");
+
+  const homeView = document.getElementById("home-view");
+  const rosterView = document.getElementById("roster-view");
+
+  // --- Render title ---
   if (titleEl) {
     titleEl.textContent = backend.getCampaignName();
   }
 
-  // Dungeon Master
+  // --- Render DM ---
   const dm = backend.getDungeonMaster();
-  const dmEl = document.getElementById("dm-name");
   if (dmEl) {
     dmEl.textContent = dm.name || "Unknown";
   }
 
-  // Party Members
+  // --- Party / roster rendering helper ---
   const party = backend.getPartyMembers();
-  const partyList = document.getElementById("party-list");
-  if (partyList) {
-    partyList.innerHTML = "";
+
+  function fillList(listEl) {
+    if (!listEl) return;
+    listEl.innerHTML = "";
     party.forEach(member => {
       const li = document.createElement("li");
       li.className = "list-item";
@@ -31,22 +40,62 @@ document.addEventListener("DOMContentLoaded", () => {
         <span class="char-name">${member.character}</span>
         <span class="player-name">– ${member.player}</span>
       `;
-      partyList.appendChild(li);
+      listEl.appendChild(li);
     });
   }
 
-  // Navigation buttons (decorative for now)
-  const nav = backend.getNavigationButtons();
-  const navContainer = document.getElementById("nav-buttons");
+  fillList(partyList);
+  fillList(rosterList);
+
+  // --- View switching ---
+  function setActiveView(route) {
+    // Show/hide views
+    if (homeView && rosterView) {
+      if (route === "roster") {
+        homeView.classList.add("hidden");
+        rosterView.classList.remove("hidden");
+      } else {
+        rosterView.classList.add("hidden");
+        homeView.classList.remove("hidden");
+      }
+    }
+
+    // Highlight active nav button
+    if (navContainer) {
+      const allNavBtns = navContainer.querySelectorAll(".nav-btn");
+      allNavBtns.forEach(btn => {
+        const btnRoute = btn.getAttribute("data-route");
+        btn.classList.toggle("active", btnRoute === route);
+      });
+    }
+  }
+
+  // --- Navigation buttons ---
+  const navButtonsData = backend.getNavigationButtons();
+
   if (navContainer) {
     navContainer.innerHTML = "";
-    nav.forEach(btn => {
+    navButtonsData.forEach(btnData => {
       const b = document.createElement("button");
       b.className = "nav-btn";
       b.type = "button";
-      b.textContent = btn.label;
-      // Later: use btn.route for real navigation
+      b.textContent = btnData.label;
+      b.setAttribute("data-route", btnData.route);
+
+      b.addEventListener("click", () => {
+        if (btnData.route === "roster") {
+          // Switch to roster view
+          setActiveView("roster");
+        } else {
+          // For now, anything else switches back to home
+          setActiveView("home");
+        }
+      });
+
       navContainer.appendChild(b);
     });
   }
+
+  // Default view: Home
+  setActiveView("home");
 });

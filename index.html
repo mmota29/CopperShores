@@ -14,24 +14,36 @@
     </header>
 
     <main class="main">
-      <!-- Party + DM -->
-      <section class="card">
-        <h2>Party Members</h2>
-        <ul id="party-list" class="list"></ul>
+      <!-- HOME VIEW -->
+      <section id="home-view" class="view">
+        <!-- Party + DM -->
+        <section class="card">
+          <h2>Party Members</h2>
+          <ul id="party-list" class="list"></ul>
+        </section>
+
+        <section class="card">
+          <h2>Dungeon Master</h2>
+          <p id="dm-name"></p>
+        </section>
+
+        <!-- Navigation buttons -->
+        <section class="card">
+          <h2>Navigation</h2>
+          <p class="muted">
+            These buttons don’t go anywhere yet – only “Roster” switches views for now.
+          </p>
+          <div id="nav-buttons" class="nav-grid"></div>
+        </section>
       </section>
 
-      <section class="card">
-        <h2>Dungeon Master</h2>
-        <p id="dm-name"></p>
-      </section>
-
-      <!-- Navigation buttons (decorative for now) -->
-      <section class="card">
-        <h2>Navigation</h2>
-        <p class="muted">
-          These buttons don’t go anywhere yet – they’re just the main sections this site will have.
-        </p>
-        <div id="nav-buttons" class="nav-grid"></div>
+      <!-- ROSTER VIEW -->
+      <section id="roster-view" class="view hidden">
+        <section class="card">
+          <h2>Roster</h2>
+          <p class="muted">Full Copper Shores party roster.</p>
+          <ul id="roster-list" class="list"></ul>
+        </section>
       </section>
     </main>
   </div>

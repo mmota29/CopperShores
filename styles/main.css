@@ -75,7 +75,7 @@ body {
   font-size: 0.9rem;
 }
 
-/* Party list */
+/* Party/roster list */
 
 .list {
   list-style: none;
@@ -133,6 +133,26 @@ body {
 .nav-btn:active {
   transform: translateY(0);
   box-shadow: 0 4px 10px rgba(15, 23, 42, 0.8);
+}
+
+/* Active nav button state (for when Roster is selected, etc.) */
+.nav-btn.active {
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 1px var(--accent-soft),
+    0 10px 24px rgba(15, 23, 42, 0.95);
+}
+
+/* Views (home, roster, etc.) */
+
+.view {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+.view.hidden {
+  display: none;
 }
 
 /* Smaller screens */

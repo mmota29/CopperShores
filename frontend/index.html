@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Copper Shores - D&D Campaign Hub</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-title">The Copper Shores</h1>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link active">Home</a></li>
+                <li><a href="gold.html" class="nav-link">Gold Spending</a></li>
+                <li><a href="map.html" class="nav-link">Interactive Map</a></li>
+                <li><a href="players.html" class="nav-link">Players</a></li>
+                <li><a href="notes.html" class="nav-link">Notes</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        <div class="hero">
+            <h1>Welcome to The Copper Shores</h1>
+            <p>Your campaign headquarters for epic adventures and legendary tales</p>
+        </div>
+
+        <!-- API Test Section -->
+        <section class="info-section">
+            <h2>Campaign Status</h2>
+            <div id="api-info" class="info-box">
+                <p>Loading campaign data...</p>
+            </div>
+            <button id="refresh-btn" class="btn">Refresh Status</button>
+        </section>
+
+        <!-- Quick Links Grid -->
+        <section class="quick-links">
+            <h2>Quick Navigation</h2>
+            <div class="links-grid">
+                <div class="link-card">
+                    <h3>💰 Gold Spending</h3>
+                    <p>Track your party's treasures and expenses</p>
+                    <a href="gold.html" class="btn">View</a>
+                </div>
+                <div class="link-card">
+                    <h3>🗺️ Interactive Map</h3>
+                    <p>Explore the world and mark important locations</p>
+                    <a href="map.html" class="btn">View</a>
+                </div>
+                <div class="link-card">
+                    <h3>👥 Players</h3>
+                    <p>Manage your party members and their details</p>
+                    <a href="players.html" class="btn">View</a>
+                </div>
+                <div class="link-card">
+                    <h3>📝 Notes</h3>
+                    <p>Keep track of important lore and quest details</p>
+                    <a href="notes.html" class="btn">View</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 The Copper Shores. Version 0.1.0</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

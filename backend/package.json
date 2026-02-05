@@ -1,0 +1,17 @@
+{
+  "name": "copper-shores-backend",
+  "version": "0.1.0",
+  "description": "Backend API for Copper Shores D&D Campaign Hub",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["dnd", "campaign", "api"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  }
+}

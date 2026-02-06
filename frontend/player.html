@@ -57,6 +57,37 @@
                     <button id="add-previous-character" class="btn">+ Add Character</button>
                 </div>
             </section>
+
+            <!-- Edit Character Modal (hidden) -->
+            <div id="edit-character-modal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.9); padding:2rem; border:2px solid var(--secondary-color); border-radius:8px; z-index:1000; max-width:500px; width:90%;">
+                <h3>Edit Character</h3>
+                <div style="margin-top:1rem;">
+                    <label>Character Name
+                        <input id="edit-char-name" type="text" style="width:100%; margin-bottom:0.5rem;" />
+                    </label>
+                    <label>Race
+                        <input id="edit-char-race" type="text" style="width:100%; margin-bottom:0.5rem;" />
+                    </label>
+                    <label>Class
+                        <input id="edit-char-class" type="text" style="width:100%; margin-bottom:0.5rem;" />
+                    </label>
+                    <label>Level
+                        <input id="edit-char-level" type="number" min="1" style="width:100%; margin-bottom:0.5rem;" />
+                    </label>
+                    <label>Status
+                        <select id="edit-char-status" style="width:100%; margin-bottom:0.5rem;">
+                            <option value="active">Active</option>
+                            <option value="retired">Retired</option>
+                            <option value="dead">Dead</option>
+                        </select>
+                    </label>
+                </div>
+                <div style="display:flex; gap:0.5rem; margin-top:1rem;">
+                    <button id="save-edit-char" class="btn">Save</button>
+                    <button id="cancel-edit-char" class="btn">Cancel</button>
+                </div>
+            </div>
+            <div id="edit-modal-overlay" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:999;" onclick="closeEditModal()"></div>
         </div>
     </main>
 
@@ -97,7 +128,18 @@
                 .then(resp => { if (resp.status==='success') loadPlayerDetail(id); else showMessage(resp.message||'Error'); })
                 .catch(err=>showMessage('Network error'));
         });
+
+        document.getElementById('cancel-edit-char').addEventListener('click', closeEditModal);
+        document.getElementById('edit-modal-overlay').addEventListener('click', closeEditModal);
+        document.getElementById('save-edit-char').addEventListener('click', function(){
+            saveEditCharacter(id);
+        });
     });
+    
+    function closeEditModal() {
+        document.getElementById('edit-character-modal').style.display = 'none';
+        document.getElementById('edit-modal-overlay').style.display = 'none';
+    }
     </script>
 </body>
 </html>

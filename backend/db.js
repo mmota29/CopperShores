@@ -112,6 +112,26 @@ function addCharacter(playerId, charObj) {
   return char;
 }
 
+function updateCharacter(playerId, charId, patch) {
+  const db = readDB();
+  const pl = db.players.find(p => p.id === playerId);
+  if (!pl) return null;
+  const char = pl.characters.find(c => c.id === charId);
+  if (!char) return null;
+  // Update character fields
+  if (patch.name !== undefined) char.name = patch.name;
+  if (patch.race !== undefined) char.race = patch.race;
+  if (patch.className !== undefined) char.className = patch.className;
+  if (patch.level !== undefined) char.level = Number(patch.level) || 1;
+  if (patch.status !== undefined) char.status = patch.status;
+  // If this is current character, update that too
+  if (pl.currentCharacter && pl.currentCharacter.id === charId) {
+    pl.currentCharacter = char;
+  }
+  writeDB(db);
+  return char;
+}
+
 function deleteCharacter(playerId, charId) {
   const db = readDB();
   const pl = db.players.find(p => p.id === playerId);
@@ -175,6 +195,7 @@ module.exports = {
   updatePlayer,
   deletePlayer,
   addCharacter,
+  updateCharacter,
   deleteCharacter,
   setCurrentCharacter,
   moveCurrentToPrevious,

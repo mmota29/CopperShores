@@ -172,6 +172,22 @@ app.delete('/api/players/:id/characters/:charId', (req, res) => {
   res.json({ status: 'success', message: 'Character removed' });
 });
 
+// Update a character (level, class, name, etc.)
+app.put('/api/players/:id/characters/:charId', (req, res) => {
+  const id = req.params.id;
+  const charId = req.params.charId;
+  const patch = req.body || {};
+  const player = db.getPlayer(id);
+  if (!player) return res.status(404).json({ status: 'error', message: 'Player not found' });
+  try {
+    const updated = db.updateCharacter(id, charId, patch);
+    if (!updated) return res.status(404).json({ status: 'error', message: 'Character not found' });
+    res.json({ status: 'success', data: updated });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
 /**
  * GET /api/notes
  * Returns placeholder data for campaign notes

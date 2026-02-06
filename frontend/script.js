@@ -184,6 +184,7 @@ function loadPlayerDetail(id) {
         .then(resp=>{
             if (resp.status !== 'success') { showMessage('Player not found', true); return; }
             const p = resp.data;
+            window.__CURRENT_PLAYER = p; // Store for editing
             document.getElementById('player-name').textContent = p.name;
             document.getElementById('player-bio').value = p.bio || '';
             renderCurrentCharacter(p);
@@ -228,6 +229,7 @@ function renderPreviousCharacters(player) {
                 <div style="font-size:0.9rem; color:#ccc">${c.status || ''}</div>
             </div>
             <div style="display:flex; gap:0.5rem;">
+                <button class="btn" onclick="editCharacter('${player.id}','${c.id}')">Edit</button>
                 <button class="btn" onclick="setAsCurrent('${player.id}','${c.id}')">Set as Current</button>
                 <button class="btn" onclick="removeCharacter('${player.id}','${c.id}')">Remove</button>
             </div>
@@ -276,5 +278,59 @@ function openAddCharacterForm(setAsCurrent) {
             }
         })
         .catch(err=>showMessage('Network error', true));
+}
+
+function editCharacter(playerId, charId) {
+    const player = window.__CURRENT_PLAYER;
+    if (!player) return;
+    const char = player.characters.find(c => c.id === charId);
+    if (!char) return;
+    // Populate form
+    document.getElementById('edit-char-name').value = char.name || '';
+    document.getElementById('edit-char-race').value = char.race || '';
+    document.getElementById('edit-char-class').value = char.className || char.class || '';
+    document.getElementById('edit-char-level').value = char.level || 1;
+    document.getElementById('edit-char-status').value = char.status || 'active';
+    // Show modal
+    document.getElementById('edit-character-modal').style.display = 'block';
+    document.getElementById('edit-modal-overlay').style.display = 'block';
+    window.__EDIT_CHAR_ID = charId;
+}
+
+function saveEditCharacter(playerId) {
+    const charId = window.__EDIT_CHAR_ID;
+    if (!charId) { showMessage('No character selected', true); return; }
+    if (!playerId) { showMessage('No player selected', true); return; }
+    
+    const patch = {
+        name: document.getElementById('edit-char-name').value,
+        race: document.getElementById('edit-char-race').value,
+        className: document.getElementById('edit-char-class').value,
+        level: Number(document.getElementById('edit-char-level').value) || 1,
+        status: document.getElementById('edit-char-status').value
+    };
+    
+    const url = `${API_BASE_URL}/players/${playerId}/characters/${charId}`;
+    console.log('Updating character:', { playerId, charId, url, patch });
+    
+    fetch(url, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(patch) })
+        .then(r => {
+            console.log('Response status:', r.status);
+            return r.json();
+        })
+        .then(resp=>{
+            console.log('Response data:', resp);
+            if (resp.status === 'success') {
+                showMessage('Character updated');
+                closeEditModal();
+                loadPlayerDetail(playerId);
+            } else {
+                showMessage(resp.message || 'Failed to update', true);
+            }
+        })
+        .catch(err=>{ 
+            console.error('Fetch error:', err);
+            showMessage('Network error: ' + err.message, true);
+        });
 }
 

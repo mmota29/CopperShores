@@ -12,6 +12,7 @@ app.use(cors()); // Enable CORS for local development
 app.use(express.json());
 
 // Routes
+const db = require('./db');
 
 /**
  * GET /api/gold
@@ -43,17 +44,132 @@ app.get('/api/map', (req, res) => {
 });
 
 /**
- * GET /api/players
- * Returns placeholder data for players
+ * Players API (persistent JSON storage)
  */
+
+// List players
 app.get('/api/players', (req, res) => {
-  res.json({
-    status: 'success',
-    message: 'Players API (Coming Soon)',
-    data: {
-      players: []
+  try {
+    const players = db.listPlayers();
+    // Send a trimmed list for the index view
+    const trimmed = players.map(p => ({
+      id: p.id,
+      name: p.name,
+      bio: p.bio,
+      currentCharacter: p.currentCharacter || null
+    }));
+    res.json({ status: 'success', data: { players: trimmed } });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// Create player
+app.post('/api/players', (req, res) => {
+  const { name, bio, currentCharacter } = req.body;
+  if (!name || typeof name !== 'string' || name.trim() === '') {
+    return res.status(400).json({ status: 'error', message: 'Player name is required' });
+  }
+  try {
+    const player = db.createPlayer({ name: name.trim(), bio: bio || '', currentCharacter });
+    res.status(201).json({ status: 'success', data: player });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// Get one player
+app.get('/api/players/:id', (req, res) => {
+  const id = req.params.id;
+  const player = db.getPlayer(id);
+  if (!player) return res.status(404).json({ status: 'error', message: 'Player not found' });
+  res.json({ status: 'success', data: player });
+});
+
+// Update player (name/bio)
+app.put('/api/players/:id', (req, res) => {
+  const id = req.params.id;
+  const patch = req.body || {};
+  if (patch.name !== undefined && (typeof patch.name !== 'string' || patch.name.trim() === '')) {
+    return res.status(400).json({ status: 'error', message: 'Player name cannot be empty' });
+  }
+  const updated = db.updatePlayer(id, patch);
+  if (!updated) return res.status(404).json({ status: 'error', message: 'Player not found' });
+  res.json({ status: 'success', data: updated });
+});
+
+// Delete player
+app.delete('/api/players/:id', (req, res) => {
+  const id = req.params.id;
+  const ok = db.deletePlayer(id);
+  if (!ok) return res.status(404).json({ status: 'error', message: 'Player not found' });
+  res.json({ status: 'success', message: 'Player deleted' });
+});
+
+// Add a character to player (goes to previous list by default unless status active)
+app.post('/api/players/:id/characters', (req, res) => {
+  const id = req.params.id;
+  const payload = req.body || {};
+  const player = db.getPlayer(id);
+  if (!player) return res.status(404).json({ status: 'error', message: 'Player not found' });
+  if (!payload.name || typeof payload.name !== 'string') {
+    return res.status(400).json({ status: 'error', message: 'Character name is required' });
+  }
+  try {
+    const char = db.addCharacter(id, payload);
+    res.status(201).json({ status: 'success', data: char });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// Set current character for player (accepts { characterId } or full object)
+app.put('/api/players/:id/current', (req, res) => {
+  const id = req.params.id;
+  const payload = req.body || {};
+  const player = db.getPlayer(id);
+  if (!player) return res.status(404).json({ status: 'error', message: 'Player not found' });
+  let result = null;
+  try {
+    if (payload.characterId) {
+      result = db.setCurrentCharacter(id, payload.characterId);
+    } else if (payload.character) {
+      result = db.setCurrentCharacter(id, payload.character);
+    } else {
+      return res.status(400).json({ status: 'error', message: 'characterId or character object required' });
     }
-  });
+    if (!result) return res.status(404).json({ status: 'error', message: 'Character not found' });
+    res.json({ status: 'success', data: result });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// Move current to previous and clear current (e.g., when character dies)
+app.post('/api/players/:id/moveCurrentToPrevious', (req, res) => {
+  const id = req.params.id;
+  const payload = req.body || {};
+  const player = db.getPlayer(id);
+  if (!player) return res.status(404).json({ status: 'error', message: 'Player not found' });
+  try {
+    const status = payload.status || 'dead';
+    const moved = db.moveCurrentToPrevious(id, status);
+    if (!moved) return res.status(400).json({ status: 'error', message: 'No current character to move' });
+    res.json({ status: 'success', data: moved });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// Delete a character
+app.delete('/api/players/:id/characters/:charId', (req, res) => {
+  const id = req.params.id;
+  const charId = req.params.charId;
+  const player = db.getPlayer(id);
+  if (!player) return res.status(404).json({ status: 'error', message: 'Player not found' });
+  const ok = db.deleteCharacter(id, charId);
+  if (!ok) return res.status(404).json({ status: 'error', message: 'Character not found' });
+  res.json({ status: 'success', message: 'Character removed' });
 });
 
 /**

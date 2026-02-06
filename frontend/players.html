@@ -24,14 +24,50 @@
     <!-- Main Content -->
     <main class="container">
         <h1>👥 Players</h1>
-        <div class="placeholder">
-            <div class="icon">👥</div>
-            <h2>Coming Soon!</h2>
-            <p>This page will help you manage your party members and their details.</p>
-            <p style="font-size: 0.9rem; color: #999;">
-                <strong>Future features:</strong> Add characters, view stats, track experience, manage inventory
-            </p>
-            <a href="index.html" class="btn">Back to Home</a>
+        <div class="container">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                <p style="color: var(--secondary-color); font-weight:700;">Meet the players</p>
+                <button id="add-player-btn" class="btn">+ Add Player</button>
+            </div>
+
+            <div id="message" style="margin-bottom:1rem;"></div>
+
+            <table id="players-table" style="width:100%; border-collapse:collapse;">
+                <thead>
+                    <tr style="text-align:left; border-bottom:1px solid rgba(212,175,55,0.2);">
+                        <th style="padding:0.75rem">Player</th>
+                        <th>Current Character</th>
+                        <th>Bio</th>
+                    </tr>
+                </thead>
+                <tbody id="players-tbody">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+
+            <!-- Add Player Form (hidden by default) -->
+            <div id="add-player-form" style="display:none; margin-top:1.5rem; background: rgba(0,0,0,0.2); padding:1rem; border-radius:6px;">
+                <h3>Add Player</h3>
+                <div style="display:flex; flex-direction:column; gap:0.5rem; max-width:600px;">
+                    <label>Player Name (required)
+                        <input id="input-player-name" type="text" placeholder="Player name" />
+                    </label>
+                    <label>Bio / Notes
+                        <textarea id="input-player-bio" rows="3" placeholder="Short bio or notes"></textarea>
+                    </label>
+                    <fieldset style="border:1px solid rgba(212,175,55,0.15); padding:0.5rem;">
+                        <legend style="color:var(--secondary-color)">Optional: Current Character</legend>
+                        <input id="input-char-name" type="text" placeholder="Character name" style="width:100%; margin-bottom:0.5rem;" />
+                        <input id="input-char-race" type="text" placeholder="Race" style="width:100%; margin-bottom:0.5rem;" />
+                        <input id="input-char-class" type="text" placeholder="Class" style="width:100%; margin-bottom:0.5rem;" />
+                        <input id="input-char-level" type="number" min="1" placeholder="Level" style="width:100%;" />
+                    </fieldset>
+                    <div style="display:flex; gap:0.5rem;">
+                        <button id="submit-add-player" class="btn">Save</button>
+                        <button id="cancel-add-player" class="btn">Cancel</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 
@@ -41,5 +77,16 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        // Initialize players page when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Players page loaded');
+            if (typeof initPlayersPage === 'function') {
+                initPlayersPage();
+            } else {
+                console.error('initPlayersPage not found');
+            }
+        });
+    </script>
 </body>
 </html>

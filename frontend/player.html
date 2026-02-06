@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Details - The Copper Shores</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .char-row { display:flex; justify-content:space-between; align-items:center; padding:0.5rem 0; border-bottom:1px solid rgba(255,255,255,0.03);} 
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-title">The Copper Shores</h1>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="gold.html" class="nav-link">Gold Spending</a></li>
+                <li><a href="map.html" class="nav-link">Interactive Map</a></li>
+                <li><a href="players.html" class="nav-link active">Players</a></li>
+                <li><a href="notes.html" class="nav-link">Notes</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div id="player-container">
+            <h1 id="player-name">Player</h1>
+            <div id="player-message"></div>
+
+            <section>
+                <h2>Bio / Notes</h2>
+                <textarea id="player-bio" rows="6" style="width:100%;"></textarea>
+                <div style="margin-top:0.5rem;">
+                    <button id="save-bio" class="btn">Save Bio</button>
+                    <a href="players.html" class="btn">Back to Players</a>
+                </div>
+            </section>
+
+            <section style="margin-top:1.5rem;">
+                <h2>Current Character</h2>
+                <div id="current-character-box">
+                    <!-- Filled by JS -->
+                </div>
+                <div style="margin-top:0.5rem;">
+                    <button id="move-current-to-previous" class="btn">Move Current to Previous (e.g., if dead)</button>
+                    <button id="add-current-manual" class="btn">Add / Set Current Character</button>
+                </div>
+            </section>
+
+            <section style="margin-top:1.5rem;">
+                <h2>Previous Characters</h2>
+                <div id="previous-characters-list">
+                    <!-- list of previous characters -->
+                </div>
+                <div style="margin-top:0.5rem;">
+                    <button id="add-previous-character" class="btn">+ Add Character</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 The Copper Shores. Version 0.1.0</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+    // Inline handlers for player.html-specific UI
+    document.addEventListener('DOMContentLoaded', function() {
+        const params = new URLSearchParams(location.search);
+        const id = params.get('id');
+        if (!id) {
+            document.getElementById('player-container').innerHTML = '<p style="color:#ff6b6b">No player id provided.</p>';
+            return;
+        }
+        window.__PLAYER_ID = id;
+        loadPlayerDetail(id);
+
+        document.getElementById('save-bio').addEventListener('click', function(){
+            const bio = document.getElementById('player-bio').value;
+            updatePlayerBio(id, bio);
+        });
+
+        document.getElementById('add-previous-character').addEventListener('click', function(){
+            openAddCharacterForm(false);
+        });
+
+        document.getElementById('add-current-manual').addEventListener('click', function(){
+            openAddCharacterForm(true);
+        });
+
+        document.getElementById('move-current-to-previous').addEventListener('click', function(){
+            if (!confirm('Move current character to previous (mark as dead by default)?')) return;
+            fetch(`${API_BASE_URL}/players/${id}/moveCurrentToPrevious`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ status: 'dead' }) })
+                .then(r=>r.json())
+                .then(resp => { if (resp.status==='success') loadPlayerDetail(id); else showMessage(resp.message||'Error'); })
+                .catch(err=>showMessage('Network error'));
+        });
+    });
+    </script>
+</body>
+</html>

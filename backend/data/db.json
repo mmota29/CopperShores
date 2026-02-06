@@ -1,0 +1,80 @@
+{
+  "players": [
+    {
+      "id": "pl_mlb5lycv-kwicif",
+      "name": "Michael Mota",
+      "bio": "Hey its the me",
+      "currentCharacter": {
+        "name": "Gill",
+        "race": "Triton",
+        "className": "Artificer",
+        "level": 3,
+        "status": "active",
+        "id": "ch_mlb5meab-2tthli"
+      },
+      "characters": [
+        {
+          "name": "Gill",
+          "race": "Triton",
+          "className": "Artificer",
+          "level": 3,
+          "status": "active",
+          "id": "ch_mlb5meab-2tthli"
+        }
+      ]
+    },
+    {
+      "id": "pl_mlb5n58a-wrw2yo",
+      "name": "George",
+      "bio": "GOD aka the DM",
+      "currentCharacter": null,
+      "characters": []
+    },
+    {
+      "id": "pl_mlb5okkf-tgu539",
+      "name": "Gabi",
+      "bio": "",
+      "currentCharacter": {
+        "name": "Corelia",
+        "race": "aasimar",
+        "className": "Fighter",
+        "level": 3,
+        "id": "ch_mlb5okkf-o7v4qu",
+        "status": "active"
+      },
+      "characters": [
+        {
+          "name": "Corelia",
+          "race": "aasimar",
+          "className": "Fighter",
+          "level": 3,
+          "id": "ch_mlb5okkf-o7v4qu",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "pl_mlb63uh7-9rd4vz",
+      "name": "Mia",
+      "bio": "",
+      "currentCharacter": {
+        "name": "Blue",
+        "race": "Dragonborn",
+        "className": "Bard",
+        "level": 3,
+        "id": "ch_mlb63uh7-tzw9ht",
+        "status": "active"
+      },
+      "characters": [
+        {
+          "name": "Blue",
+          "race": "Dragonborn",
+          "className": "Bard",
+          "level": 3,
+          "id": "ch_mlb63uh7-tzw9ht",
+          "status": "active"
+        }
+      ]
+    }
+  ]
+}

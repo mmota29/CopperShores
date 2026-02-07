@@ -181,5 +181,72 @@
       }
     ],
     "session": []
+  },
+  "mapWaypoints": {
+    "world": [],
+    "alsita": [
+      {
+        "id": "wp_mlcsxud4-sgwz79",
+        "mapId": "alsita",
+        "x": 6664,
+        "y": 2956,
+        "title": "town center",
+        "note": "the center and where the magic fountain is",
+        "createdAt": "2026-02-07T21:04:01.528Z",
+        "updatedAt": "2026-02-07T21:04:01.528Z"
+      }
+    ],
+    "tosatina": [],
+    "tormsicle": []
+  },
+  "gold": {
+    "lootLog": [
+      {
+        "id": "loot_mlcutcve-fvcx2l",
+        "date": "2026-02-07T21:56:31.466Z",
+        "totalCp": 100,
+        "description": "Loot",
+        "category": "quest",
+        "session": null,
+        "allocations": [
+          {
+            "accountId": "character:ch_mlb5meab-2tthli",
+            "name": "Michael Mota — Gill",
+            "amountCp": 100
+          }
+        ]
+      }
+    ],
+    "allocationsSnapshot": {
+      "party": 0,
+      "patron": 0,
+      "character:ch_mlb5meab-2tthli": 100
+    },
+    "settings": {
+      "allocateToPatron": false,
+      "patronPercentage": 10
+    },
+    "_archived_transactions": [
+      {
+        "id": "txn_mlcu073z-89qoss",
+        "date": "2026-02-07T21:33:50.975Z",
+        "source": "loot",
+        "description": "test",
+        "recipientId": "party",
+        "amountCp": 400,
+        "category": null,
+        "session": null
+      },
+      {
+        "id": "txn_mlcu073z-9uaulq",
+        "date": "2026-02-07T21:33:50.975Z",
+        "source": "loot",
+        "description": "test",
+        "recipientId": "patron",
+        "amountCp": 100,
+        "category": null,
+        "session": null
+      }
+    ]
   }
 }

@@ -1,0 +1,10 @@
+{
+  "totalCp": 50000,
+  "description": "Test Quest Reward",
+  "category": "Quest",
+  "session": 1,
+  "splits": [
+    { "recipientId": "party", "amountCp": 45000 },
+    { "recipientId": "patron", "amountCp": 5000 }
+  ]
+}

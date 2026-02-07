@@ -273,6 +273,292 @@ function deleteNote(category, noteId) {
   return true;
 }
 
+/* -------------------- Map Helpers -------------------- */
+
+// Map definitions (hardcoded for now)
+const MAPS_DEFINITION = [
+  {
+    id: 'world',
+    name: 'World Map',
+    imagePath: '/allmaps/coppershores.png'
+  },
+  {
+    id: 'alsita',
+    name: 'Alsita',
+    imagePath: '/allmaps/Alsita.PNG'
+  },
+  {
+    id: 'tosatina',
+    name: 'Tosatina',
+    imagePath: '/allmaps/Tosatina.PNG'
+  },
+  {
+    id: 'tormsicle',
+    name: 'Tormsicle',
+    imagePath: '/allmaps/Tormsicle.png'
+  }
+];
+
+function getMapsDefinition() {
+  return MAPS_DEFINITION;
+}
+
+function ensureMapWaypointsStructure() {
+  const db = readDB();
+  if (!db.mapWaypoints) {
+    db.mapWaypoints = {};
+    MAPS_DEFINITION.forEach(map => {
+      db.mapWaypoints[map.id] = [];
+    });
+    writeDB(db);
+  }
+}
+
+function listWaypoints(mapId) {
+  ensureMapWaypointsStructure();
+  const db = readDB();
+  if (!db.mapWaypoints[mapId]) return null;
+  return db.mapWaypoints[mapId];
+}
+
+function getWaypoint(mapId, waypointId) {
+  const waypoints = listWaypoints(mapId);
+  if (!waypoints) return null;
+  return waypoints.find(w => w.id === waypointId) || null;
+}
+
+function createWaypoint(mapId, { x, y, title, note }) {
+  const waypoints = listWaypoints(mapId);
+  if (!waypoints) return null;
+  
+  const now = new Date().toISOString();
+  const newWaypoint = {
+    id: generateId('wp_'),
+    mapId: mapId,
+    x: Number(x) || 0,
+    y: Number(y) || 0,
+    title: title || '',
+    note: note || '',
+    createdAt: now,
+    updatedAt: now
+  };
+  
+  const db = readDB();
+  db.mapWaypoints[mapId].push(newWaypoint);
+  writeDB(db);
+  return newWaypoint;
+}
+
+function updateWaypoint(mapId, waypointId, patch) {
+  const db = readDB();
+  const waypoints = db.mapWaypoints[mapId];
+  if (!waypoints) return null;
+  
+  const idx = waypoints.findIndex(w => w.id === waypointId);
+  if (idx === -1) return null;
+  
+  const waypoint = waypoints[idx];
+  if (patch.x !== undefined) waypoint.x = Number(patch.x) || 0;
+  if (patch.y !== undefined) waypoint.y = Number(patch.y) || 0;
+  if (patch.title !== undefined) waypoint.title = patch.title;
+  if (patch.note !== undefined) waypoint.note = patch.note;
+  waypoint.updatedAt = new Date().toISOString();
+  
+  db.mapWaypoints[mapId][idx] = waypoint;
+  writeDB(db);
+  return waypoint;
+}
+
+function deleteWaypoint(mapId, waypointId) {
+  const db = readDB();
+  const waypoints = db.mapWaypoints[mapId];
+  if (!waypoints) return false;
+  
+  const idx = waypoints.findIndex(w => w.id === waypointId);
+  if (idx === -1) return false;
+  
+  waypoints.splice(idx, 1);
+  writeDB(db);
+  return true;
+}
+
+/* -------------------- Gold Treasury Helpers -------------------- */
+
+// Category definitions for loot allocation
+const LOOT_CATEGORIES = [
+  { id: 'quest', name: 'Quest Reward' },
+  { id: 'treasure', name: 'Treasure' },
+  { id: 'vendor', name: 'Vendor Sale' },
+  { id: 'other', name: 'Other' }
+];
+
+// Allocation categories for distribution
+const ALLOCATION_CATEGORIES = [
+  { id: 'party', name: 'Party Vault' },
+  { id: 'patron', name: 'Patron' },
+  { id: 'ship', name: 'Ship Fund' },
+  { id: 'crew', name: 'Crew Fund' },
+  { id: 'player_pool', name: 'Players Pool' },
+  { id: 'direct_player', name: 'Direct to Player' }
+];
+
+function ensureTreasuryStructure() {
+  const db = readDB();
+  if (!db.gold) {
+    db.gold = {
+      lootLog: [],
+      allocationsSnapshot: {
+        party: 0,
+        patron: 0
+      },
+      settings: {
+        allocateToPatron: false,
+        patronPercentage: 10
+      }
+    };
+    writeDB(db);
+  }
+}
+
+function getLootCategories() {
+  return LOOT_CATEGORIES;
+}
+
+function getAllocationCategories() {
+  return ALLOCATION_CATEGORIES;
+}
+
+function getTreasurySettings() {
+  ensureTreasuryStructure();
+  const db = readDB();
+  return db.gold.settings;
+}
+
+function updateTreasurySettings(patch) {
+  const db = readDB();
+  if (!db.gold) ensureTreasuryStructure();
+  if (patch.allocateToPatron !== undefined) db.gold.settings.allocateToPatron = patch.allocateToPatron;
+  if (patch.patronPercentage !== undefined) db.gold.settings.patronPercentage = patch.patronPercentage;
+  writeDB(db);
+  return db.gold.settings;
+}
+
+function listLootLog() {
+  ensureTreasuryStructure();
+  const db = readDB();
+  return db.gold.lootLog || [];
+}
+
+function addLootEntry(lootData) {
+  const { totalCp, description, category, session, allocations } = lootData;
+  
+  // Validate inputs
+  if (typeof totalCp !== 'number' || totalCp <= 0) return null;
+  if (!Array.isArray(allocations) || allocations.length === 0) return null;
+  
+  // Validate allocations sum to total
+  const allocSum = allocations.reduce((sum, a) => sum + (a.amountCp || 0), 0);
+  if (allocSum !== totalCp) return null;
+  
+  const db = readDB();
+  if (!db.gold) ensureTreasuryStructure();
+  
+  const now = new Date().toISOString();
+  const entry = {
+    id: generateId('loot_'),
+    date: now,
+    totalCp,
+    description: description || '',
+    category: category || 'other',
+    session: session || null,
+    allocations: allocations // Array of { accountId, amountCp, name } - accountId can be "party", "patron", or "character:charId"
+  };
+  
+  db.gold.lootLog.push(entry);
+  
+  // Update allocations snapshot
+  allocations.forEach(alloc => {
+    const accountId = alloc.accountId || alloc.recipientId; // Support both field names
+    if (!db.gold.allocationsSnapshot[accountId]) {
+      db.gold.allocationsSnapshot[accountId] = 0;
+    }
+    db.gold.allocationsSnapshot[accountId] += alloc.amountCp;
+  });
+  
+  writeDB(db);
+  return entry;
+}
+
+function deleteLootEntry(lootId) {
+  const db = readDB();
+  if (!db.gold) return false;
+  
+  const idx = db.gold.lootLog.findIndex(l => l.id === lootId);
+  if (idx === -1) return false;
+  
+  const entry = db.gold.lootLog[idx];
+  
+  // Reverse the allocations snapshot
+  entry.allocations.forEach(alloc => {
+    const accountId = alloc.accountId || alloc.recipientId; // Support both field names
+    if (db.gold.allocationsSnapshot[accountId]) {
+      db.gold.allocationsSnapshot[accountId] -= alloc.amountCp;
+      if (db.gold.allocationsSnapshot[accountId] < 0) {
+        db.gold.allocationsSnapshot[accountId] = 0;
+      }
+    }
+  });
+  
+  db.gold.lootLog.splice(idx, 1);
+  writeDB(db);
+  return true;
+}
+
+function getAllocationsSnapshot() {
+  ensureTreasuryStructure();
+  const db = readDB();
+  return db.gold.allocationsSnapshot;
+}
+
+/**
+ * Get accounts list for treasury allocations
+ * Returns: party, patron, and all players' current characters
+ */
+function getAccounts() {
+  const accounts = [];
+  
+  // Add fixed accounts
+  accounts.push({
+    id: 'party',
+    name: 'Party Vault',
+    displayName: 'Party Vault'
+  });
+  accounts.push({
+    id: 'patron',
+    name: 'Patron',
+    displayName: 'Patron'
+  });
+  
+  // Add current character accounts for each player
+  const players = listPlayers();
+  players.forEach(player => {
+    if (player.currentCharacter) {
+      const char = player.currentCharacter;
+      const accountId = `character:${char.id}`;
+      const displayName = `${player.name} — ${char.name}`;
+      accounts.push({
+        id: accountId,
+        name: displayName,
+        displayName: displayName,
+        playerId: player.id,
+        characterId: char.id
+      });
+    }
+  });
+  
+  return accounts;
+}
+
 module.exports = {
   readDB,
   writeDB,
@@ -293,5 +579,22 @@ module.exports = {
   getNote,
   createNote,
   updateNote,
-  deleteNote
+  deleteNote,
+  // Maps
+  getMapsDefinition,
+  listWaypoints,
+  getWaypoint,
+  createWaypoint,
+  updateWaypoint,
+  deleteWaypoint,
+  // Treasury (replaces old gold)
+  getLootCategories,
+  getAllocationCategories,
+  getTreasurySettings,
+  updateTreasurySettings,
+  listLootLog,
+  addLootEntry,
+  deleteLootEntry,
+  getAllocationsSnapshot,
+  getAccounts
 };

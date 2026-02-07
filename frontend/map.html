@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Map - The Copper Shores</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="map.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -21,25 +24,76 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="container">
-        <h1>🗺️ Interactive Map</h1>
-        <div class="placeholder">
-            <div class="icon">🗺️</div>
-            <h2>Coming Soon!</h2>
-            <p>This page will let you explore the world and mark important locations.</p>
-            <p style="font-size: 0.9rem; color: #999;">
-                <strong>Future features:</strong> Click to add locations, view points of interest, track party position
-            </p>
-            <a href="index.html" class="btn">Back to Home</a>
+    <!-- Map Container -->
+    <div id="map-wrapper">
+        <!-- Top Controls -->
+        <div id="map-controls" class="map-controls">
+            <div class="controls-left">
+                <button id="btn-add-waypoint" class="btn btn-primary" title="Click map to add waypoint">Add Waypoint</button>
+            </div>
+            <div class="controls-center">
+                <span id="current-map-name" class="map-name">World Map</span>
+            </div>
+            <div class="controls-right" id="back-to-world-container" style="display:none;">
+                <button id="btn-back-to-world" class="btn btn-secondary">Back to World</button>
+            </div>
         </div>
-    </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <p>&copy; 2026 The Copper Shores. Version 0.1.0</p>
-    </footer>
+        <!-- Map Container -->
+        <div id="map" class="map-container"></div>
 
-    <script src="script.js"></script>
+        <!-- Waypoint Editor Modal -->
+        <div id="modal-waypoint" class="modal" style="display:none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modal-title">Add Waypoint</h3>
+                    <button class="modal-close" id="modal-close-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="waypoint-form">
+                        <div class="form-group">
+                            <label for="waypoint-title">Title (optional):</label>
+                            <input type="text" id="waypoint-title" placeholder="e.g., Hidden Treasure" />
+                        </div>
+                        <div class="form-group">
+                            <label for="waypoint-note">Note/Description (optional):</label>
+                            <textarea id="waypoint-note" placeholder="What is this location important for?"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Coordinates:</label>
+                            <p id="waypoint-coords" style="font-size: 0.9em; color: #888;">X: --, Y: --</p>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="waypoint-cancel" class="btn btn-secondary">Cancel</button>
+                    <button id="waypoint-save" class="btn btn-primary">Save Waypoint</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Waypoint Popup (for existing waypoints) -->
+        <div id="modal-waypoint-view" class="modal" style="display:none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="waypoint-view-title">Waypoint</h3>
+                    <button class="modal-close" id="modal-view-close-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p id="waypoint-view-note" style="margin-bottom: 1rem;"></p>
+                    <p id="waypoint-view-coords" style="font-size: 0.9em; color: #888; margin-bottom: 1rem;"></p>
+                </div>
+                <div class="modal-footer">
+                    <button id="waypoint-delete" class="btn btn-danger">Delete</button>
+                    <button id="waypoint-close-view" class="btn btn-secondary">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <!-- App Script -->
+    <script src="map.js"></script>
 </body>
 </html>

@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gold Spending - The Copper Shores</title>
+    <title>Treasury - The Copper Shores</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="gold.css">
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -13,7 +14,7 @@
             <h1 class="nav-title">The Copper Shores</h1>
             <ul class="nav-links">
                 <li><a href="index.html" class="nav-link">Home</a></li>
-                <li><a href="gold.html" class="nav-link active">Gold Spending</a></li>
+                <li><a href="gold.html" class="nav-link active">Treasury</a></li>
                 <li><a href="map.html" class="nav-link">Interactive Map</a></li>
                 <li><a href="players.html" class="nav-link">Players</a></li>
                 <li><a href="notes.html" class="nav-link">Notes</a></li>
@@ -22,24 +23,186 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="container">
-        <h1>💰 Gold Spending</h1>
-        <div class="placeholder">
-            <div class="icon">💰</div>
-            <h2>Coming Soon!</h2>
-            <p>This page will help you track your party's treasures and manage spending.</p>
-            <p style="font-size: 0.9rem; color: #999;">
-                <strong>Future features:</strong> Add expenses, view spending summaries, manage party treasury
-            </p>
-            <a href="index.html" class="btn">Back to Home</a>
+    <div class="page-wrapper">
+        <div class="treasury-container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1>⚔️ Party Treasury</h1>
+                <p>Manage loot and track allocations</p>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <div class="tab-navigation">
+                <button class="tab-btn active" data-tab="loot-log">Loot Log</button>
+                <button class="tab-btn" data-tab="wallets">Wallets</button>
+                <button class="tab-btn" data-tab="settings">Settings</button>
+            </div>
+
+            <!-- TAB 1: Loot Log -->
+            <div id="tab-loot-log" class="tab-content active">
+                <div class="tab-header">
+                    <h2>Loot Log</h2>
+                    <button id="btn-add-loot" class="btn btn-primary">➕ Add Loot</button>
+                </div>
+
+                <div class="ledger-wrapper">
+                    <table class="ledger-table" id="loot-log-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Total</th>
+                                <th>Allocations</th>
+                                <th>Session</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="loot-log-body">
+                            <!-- Rows inserted here -->
+                        </tbody>
+                    </table>
+                    <div id="empty-loot-log" class="empty-message" style="display: none;">
+                        No loot entries yet. Add one to get started!
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: Wallets -->
+            <div id="tab-wallets" class="tab-content" style="display: none;">
+                <h2>Current Balances</h2>
+                <div class="wallets-section">
+                    <div class="wallets-subsection">
+                        <h3>Party Funds</h3>
+                        <div class="wallets-grid">
+                            <div class="wallet-card">
+                                <div class="wallet-label">Party Vault</div>
+                                <div class="wallet-balance" id="wallet-party">0 gp</div>
+                            </div>
+                            <div class="wallet-card">
+                                <div class="wallet-label">Patron</div>
+                                <div class="wallet-balance" id="wallet-patron">0 gp</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="wallets-subsection">
+                        <h3>Character Accounts</h3>
+                        <div id="player-wallets-container" class="wallets-list">
+                            <!-- Populated by renderWallets() -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: Settings -->
+            <div id="tab-settings" class="tab-content" style="display: none;">
+                <h2>Treasury Settings</h2>
+                <div class="settings-section">
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="setting-allocate-patron" />
+                            <span>Auto-allocate percentage to Patron on new loot</span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label for="setting-patron-percent">Patron Percentage (only if enabled above):</label>
+                        <input type="number" id="setting-patron-percent" min="0" max="100" value="10" />
+                        <span class="hint">%</span>
+                    </div>
+                    <button id="btn-save-settings" class="btn btn-primary">Save Settings</button>
+                </div>
+            </div>
         </div>
-    </main>
+    </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <p>&copy; 2026 The Copper Shores. Version 0.1.0</p>
-    </footer>
+    <!-- Add Loot Modal -->
+    <div id="modal-add-loot" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Loot Entry</h3>
+                <button class="modal-close" id="modal-close-loot">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Step 1: Loot Details -->
+                <div id="step-1-details" class="step">
+                    <h4>Step 1: Loot Details</h4>
+                    
+                    <div class="form-group">
+                        <label for="loot-gp">Amount (GP):</label>
+                        <input type="number" id="loot-gp" min="0" value="0" />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="loot-sp">Amount (SP):</label>
+                        <input type="number" id="loot-sp" min="0" value="0" />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="loot-cp">Amount (CP):</label>
+                        <input type="number" id="loot-cp" min="0" value="0" />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="loot-category">Category:</label>
+                        <select id="loot-category"></select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="loot-description">Description:</label>
+                        <input type="text" id="loot-description" placeholder="e.g., Dragon hoard from cave" />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="loot-session">Session (optional):</label>
+                        <input type="number" id="loot-session" min="1" />
+                    </div>
+                    
+                    <div class="total-display">
+                        Total: <strong id="total-amount-display">0 gp</strong>
+                    </div>
+                </div>
 
-    <script src="script.js"></script>
+                <!-- Step 2: Allocation -->
+                <div id="step-2-allocation" class="step" style="display: none;">
+                    <h4>Step 2: Allocate Loot</h4>
+                    <p class="step-hint">Specify how to distribute the loot across funds.</p>
+                    
+                    <div class="allocation-table-wrapper">
+                        <table class="allocation-table">
+                            <thead>
+                                <tr>
+                                    <th>Recipient</th>
+                                    <th>GP</th>
+                                    <th>SP</th>
+                                    <th>CP</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="allocation-body">
+                                <!-- Rows inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="allocation-check">
+                        <div>Loot Total: <strong id="alloc-loot-total">0 cp</strong></div>
+                        <div>Allocated: <strong id="alloc-allocated-total">0 cp</strong></div>
+                        <div id="alloc-match-status" class="status-bad">❌ Amounts don't match</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button id="btn-back-step1" class="btn btn-secondary" style="display: none;">← Back</button>
+                <button id="btn-cancel-loot" class="btn btn-secondary">Cancel</button>
+                <button id="btn-next-step2" class="btn btn-primary">Next: Allocate →</button>
+                <button id="btn-confirm-loot" class="btn btn-primary" style="display: none;">✓ Add Loot</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="gold.js"></script>
 </body>
 </html>

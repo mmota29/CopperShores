@@ -3,6 +3,7 @@
 
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 const PORT = 3000;
@@ -10,6 +11,10 @@ const PORT = 3000;
 // Middleware
 app.use(cors()); // Enable CORS for local development
 app.use(express.json());
+
+// Serve static files from frontend and allmaps directories
+app.use(express.static(path.join(__dirname, '..', 'frontend')));
+app.use('/allmaps', express.static(path.join(__dirname, '..', 'allmaps')));
 
 // Routes
 const db = require('./db');
@@ -289,6 +294,211 @@ app.delete('/api/notes/:cat/:id', (req, res) => {
       return res.status(404).json({ status: 'error', message: 'Note not found' });
     }
     res.json({ status: 'success', message: 'Note deleted' });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+/**
+ * Maps API (persistent JSON storage with Leaflet.js integration)
+ */
+
+// Get all available maps with metadata
+app.get('/api/maps', (req, res) => {
+  try {
+    const maps = db.getMapsDefinition();
+    res.json({ status: 'success', data: { maps } });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// Get waypoints for a specific map
+app.get('/api/maps/:mapId/waypoints', (req, res) => {
+  const mapId = req.params.mapId;
+  try {
+    const waypoints = db.listWaypoints(mapId);
+    if (waypoints === null) {
+      return res.status(400).json({ status: 'error', message: 'Invalid map ID' });
+    }
+    res.json({ status: 'success', data: { waypoints } });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// Create a waypoint on a map
+app.post('/api/maps/:mapId/waypoints', (req, res) => {
+  const mapId = req.params.mapId;
+  const { x, y, title, note } = req.body || {};
+  if (typeof x !== 'number' || typeof y !== 'number') {
+    return res.status(400).json({ status: 'error', message: 'x and y coordinates are required and must be numbers' });
+  }
+  try {
+    const waypoint = db.createWaypoint(mapId, { x, y, title, note });
+    if (!waypoint) {
+      return res.status(400).json({ status: 'error', message: 'Invalid map ID' });
+    }
+    res.status(201).json({ status: 'success', data: waypoint });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// Get a specific waypoint
+app.get('/api/maps/:mapId/waypoints/:id', (req, res) => {
+  const mapId = req.params.mapId;
+  const id = req.params.id;
+  try {
+    const waypoint = db.getWaypoint(mapId, id);
+    if (!waypoint) {
+      return res.status(404).json({ status: 'error', message: 'Waypoint not found' });
+    }
+    res.json({ status: 'success', data: waypoint });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// Update a waypoint
+app.put('/api/maps/:mapId/waypoints/:id', (req, res) => {
+  const mapId = req.params.mapId;
+  const id = req.params.id;
+  const patch = req.body || {};
+  try {
+    const waypoint = db.updateWaypoint(mapId, id, patch);
+    if (!waypoint) {
+      return res.status(404).json({ status: 'error', message: 'Waypoint not found' });
+    }
+    res.json({ status: 'success', data: waypoint });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// Delete a waypoint
+app.delete('/api/maps/:mapId/waypoints/:id', (req, res) => {
+  const mapId = req.params.mapId;
+  const id = req.params.id;
+  try {
+    const ok = db.deleteWaypoint(mapId, id);
+    if (!ok) {
+      return res.status(404).json({ status: 'error', message: 'Waypoint not found' });
+    }
+    res.json({ status: 'success', message: 'Waypoint deleted' });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+/* -------------------- Gold Treasury API Routes -------------------- */
+
+// Get treasury settings
+app.get('/api/treasury/settings', (req, res) => {
+  try {
+    const settings = db.getTreasurySettings();
+    res.json({ status: 'success', data: { settings } });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// Update treasury settings
+app.put('/api/treasury/settings', (req, res) => {
+  try {
+    const patch = req.body || {};
+    const settings = db.updateTreasurySettings(patch);
+    res.json({ status: 'success', data: { settings } });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// Get loot categories and allocation categories
+app.get('/api/treasury/categories', (req, res) => {
+  try {
+    const lootCategories = db.getLootCategories();
+    const allocationCategories = db.getAllocationCategories();
+    res.json({
+      status: 'success',
+      data: { lootCategories, allocationCategories }
+    });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// Get loot log
+app.get('/api/treasury/loot-log', (req, res) => {
+  try {
+    const lootLog = db.listLootLog();
+    res.json({ status: 'success', data: { lootLog } });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// Add loot entry
+app.post('/api/treasury/loot', (req, res) => {
+  try {
+    const { totalCp, description, category, session, allocations } = req.body;
+    
+    if (typeof totalCp !== 'number' || totalCp <= 0) {
+      return res.status(400).json({ status: 'error', message: 'totalCp must be positive' });
+    }
+    if (!Array.isArray(allocations) || allocations.length === 0) {
+      return res.status(400).json({ status: 'error', message: 'allocations array required' });
+    }
+    
+    const allocSum = allocations.reduce((sum, a) => sum + (a.amountCp || 0), 0);
+    if (allocSum !== totalCp) {
+      return res.status(400).json({
+        status: 'error',
+        message: `Allocations sum (${allocSum}) != total (${totalCp})`
+      });
+    }
+    
+    const entry = db.addLootEntry({ totalCp, description, category, session, allocations });
+    if (!entry) {
+      return res.status(400).json({ status: 'error', message: 'Failed to create loot entry' });
+    }
+    
+    const snapshot = db.getAllocationsSnapshot();
+    res.status(201).json({ status: 'success', data: { entry, snapshot } });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// Delete loot entry
+app.delete('/api/treasury/loot/:id', (req, res) => {
+  try {
+    const ok = db.deleteLootEntry(req.params.id);
+    if (!ok) {
+      return res.status(404).json({ status: 'error', message: 'Loot entry not found' });
+    }
+    const snapshot = db.getAllocationsSnapshot();
+    res.json({ status: 'success', data: { snapshot } });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// Get allocations snapshot (wallets)
+app.get('/api/treasury/wallets', (req, res) => {
+  try {
+    const snapshot = db.getAllocationsSnapshot();
+    res.json({ status: 'success', data: { wallets: snapshot } });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// Get accounts list (party, patron, characters)
+app.get('/api/treasury/accounts', (req, res) => {
+  try {
+    const accounts = db.getAccounts();
+    res.json({ status: 'success', data: { accounts } });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
   }

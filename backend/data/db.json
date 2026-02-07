@@ -122,5 +122,64 @@
         }
       ]
     }
-  ]
+  ],
+  "notes": {
+    "pc": [
+      {
+        "id": "note_mlbhumlh-42oy9w",
+        "title": "Gill",
+        "content": "Gill the triton artificer, came to the festival to explore the city and see what inventions can be made, he met ellie and from there join the party in the quest for the celestial droplet.",
+        "tags": [
+          "PC",
+          "Michael",
+          "Triton"
+        ],
+        "createdAt": "2026-02-06T23:05:49.541Z",
+        "updatedAt": "2026-02-06T23:05:49.541Z"
+      },
+      {
+        "id": "note_mlbin281-qdv0ng",
+        "title": "Corelia Harrendyl",
+        "content": "Aasimar Samurai Fighter, a friend of Mozzie the devil, is currently looking for item that used to belong to her family. helped interagted Gill.",
+        "tags": [
+          "Aasimar",
+          "Fighter",
+          "Gabi",
+          "PC"
+        ],
+        "createdAt": "2026-02-06T23:27:56.161Z",
+        "updatedAt": "2026-02-06T23:28:19.431Z"
+      }
+    ],
+    "npc": [],
+    "event": [],
+    "enemy": [],
+    "location": [],
+    "item": [
+      {
+        "id": "note_mlbk5sq5-2p63vi",
+        "title": "Celestial Droplet",
+        "content": "only rumors at this point \nSome relate it to a kids’ book  \nSome attribute it to the dragon that attacked, which could be in Alsita, the government stole it\n1 million gp bounty  \ndroplet w/ blue and purple tints. Emanates energy of storm clouds and arcana, magical and religious importance. \n\n",
+        "tags": [
+          "Celestial",
+          "Main",
+          "souls"
+        ],
+        "createdAt": "2026-02-07T00:10:29.933Z",
+        "updatedAt": "2026-02-07T00:10:29.933Z"
+      },
+      {
+        "id": "note_mlbk79a1-2nl4v8",
+        "title": "Random Monolith",
+        "content": "Some form of ward/protection \nThe language cannot be understood  \nRhaekar’s mind is clear when he’s there \n",
+        "tags": [
+          "Grafgate",
+          "Rhaekar"
+        ],
+        "createdAt": "2026-02-07T00:11:38.041Z",
+        "updatedAt": "2026-02-07T00:11:38.041Z"
+      }
+    ],
+    "session": []
+  }
 }

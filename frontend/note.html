@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Note - The Copper Shores</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-title">The Copper Shores</h1>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="gold.html" class="nav-link">Gold Spending</a></li>
+                <li><a href="map.html" class="nav-link">Interactive Map</a></li>
+                <li><a href="players.html" class="nav-link">Players</a></li>
+                <li><a href="notes.html" class="nav-link active">Notes</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h1 id="note-title-display">Note</h1>
+            <button id="back-btn" class="btn">← Back</button>
+        </div>
+
+        <div id="message" style="margin-bottom: 1rem;"></div>
+
+        <form id="note-form">
+            <section style="margin-bottom: 1rem;">
+                <label>Title
+                    <input id="note-title" type="text" style="width: 100%; padding: 0.75rem; margin-bottom: 0.5rem;" />
+                </label>
+            </section>
+
+            <section style="margin-bottom: 1rem;">
+                <label>Content
+                    <textarea id="note-content" rows="10" style="width: 100%; padding: 0.75rem; margin-bottom: 0.5rem;"></textarea>
+                </label>
+            </section>
+
+            <section style="margin-bottom: 1rem;">
+                <label>Tags (comma-separated)
+                    <input id="note-tags" type="text" style="width: 100%; padding: 0.75rem; margin-bottom: 0.5rem;" />
+                </label>
+            </section>
+
+            <div style="display: flex; gap: 0.5rem;">
+                <button type="button" id="save-btn" class="btn">Save</button>
+                <button type="button" id="delete-btn" class="btn" style="background-color: #8b3a3a; border-color: #ff6b6b;">Delete</button>
+                <button type="button" id="cancel-btn" class="btn">Cancel</button>
+            </div>
+        </form>
+
+        <div style="margin-top: 1rem; color: #999; font-size: 0.9rem;">
+            <p id="timestamps"></p>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 The Copper Shores. Version 0.1.0</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        let currentCategory = null;
+        let currentNoteId = null;
+        let currentNote = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = new URLSearchParams(location.search);
+            currentCategory = params.get('cat') || 'pc';
+            currentNoteId = params.get('id');
+            window.__CURRENT_CATEGORY = currentCategory;
+
+            if (!currentNoteId) {
+                document.getElementById('note-form').innerHTML = '<p style="color:#ff6b6b">No note selected.</p>';
+                return;
+            }
+
+            loadNote();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('save-btn').addEventListener('click', saveNote);
+            document.getElementById('delete-btn').addEventListener('click', deleteNote);
+            document.getElementById('cancel-btn').addEventListener('click', goBack);
+            document.getElementById('back-btn').addEventListener('click', goBack);
+        }
+
+        function loadNote() {
+            fetch(`${API_BASE_URL}/notes/${currentCategory}/${currentNoteId}`)
+                .then(r => r.json())
+                .then(resp => {
+                    if (resp.status !== 'success') {
+                        showMessage('Note not found', true);
+                        return;
+                    }
+                    currentNote = resp.data;
+                    populateForm(currentNote);
+                })
+                .catch(err => showMessage('Network error', true));
+        }
+
+        function populateForm(note) {
+            document.getElementById('note-title').value = note.title || '';
+            document.getElementById('note-content').value = note.content || '';
+            document.getElementById('note-tags').value = note.tags ? note.tags.join(', ') : '';
+            document.getElementById('note-title-display').textContent = note.title;
+            
+            const created = new Date(note.createdAt).toLocaleString();
+            const updated = new Date(note.updatedAt).toLocaleString();
+            document.getElementById('timestamps').innerHTML = `
+                <strong>Created:</strong> ${created}<br/>
+                <strong>Updated:</strong> ${updated}
+            `;
+        }
+
+        function saveNote() {
+            const title = document.getElementById('note-title').value || '';
+            if (!title.trim()) {
+                showMessage('Title is required', true);
+                return;
+            }
+            const content = document.getElementById('note-content').value || '';
+            const tagsStr = document.getElementById('note-tags').value || '';
+            const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()) : [];
+            
+            fetch(`${API_BASE_URL}/notes/${currentCategory}/${currentNoteId}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ title, content, tags })
+            })
+            .then(r => r.json())
+            .then(resp => {
+                if (resp.status === 'success') {
+                    currentNote = resp.data;
+                    populateForm(currentNote);
+                    showMessage('Note saved');
+                } else {
+                    showMessage(resp.message || 'Failed to save', true);
+                }
+            })
+            .catch(err => showMessage('Network error', true));
+        }
+
+        function deleteNote() {
+            if (!confirm('Delete this note permanently?')) return;
+            
+            fetch(`${API_BASE_URL}/notes/${currentCategory}/${currentNoteId}`, { method: 'DELETE' })
+                .then(r => r.json())
+                .then(resp => {
+                    if (resp.status === 'success') {
+                        showMessage('Note deleted. Redirecting...');
+                        setTimeout(() => {
+                            window.location = `notes_category.html?cat=${currentCategory}`;
+                        }, 1000);
+                    } else {
+                        showMessage(resp.message || 'Failed to delete', true);
+                    }
+                })
+                .catch(err => showMessage('Network error', true));
+        }
+
+        function goBack() {
+            window.location = `notes_category.html?cat=${currentCategory}`;
+        }
+
+        function showMessage(msg, isError) {
+            const el = document.getElementById('message');
+            el.innerHTML = `<p style="color:${isError? '#ff6b6b':'#90ee90'}">${msg}</p>`;
+            if (!isError) setTimeout(() => { el.innerHTML = ''; }, 4000);
+        }
+    </script>
+</body>
+</html>

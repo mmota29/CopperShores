@@ -202,6 +202,98 @@ app.get('/api/notes', (req, res) => {
   });
 });
 
+/**
+ * Notes API (persistent JSON storage)
+ */
+
+// Get all note categories with labels
+app.get('/api/notes/categories', (req, res) => {
+  try {
+    const cats = db.getCategories();
+    res.json({ status: 'success', data: cats });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// List notes in a category
+app.get('/api/notes/:cat', (req, res) => {
+  const cat = req.params.cat;
+  try {
+    const notes = db.listNotes(cat);
+    if (notes === null) {
+      return res.status(400).json({ status: 'error', message: 'Invalid category' });
+    }
+    res.json({ status: 'success', data: { notes } });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// Create a note
+app.post('/api/notes/:cat', (req, res) => {
+  const cat = req.params.cat;
+  const { title, content, tags } = req.body || {};
+  if (!title || typeof title !== 'string' || title.trim() === '') {
+    return res.status(400).json({ status: 'error', message: 'Note title is required' });
+  }
+  try {
+    const note = db.createNote(cat, { title, content, tags });
+    if (!note) {
+      return res.status(400).json({ status: 'error', message: 'Invalid category or note data' });
+    }
+    res.status(201).json({ status: 'success', data: note });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// Get one note
+app.get('/api/notes/:cat/:id', (req, res) => {
+  const cat = req.params.cat;
+  const id = req.params.id;
+  try {
+    const note = db.getNote(cat, id);
+    if (!note) {
+      return res.status(404).json({ status: 'error', message: 'Note not found' });
+    }
+    res.json({ status: 'success', data: note });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// Update a note
+app.put('/api/notes/:cat/:id', (req, res) => {
+  const cat = req.params.cat;
+  const id = req.params.id;
+  const patch = req.body || {};
+  try {
+    const note = db.updateNote(cat, id, patch);
+    if (!note) {
+      return res.status(404).json({ status: 'error', message: 'Note not found or invalid category' });
+    }
+    res.json({ status: 'success', data: note });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// Delete a note
+app.delete('/api/notes/:cat/:id', (req, res) => {
+  const cat = req.params.cat;
+  const id = req.params.id;
+  try {
+    const ok = db.deleteNote(cat, id);
+    if (!ok) {
+      return res.status(404).json({ status: 'error', message: 'Note not found' });
+    }
+    res.json({ status: 'success', message: 'Note deleted' });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
 // Health check endpoint
 app.get('/', (req, res) => {
   res.json({

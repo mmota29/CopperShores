@@ -186,6 +186,93 @@ function moveCurrentToPrevious(playerId, status = 'dead') {
   return cur;
 }
 
+/* -------------------- Notes Helpers -------------------- */
+
+const NOTE_CATEGORIES = {
+  pc: 'PC Notes',
+  npc: 'NPC Notes',
+  event: 'Event Notes',
+  enemy: 'Enemy Notes',
+  location: 'Location Notes',
+  item: 'Item Notes',
+  session: 'Session Recaps'
+};
+
+function getCategories() {
+  return NOTE_CATEGORIES;
+}
+
+function listNotes(category) {
+  if (!NOTE_CATEGORIES[category]) return null;
+  const db = readDB();
+  if (!db.notes) db.notes = {};
+  if (!db.notes[category]) db.notes[category] = [];
+  return db.notes[category];
+}
+
+function getNote(category, noteId) {
+  const notes = listNotes(category);
+  if (!notes) return null;
+  return notes.find(n => n.id === noteId) || null;
+}
+
+function createNote(category, { title, content, tags }) {
+  if (!NOTE_CATEGORIES[category]) return null;
+  if (!title || typeof title !== 'string' || title.trim() === '') return null;
+  
+  const db = readDB();
+  if (!db.notes) db.notes = {};
+  if (!db.notes[category]) db.notes[category] = [];
+  
+  const now = new Date().toISOString();
+  const newNote = {
+    id: generateId('note_'),
+    title: title.trim(),
+    content: content || '',
+    tags: Array.isArray(tags) ? tags : (tags ? tags.split(',').map(t => t.trim()) : []),
+    createdAt: now,
+    updatedAt: now
+  };
+  
+  db.notes[category].push(newNote);
+  writeDB(db);
+  return newNote;
+}
+
+function updateNote(category, noteId, patch) {
+  if (!NOTE_CATEGORIES[category]) return null;
+  const db = readDB();
+  if (!db.notes || !db.notes[category]) return null;
+  
+  const idx = db.notes[category].findIndex(n => n.id === noteId);
+  if (idx === -1) return null;
+  
+  const note = db.notes[category][idx];
+  if (patch.title !== undefined) note.title = patch.title;
+  if (patch.content !== undefined) note.content = patch.content;
+  if (patch.tags !== undefined) {
+    note.tags = Array.isArray(patch.tags) ? patch.tags : (patch.tags ? patch.tags.split(',').map(t => t.trim()) : []);
+  }
+  note.updatedAt = new Date().toISOString();
+  
+  db.notes[category][idx] = note;
+  writeDB(db);
+  return note;
+}
+
+function deleteNote(category, noteId) {
+  if (!NOTE_CATEGORIES[category]) return false;
+  const db = readDB();
+  if (!db.notes || !db.notes[category]) return false;
+  
+  const idx = db.notes[category].findIndex(n => n.id === noteId);
+  if (idx === -1) return false;
+  
+  db.notes[category].splice(idx, 1);
+  writeDB(db);
+  return true;
+}
+
 module.exports = {
   readDB,
   writeDB,
@@ -199,5 +286,12 @@ module.exports = {
   deleteCharacter,
   setCurrentCharacter,
   moveCurrentToPrevious,
-  generateId
+  generateId,
+  // Notes
+  getCategories,
+  listNotes,
+  getNote,
+  createNote,
+  updateNote,
+  deleteNote
 };

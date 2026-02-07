@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes Category - The Copper Shores</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .note-row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 1rem; 
+            background: rgba(0,0,0,0.2); 
+            margin-bottom: 0.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-left: 3px solid var(--secondary-color);
+        }
+        .note-row:hover { 
+            background: rgba(0,0,0,0.3);
+            transform: translateX(5px);
+        }
+        .note-info { flex: 1; }
+        .note-title { font-weight: bold; color: var(--secondary-color); }
+        .note-snippet { font-size: 0.9rem; color: #ccc; margin-top: 0.25rem; }
+        .note-tags { font-size: 0.85rem; color: var(--accent-color); margin-top: 0.25rem; }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-title">The Copper Shores</h1>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="gold.html" class="nav-link">Gold Spending</a></li>
+                <li><a href="map.html" class="nav-link">Interactive Map</a></li>
+                <li><a href="players.html" class="nav-link">Players</a></li>
+                <li><a href="notes.html" class="nav-link active">Notes</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <div>
+                <a href="notes.html" class="btn">← Back to Categories</a>
+                <h1 id="category-title" style="margin-top: 0.5rem;">Notes</h1>
+            </div>
+            <button id="add-note-btn" class="btn">+ Add Note</button>
+        </div>
+
+        <div style="margin-bottom: 1rem;">
+            <input id="search-notes" type="text" placeholder="Search notes..." 
+                   style="width: 100%; padding: 0.75rem; border: 1px solid var(--accent-color); border-radius: 4px; background: rgba(0,0,0,0.3); color: var(--light-text);" />
+        </div>
+
+        <div id="message" style="margin-bottom: 1rem;"></div>
+
+        <div id="notes-list">
+            <!-- Populated by JS -->
+        </div>
+    </main>
+
+    <!-- Add Note Form (hidden) -->
+    <div id="add-note-modal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.95); padding:2rem; border:2px solid var(--secondary-color); border-radius:8px; z-index:1000; max-width:600px; width:90%;">
+        <h3>Add Note</h3>
+        <div style="margin-top:1rem;">
+            <label>Title (required)
+                <input id="add-note-title" type="text" style="width:100%; margin-bottom:0.5rem;" />
+            </label>
+            <label>Content
+                <textarea id="add-note-content" rows="6" style="width:100%; margin-bottom:0.5rem;"></textarea>
+            </label>
+            <label>Tags (comma-separated)
+                <input id="add-note-tags" type="text" placeholder="npc, important, quest" style="width:100%; margin-bottom:0.5rem;" />
+            </label>
+        </div>
+        <div style="display:flex; gap:0.5rem; margin-top:1rem;">
+            <button id="submit-add-note" class="btn">Save</button>
+            <button id="cancel-add-note" class="btn">Cancel</button>
+        </div>
+    </div>
+    <div id="add-modal-overlay" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:999;" onclick="closeAddNoteModal()"></div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 The Copper Shores. Version 0.1.0</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        let currentCategory = null;
+        let allNotes = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = new URLSearchParams(location.search);
+            currentCategory = params.get('cat') || 'pc';
+            window.__CURRENT_CATEGORY = currentCategory;
+            
+            initNotesCategory();
+        });
+
+        document.getElementById('add-note-btn').addEventListener('click', () => {
+            document.getElementById('add-note-modal').style.display = 'block';
+            document.getElementById('add-modal-overlay').style.display = 'block';
+        });
+
+        document.getElementById('cancel-add-note').addEventListener('click', closeAddNoteModal);
+        document.getElementById('add-modal-overlay').addEventListener('click', closeAddNoteModal);
+        document.getElementById('submit-add-note').addEventListener('click', submitAddNote);
+        document.getElementById('search-notes').addEventListener('input', filterNotes);
+
+        function initNotesCategory() {
+            getCategoryLabel(currentCategory);
+            loadNotesList();
+        }
+
+        function getCategoryLabel(cat) {
+            fetch(`${API_BASE_URL}/notes/categories`)
+                .then(r => r.json())
+                .then(resp => {
+                    if (resp.status === 'success' && resp.data[cat]) {
+                        document.getElementById('category-title').textContent = resp.data[cat];
+                    }
+                });
+        }
+
+        function loadNotesList() {
+            fetch(`${API_BASE_URL}/notes/${currentCategory}`)
+                .then(r => r.json())
+                .then(resp => {
+                    if (resp.status !== 'success') {
+                        showMessage('Failed to load notes', true);
+                        return;
+                    }
+                    allNotes = resp.data.notes || [];
+                    renderNotesList(allNotes);
+                })
+                .catch(err => showMessage('Network error', true));
+        }
+
+        function renderNotesList(notes) {
+            const list = document.getElementById('notes-list');
+            list.innerHTML = '';
+            if (!notes.length) {
+                list.innerHTML = '<p>No notes yet. Click "+ Add Note" to create one.</p>';
+                return;
+            }
+            notes.forEach(note => {
+                const row = document.createElement('div');
+                row.className = 'note-row';
+                row.onclick = () => {
+                    window.location = `note.html?cat=${currentCategory}&id=${note.id}`;
+                };
+                const snippet = truncate(note.content, 80);
+                const tagsHtml = note.tags && note.tags.length ? `<div class="note-tags">Tags: ${note.tags.join(', ')}</div>` : '';
+                row.innerHTML = `
+                    <div class="note-info">
+                        <div class="note-title">${note.title}</div>
+                        <div class="note-snippet">${snippet || '(no content)'}</div>
+                        ${tagsHtml}
+                    </div>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        function filterNotes() {
+            const query = document.getElementById('search-notes').value.toLowerCase();
+            const filtered = allNotes.filter(n => 
+                n.title.toLowerCase().includes(query) || 
+                n.content.toLowerCase().includes(query) ||
+                (n.tags && n.tags.some(t => t.toLowerCase().includes(query)))
+            );
+            renderNotesList(filtered);
+        }
+
+        function submitAddNote() {
+            const title = document.getElementById('add-note-title').value || '';
+            if (!title.trim()) {
+                showMessage('Note title is required', true);
+                return;
+            }
+            const content = document.getElementById('add-note-content').value || '';
+            const tagsStr = document.getElementById('add-note-tags').value || '';
+            const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()) : [];
+            
+            fetch(`${API_BASE_URL}/notes/${currentCategory}`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ title, content, tags })
+            })
+            .then(r => r.json())
+            .then(resp => {
+                if (resp.status === 'success') {
+                    showMessage('Note added');
+                    closeAddNoteModal();
+                    loadNotesList();
+                } else {
+                    showMessage(resp.message || 'Failed to add', true);
+                }
+            })
+            .catch(err => showMessage('Network error', true));
+        }
+
+        function closeAddNoteModal() {
+            document.getElementById('add-note-modal').style.display = 'none';
+            document.getElementById('add-modal-overlay').style.display = 'none';
+            document.getElementById('add-note-title').value = '';
+            document.getElementById('add-note-content').value = '';
+            document.getElementById('add-note-tags').value = '';
+        }
+
+        function showMessage(msg, isError) {
+            const el = document.getElementById('message');
+            el.innerHTML = `<p style="color:${isError? '#ff6b6b':'#90ee90'}">${msg}</p>`;
+            setTimeout(() => { el.innerHTML = ''; }, 4000);
+        }
+
+        function truncate(text, n = 80) {
+            if (!text) return '';
+            return text.length > n ? text.slice(0, n - 1) + '…' : text;
+        }
+    </script>
+</body>
+</html>

@@ -149,12 +149,50 @@
         ],
         "createdAt": "2026-02-06T23:27:56.161Z",
         "updatedAt": "2026-02-06T23:28:19.431Z"
+      },
+      {
+        "id": "note_mld1oul0-9dqspz",
+        "title": "Riven",
+        "content": "the sea elf that can not go into the sea, this seems to be to some kind of curse or something, from some type of being, seem to be a god that did it",
+        "tags": [
+          "PC",
+          "Shawn",
+          "sea elf",
+          "curse"
+        ],
+        "createdAt": "2026-02-08T01:08:58.451Z",
+        "updatedAt": "2026-02-08T01:08:58.451Z"
       }
     ],
     "npc": [],
     "event": [],
-    "enemy": [],
-    "location": [],
+    "enemy": [
+      {
+        "id": "note_mld9ubv4-r13aus",
+        "title": "Shadow Demon",
+        "content": "WHAT THE FUCK WAS THAT, IT WAS AFTER BLUE AND RIVEN AND SARAH AS THEY BROKE SOMEWHERE IT WAS SCARY< IDK",
+        "tags": [
+          "demon?",
+          "goverment?"
+        ],
+        "createdAt": "2026-02-08T04:57:11.056Z",
+        "updatedAt": "2026-02-08T04:57:11.056Z"
+      }
+    ],
+    "location": [
+      {
+        "id": "note_mld1qngr-ce8e2l",
+        "title": "The royal seadog",
+        "content": "a bar in Alsicta",
+        "tags": [
+          "Alsicta",
+          "bar",
+          ""
+        ],
+        "createdAt": "2026-02-08T01:10:22.539Z",
+        "updatedAt": "2026-02-08T01:10:22.539Z"
+      }
+    ],
     "item": [
       {
         "id": "note_mlbk5sq5-2p63vi",
@@ -186,14 +224,14 @@
     "world": [],
     "alsita": [
       {
-        "id": "wp_mlcsxud4-sgwz79",
+        "id": "wp_mld9zi51-4rr4hc",
         "mapId": "alsita",
-        "x": 6664,
-        "y": 2956,
-        "title": "town center",
-        "note": "the center and where the magic fountain is",
-        "createdAt": "2026-02-07T21:04:01.528Z",
-        "updatedAt": "2026-02-07T21:04:01.528Z"
+        "x": 6668,
+        "y": 2979,
+        "title": "the center and where the magic fountain is",
+        "note": "fountain that telaports you to an arena for fighting",
+        "createdAt": "2026-02-08T05:01:12.469Z",
+        "updatedAt": "2026-02-08T05:01:12.469Z"
       }
     ],
     "tosatina": [],
@@ -202,17 +240,32 @@
   "gold": {
     "lootLog": [
       {
-        "id": "loot_mlcutcve-fvcx2l",
-        "date": "2026-02-07T21:56:31.466Z",
-        "totalCp": 100,
-        "description": "Loot",
-        "category": "quest",
+        "id": "loot_mld6hyn9-g491un",
+        "date": "2026-02-08T03:23:35.204Z",
+        "totalCp": 8900,
+        "description": "gold for gill",
+        "category": "other",
         "session": null,
         "allocations": [
           {
             "accountId": "character:ch_mlb5meab-2tthli",
             "name": "Michael Mota — Gill",
-            "amountCp": 100
+            "amountCp": 8900
+          }
+        ]
+      },
+      {
+        "id": "loot_mld6jgcf-zr4r04",
+        "date": "2026-02-08T03:24:44.799Z",
+        "totalCp": 36756,
+        "description": "blue gold",
+        "category": "other",
+        "session": null,
+        "allocations": [
+          {
+            "accountId": "character:ch_mlb63uh7-tzw9ht",
+            "name": "Mia — Blue",
+            "amountCp": 36756
           }
         ]
       }
@@ -220,7 +273,8 @@
     "allocationsSnapshot": {
       "party": 0,
       "patron": 0,
-      "character:ch_mlb5meab-2tthli": 100
+      "character:ch_mlb5meab-2tthli": 8900,
+      "character:ch_mlb63uh7-tzw9ht": 36756
     },
     "settings": {
       "allocateToPatron": false,

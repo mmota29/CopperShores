@@ -164,7 +164,43 @@
         "updatedAt": "2026-02-08T01:08:58.451Z"
       }
     ],
-    "npc": [],
+    "npc": [
+      {
+        "id": "note_mltt587z-oz86vm",
+        "title": "Talon Malsir",
+        "content": "One of the great heroes, a wild magic sorcerer, who helped defeat the pale silence, now a resident celebrity and living in Alsicta, master of the rahkar. may have clostrol problems. father of soren malsir. seems to have issues. best not to press. (hey its my boy)",
+        "tags": [
+          "Michael",
+          "rahkar",
+          "pale silence"
+        ],
+        "createdAt": "2026-02-19T18:41:51.066Z",
+        "updatedAt": "2026-02-19T18:41:51.066Z"
+      },
+      {
+        "id": "note_mltta4sz-h0wqz7",
+        "title": "Unknown Captain of the Riverwalker/Former",
+        "content": "seen in a vision, Going by an alias right now, cannot remember his name\nHis first mate isn’t here (the other one in the vision)\nRemembers vaguely the man who he travelled with, believes his friend\nwasn’t a good person. was able to sense some sort of magic from blue and riven, then associated it with Gill. ",
+        "tags": [
+          "river walker strider",
+          "ghost"
+        ],
+        "createdAt": "2026-02-19T18:45:39.923Z",
+        "updatedAt": "2026-02-19T18:45:39.923Z"
+      },
+      {
+        "id": "note_mlttb0zh-3vdqwi",
+        "title": "Hubert",
+        "content": "Hobo, friend of blue, former sailor and now captain of the party ship",
+        "tags": [
+          "blue",
+          "river walker strider",
+          ""
+        ],
+        "createdAt": "2026-02-19T18:46:21.629Z",
+        "updatedAt": "2026-02-19T18:46:21.629Z"
+      }
+    ],
     "event": [
       {
         "id": "note_mlr6pcbd-my6ouw",

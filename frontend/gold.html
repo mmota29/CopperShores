@@ -27,22 +27,73 @@
         <div class="treasury-container">
             <!-- Page Header -->
             <div class="page-header">
-                <h1>⚔️ Party Treasury</h1>
-                <p>Manage loot and track allocations</p>
+                <h1>💰 Party Treasury</h1>
+                <p>Manage loot, track spending, and allocate funds</p>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="quick-stats">
+                <div class="stat-card">
+                    <div class="stat-label">Total Party Vault</div>
+                    <div class="stat-value" id="stat-party">0 gp</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Individual Funds</div>
+                    <div class="stat-value" id="stat-individual">0 gp</div>
+                </div>
+                <div class="stat-card alert">
+                    <div class="stat-label">Total Spent This Session</div>
+                    <div class="stat-value" id="stat-spent">0 gp</div>
+                </div>
             </div>
 
             <!-- Tabs Navigation -->
             <div class="tab-navigation">
-                <button class="tab-btn active" data-tab="loot-log">Loot Log</button>
-                <button class="tab-btn" data-tab="wallets">Wallets</button>
+                <button class="tab-btn active" data-tab="wallets">Wallets</button>
+                <button class="tab-btn" data-tab="loot-log">Loot Log</button>
+                <button class="tab-btn" data-tab="spending-log">Spending Log</button>
                 <button class="tab-btn" data-tab="settings">Settings</button>
             </div>
 
-            <!-- TAB 1: Loot Log -->
-            <div id="tab-loot-log" class="tab-content active">
+            <!-- TAB 1: Wallets (Quick Overview) -->
+            <div id="tab-wallets" class="tab-content active">
                 <div class="tab-header">
-                    <h2>Loot Log</h2>
-                    <button id="btn-add-loot" class="btn btn-primary">➕ Add Loot</button>
+                    <h2>💳 Account Balances</h2>
+                    <div class="tab-actions">
+                        <button id="btn-add-loot" class="btn btn-success">➕ Add Loot</button>
+                        <button id="btn-record-spending" class="btn btn-warning">💸 Record Spending</button>
+                    </div>
+                </div>
+
+                <div class="wallets-section">
+                    <div class="wallets-subsection">
+                        <h3>🏰 Party & Special Funds</h3>
+                        <div class="wallets-grid">
+                            <div class="wallet-card premium">
+                                <div class="wallet-label">Party Vault</div>
+                                <div class="wallet-balance" id="wallet-party">0 gp</div>
+                            </div>
+                            <div class="wallet-card">
+                                <div class="wallet-label">Patron Fund</div>
+                                <div class="wallet-balance" id="wallet-patron">0 gp</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="wallets-subsection">
+                        <h3>👥 Character Accounts</h3>
+                        <div id="player-wallets-container" class="wallets-list">
+                            <!-- Populated by renderWallets() -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: Loot Log -->
+            <div id="tab-loot-log" class="tab-content" style="display: none;">
+                <div class="tab-header">
+                    <h2>🎁 Loot Log</h2>
+                    <button id="btn-add-loot-2" class="btn btn-success">➕ Add Loot</button>
                 </div>
 
                 <div class="ledger-wrapper">
@@ -53,7 +104,7 @@
                                 <th>Description</th>
                                 <th>Category</th>
                                 <th>Total</th>
-                                <th>Allocations</th>
+                                <th>Main Recipients</th>
                                 <th>Session</th>
                                 <th>Action</th>
                             </tr>
@@ -68,47 +119,63 @@
                 </div>
             </div>
 
-            <!-- TAB 2: Wallets -->
-            <div id="tab-wallets" class="tab-content" style="display: none;">
-                <h2>Current Balances</h2>
-                <div class="wallets-section">
-                    <div class="wallets-subsection">
-                        <h3>Party Funds</h3>
-                        <div class="wallets-grid">
-                            <div class="wallet-card">
-                                <div class="wallet-label">Party Vault</div>
-                                <div class="wallet-balance" id="wallet-party">0 gp</div>
-                            </div>
-                            <div class="wallet-card">
-                                <div class="wallet-label">Patron</div>
-                                <div class="wallet-balance" id="wallet-patron">0 gp</div>
-                            </div>
-                        </div>
-                    </div>
+            <!-- TAB 3: Spending Log -->
+            <div id="tab-spending-log" class="tab-content" style="display: none;">
+                <div class="tab-header">
+                    <h2>💸 Spending Log</h2>
+                    <button id="btn-record-spending-2" class="btn btn-warning">💸 Record Spending</button>
+                </div>
 
-                    <div class="wallets-subsection">
-                        <h3>Character Accounts</h3>
-                        <div id="player-wallets-container" class="wallets-list">
-                            <!-- Populated by renderWallets() -->
-                        </div>
+                <div class="filters-section">
+                    <select id="spending-filter-account" class="filter-select">
+                        <option value="">All Accounts</option>
+                    </select>
+                    <select id="spending-filter-category" class="filter-select">
+                        <option value="">All Categories</option>
+                    </select>
+                </div>
+
+                <div class="ledger-wrapper">
+                    <table class="ledger-table" id="spending-log-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Account</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Amount</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="spending-log-body">
+                            <!-- Rows inserted here -->
+                        </tbody>
+                    </table>
+                    <div id="empty-spending-log" class="empty-message" style="display: none;">
+                        No spending recorded yet!
                     </div>
                 </div>
             </div>
 
-            <!-- TAB 3: Settings -->
+            <!-- TAB 4: Settings -->
             <div id="tab-settings" class="tab-content" style="display: none;">
-                <h2>Treasury Settings</h2>
+                <h2>⚙️ Treasury Settings</h2>
                 <div class="settings-section">
-                    <div class="setting-item">
-                        <label>
-                            <input type="checkbox" id="setting-allocate-patron" />
-                            <span>Auto-allocate percentage to Patron on new loot</span>
-                        </label>
-                    </div>
-                    <div class="setting-item">
-                        <label for="setting-patron-percent">Patron Percentage (only if enabled above):</label>
-                        <input type="number" id="setting-patron-percent" min="0" max="100" value="10" />
-                        <span class="hint">%</span>
+                    <div class="setting-group">
+                        <h3>Auto-allocation Rules</h3>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="setting-allocate-patron" />
+                                <span>Auto-allocate percentage to Patron on new loot</span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label for="setting-patron-percent">Patron Percentage:</label>
+                            <div class="input-group">
+                                <input type="number" id="setting-patron-percent" min="0" max="100" value="10" />
+                                <span class="unit">%</span>
+                            </div>
+                        </div>
                     </div>
                     <button id="btn-save-settings" class="btn btn-primary">Save Settings</button>
                 </div>
@@ -118,7 +185,7 @@
 
     <!-- Add Loot Modal -->
     <div id="modal-add-loot" class="modal" style="display: none;">
-        <div class="modal-content">
+        <div class="modal-content large">
             <div class="modal-header">
                 <h3>Add Loot Entry</h3>
                 <button class="modal-close" id="modal-close-loot">&times;</button>
@@ -126,48 +193,58 @@
             
             <div class="modal-body">
                 <!-- Step 1: Loot Details -->
-                <div id="step-1-details" class="step">
-                    <h4>Step 1: Loot Details</h4>
+                <div id="step-1-details" class="step active">
+                    <div class="step-indicator">Step 1 of 2: Loot Details</div>
+                    <h4>Enter Loot Amount & Details</h4>
                     
-                    <div class="form-group">
-                        <label for="loot-gp">Amount (GP):</label>
-                        <input type="number" id="loot-gp" min="0" value="0" />
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="loot-gp">Gold (gp):</label>
+                            <input type="number" id="loot-gp" class="currency-input" min="0" value="0" />
+                        </div>
+                        <div class="form-group">
+                            <label for="loot-sp">Silver (sp):</label>
+                            <input type="number" id="loot-sp" class="currency-input" min="0" value="0" />
+                        </div>
+                        <div class="form-group">
+                            <label for="loot-cp">Copper (cp):</label>
+                            <input type="number" id="loot-cp" class="currency-input" min="0" value="0" />
+                        </div>
                     </div>
                     
                     <div class="form-group">
-                        <label for="loot-sp">Amount (SP):</label>
-                        <input type="number" id="loot-sp" min="0" value="0" />
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="loot-cp">Amount (CP):</label>
-                        <input type="number" id="loot-cp" min="0" value="0" />
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="loot-category">Category:</label>
+                        <label for="loot-category">Source Category:</label>
                         <select id="loot-category"></select>
                     </div>
                     
                     <div class="form-group">
-                        <label for="loot-description">Description:</label>
-                        <input type="text" id="loot-description" placeholder="e.g., Dragon hoard from cave" />
+                        <label for="loot-description">Description (optional):</label>
+                        <input type="text" id="loot-description" placeholder="e.g., Dragon hoard from cave encounter" />
                     </div>
                     
                     <div class="form-group">
-                        <label for="loot-session">Session (optional):</label>
-                        <input type="number" id="loot-session" min="1" />
+                        <label for="loot-session">Session #:</label>
+                        <input type="number" id="loot-session" min="1" placeholder="(optional)" />
                     </div>
                     
-                    <div class="total-display">
-                        Total: <strong id="total-amount-display">0 gp</strong>
+                    <div class="total-display success">
+                        <strong>Total Loot:</strong> <span id="total-amount-display">0 gp</span>
                     </div>
                 </div>
 
                 <!-- Step 2: Allocation -->
-                <div id="step-2-allocation" class="step" style="display: none;">
-                    <h4>Step 2: Allocate Loot</h4>
-                    <p class="step-hint">Specify how to distribute the loot across funds.</p>
+                <div id="step-2-allocation" class="step">
+                    <div class="step-indicator">Step 2 of 2: Allocate Funds</div>
+                    <h4>Distribute Loot Across Accounts</h4>
+                    <p class="step-hint">Click accounts below to allocate funds. Amounts must match the total!</p>
+                    
+                    <div class="allocation-quick-buttons">
+                        <button class="quick-btn" id="quick-even-split">Split Evenly</button>
+                        <button class="quick-btn" id="quick-party-all">All to Party Vault</button>
+                        <button class="quick-btn" id="quick-patron-pct">Patron %</button>
+                        <button class="quick-btn" id="quick-custom-pct">Custom %</button>
+                        <button class="quick-btn" id="quick-clear-alloc">Clear All</button>
+                    </div>
                     
                     <div class="allocation-table-wrapper">
                         <table class="allocation-table">
@@ -187,8 +264,14 @@
                     </div>
                     
                     <div class="allocation-check">
-                        <div>Loot Total: <strong id="alloc-loot-total">0 cp</strong></div>
-                        <div>Allocated: <strong id="alloc-allocated-total">0 cp</strong></div>
+                        <div class="check-line">
+                            <span>Loot Total:</span> 
+                            <strong id="alloc-loot-total">0 cp</strong>
+                        </div>
+                        <div class="check-line">
+                            <span>Allocated:</span> 
+                            <strong id="alloc-allocated-total">0 cp</strong>
+                        </div>
                         <div id="alloc-match-status" class="status-bad">❌ Amounts don't match</div>
                     </div>
                 </div>
@@ -198,7 +281,81 @@
                 <button id="btn-back-step1" class="btn btn-secondary" style="display: none;">← Back</button>
                 <button id="btn-cancel-loot" class="btn btn-secondary">Cancel</button>
                 <button id="btn-next-step2" class="btn btn-primary">Next: Allocate →</button>
-                <button id="btn-confirm-loot" class="btn btn-primary" style="display: none;">✓ Add Loot</button>
+                <button id="btn-confirm-loot" class="btn btn-success" style="display: none;">✓ Add Loot Entry</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Record Spending Modal -->
+    <div id="modal-record-spending" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Record Spending</h3>
+                <button class="modal-close" id="modal-close-spending">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="spending-account">Account/Character:</label>
+                    <select id="spending-account" required></select>
+                </div>
+
+                <div class="form-group">
+                    <label for="spending-category">Category:</label>
+                    <select id="spending-category" required></select>
+                </div>
+
+                <div class="form-group">
+                    <label for="spending-description">Description:</label>
+                    <input type="text" id="spending-description" placeholder="e.g., Tavern dinner with barkeep" />
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="spending-gp">Gold (gp):</label>
+                        <input type="number" id="spending-gp" class="currency-input" min="0" value="0" />
+                    </div>
+                    <div class="form-group">
+                        <label for="spending-sp">Silver (sp):</label>
+                        <input type="number" id="spending-sp" class="currency-input" min="0" value="0" />
+                    </div>
+                    <div class="form-group">
+                        <label for="spending-cp">Copper (cp):</label>
+                        <input type="number" id="spending-cp" class="currency-input" min="0" value="0" />
+                    </div>
+                </div>
+
+                <div class="total-display warning">
+                    <strong>Amount:</strong> <span id="spending-amount-display">0 gp</span>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button id="btn-cancel-spending" class="btn btn-secondary">Cancel</button>
+                <button id="btn-confirm-spending" class="btn btn-primary">✓ Record Spending</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Custom Percentages -->
+    <div id="modal-custom-pct" class="modal-overlay">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3>🎯 Custom Percentage Allocation</h3>
+                <button class="modal-close" id="modal-close-pct">✕</button>
+            </div>
+
+            <div class="modal-body">
+                <p class="hint-text">Assign percentages to each account (total should reach 100%). Enter 0 to skip an account.</p>
+                <div id="pct-inputs-container"></div>
+                <div class="total-display warning">
+                    <strong>Total %:</strong> <span id="pct-total-display">0%</span>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="btn-cancel-pct">Cancel</button>
+                <button class="btn btn-primary" id="btn-confirm-pct">✓ Apply Percentages</button>
             </div>
         </div>
     </div>

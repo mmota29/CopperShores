@@ -165,7 +165,20 @@
       }
     ],
     "npc": [],
-    "event": [],
+    "event": [
+      {
+        "id": "note_mlr6pcbd-my6ouw",
+        "title": "DREAM BATTLES",
+        "content": "For some reason, in Riven's dreams, he has been dragging party members into his dreams to fight some sort of shadow demon. Currently, Coreila and Rahkar have been sent into these dreams. Mozzie showed up to Coreila aid, and Rahkar got a boost from his voices in his head.",
+        "tags": [
+          "dream",
+          "riven",
+          "shadow"
+        ],
+        "createdAt": "2026-02-17T22:38:05.977Z",
+        "updatedAt": "2026-02-17T22:38:05.977Z"
+      }
+    ],
     "enemy": [
       {
         "id": "note_mld9ubv4-r13aus",
@@ -197,14 +210,14 @@
       {
         "id": "note_mlbk5sq5-2p63vi",
         "title": "Celestial Droplet",
-        "content": "only rumors at this point \nSome relate it to a kids’ book  \nSome attribute it to the dragon that attacked, which could be in Alsita, the government stole it\n1 million gp bounty  \ndroplet w/ blue and purple tints. Emanates energy of storm clouds and arcana, magical and religious importance. \n\n",
+        "content": "only rumors at this point \nSome relate it to a kids’ book  \nSome attribute it to the dragon that attacked, which could be in Alsita, maybe the government stole it\n1 million gp bounty  \ndroplet w/ blue and purple tints. Emanates energy of storm clouds and arcana, magical and religious importance. \n\n",
         "tags": [
           "Celestial",
           "Main",
           "souls"
         ],
         "createdAt": "2026-02-07T00:10:29.933Z",
-        "updatedAt": "2026-02-07T00:10:29.933Z"
+        "updatedAt": "2026-02-17T22:39:49.337Z"
       },
       {
         "id": "note_mlbk79a1-2nl4v8",
@@ -216,6 +229,18 @@
         ],
         "createdAt": "2026-02-07T00:11:38.041Z",
         "updatedAt": "2026-02-07T00:11:38.041Z"
+      },
+      {
+        "id": "note_mlr6uw2y-vopyyb",
+        "title": "White tentacle",
+        "content": "Not much is known about this tentacle other than it was from the time of the pale silence, it was housed in the church but was taken away, and is now being taken to Pinchester. The dragon seems to be interested in it. The government is willing to pay 5000 gold per adventuring party to keep it safe and its secret kept.",
+        "tags": [
+          "government",
+          "pale silence",
+          "dragon"
+        ],
+        "createdAt": "2026-02-17T22:42:24.874Z",
+        "updatedAt": "2026-02-17T22:42:24.874Z"
       }
     ],
     "session": []

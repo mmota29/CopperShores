@@ -384,22 +384,29 @@ function deleteWaypoint(mapId, waypointId) {
 
 /* -------------------- Gold Treasury Helpers -------------------- */
 
-// Category definitions for loot allocation
+// Category definitions for loot sources
 const LOOT_CATEGORIES = [
   { id: 'quest', name: 'Quest Reward' },
   { id: 'treasure', name: 'Treasure' },
   { id: 'vendor', name: 'Vendor Sale' },
+  { id: 'bounty', name: 'Bounty' },
+  { id: 'gambling', name: 'Gambling' },
+  { id: 'inheritance', name: 'Inheritance' },
   { id: 'other', name: 'Other' }
 ];
 
-// Allocation categories for distribution
-const ALLOCATION_CATEGORIES = [
-  { id: 'party', name: 'Party Vault' },
-  { id: 'patron', name: 'Patron' },
-  { id: 'ship', name: 'Ship Fund' },
-  { id: 'crew', name: 'Crew Fund' },
-  { id: 'player_pool', name: 'Players Pool' },
-  { id: 'direct_player', name: 'Direct to Player' }
+// Spending categories
+const SPENDING_CATEGORIES = [
+  { id: 'equipment', name: 'Equipment & Weapons' },
+  { id: 'lodging', name: 'Lodging' },
+  { id: 'food', name: 'Food & Drink' },
+  { id: 'bribes', name: 'Bribes & Persuasion' },
+  { id: 'healing', name: 'Healing Services' },
+  { id: 'shipping', name: 'Shipping & Travel' },
+  { id: 'resurrection', name: 'Resurrection' },
+  { id: 'charity', name: 'Charity & Donations' },
+  { id: 'maintenance', name: 'Property & Maintenance' },
+  { id: 'other', name: 'Other' }
 ];
 
 function ensureTreasuryStructure() {
@@ -407,13 +414,15 @@ function ensureTreasuryStructure() {
   if (!db.gold) {
     db.gold = {
       lootLog: [],
+      spendingLog: [],
       allocationsSnapshot: {
         party: 0,
         patron: 0
       },
       settings: {
         allocateToPatron: false,
-        patronPercentage: 10
+        patronPercentage: 10,
+        currencySymbol: 'gp'
       }
     };
     writeDB(db);
@@ -425,7 +434,11 @@ function getLootCategories() {
 }
 
 function getAllocationCategories() {
-  return ALLOCATION_CATEGORIES;
+  return ALLOCATION_CATEGORIES || [];
+}
+
+function getSpendingCategories() {
+  return SPENDING_CATEGORIES;
 }
 
 function getTreasurySettings() {
@@ -520,6 +533,65 @@ function getAllocationsSnapshot() {
   return db.gold.allocationsSnapshot;
 }
 
+function listSpendingLog() {
+  ensureTreasuryStructure();
+  const db = readDB();
+  return db.gold.spendingLog || [];
+}
+
+function addSpendingEntry(spendingData) {
+  const { accountId, amountCp, description, category } = spendingData;
+  
+  if (typeof amountCp !== 'number' || amountCp <= 0) return null;
+  
+  const db = readDB();
+  if (!db.gold) ensureTreasuryStructure();
+  
+  // Check balance
+  const currentBalance = db.gold.allocationsSnapshot[accountId] || 0;
+  if (currentBalance < amountCp) {
+    return null; // Insufficient funds
+  }
+  
+  const now = new Date().toISOString();
+  const entry = {
+    id: generateId('spend_'),
+    date: now,
+    accountId,
+    amountCp,
+    description: description || '',
+    category: category || 'other'
+  };
+  
+  db.gold.spendingLog.push(entry);
+  
+  // Deduct from allocations snapshot
+  db.gold.allocationsSnapshot[accountId] -= amountCp;
+  
+  writeDB(db);
+  return entry;
+}
+
+function deleteSpendingEntry(spendingId) {
+  const db = readDB();
+  if (!db.gold) return false;
+  
+  const idx = db.gold.spendingLog.findIndex(s => s.id === spendingId);
+  if (idx === -1) return false;
+  
+  const entry = db.gold.spendingLog[idx];
+  
+  // Refund to account
+  if (!db.gold.allocationsSnapshot[entry.accountId]) {
+    db.gold.allocationsSnapshot[entry.accountId] = 0;
+  }
+  db.gold.allocationsSnapshot[entry.accountId] += entry.amountCp;
+  
+  db.gold.spendingLog.splice(idx, 1);
+  writeDB(db);
+  return true;
+}
+
 /**
  * Get accounts list for treasury allocations
  * Returns: party, patron, and all players' current characters
@@ -590,11 +662,15 @@ module.exports = {
   // Treasury (replaces old gold)
   getLootCategories,
   getAllocationCategories,
+  getSpendingCategories,
   getTreasurySettings,
   updateTreasurySettings,
   listLootLog,
   addLootEntry,
   deleteLootEntry,
   getAllocationsSnapshot,
-  getAccounts
+  getAccounts,
+  listSpendingLog,
+  addSpendingEntry,
+  deleteSpendingEntry
 };

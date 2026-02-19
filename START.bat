@@ -1,6 +1,6 @@
 @echo off
 REM Copper Shores - One-Click Startup Script for Windows
-REM This script starts both backend and frontend servers automatically
+REM This script starts the backend server (which serves the frontend) and opens all sections
 
 echo.
 echo ========================================
@@ -8,31 +8,38 @@ echo   🐉 The Copper Shores - Startup
 echo ========================================
 echo.
 
-REM Start Backend Server
+REM Start Backend Server (serves both API and frontend)
 echo Starting Backend Server on port 3000...
+echo (This server serves both the API and all frontend pages)
 start "Copper Shores Backend" cmd /k "cd backend && npm start"
 
-REM Wait 2 seconds for backend to start
-timeout /t 2 /nobreak
-
-REM Start Frontend Server
-echo Starting Frontend Server on port 8000...
-start "Copper Shores Frontend" cmd /k "cd frontend && npx http-server -p 8000"
-
-REM Wait 2 seconds and open browser
-timeout /t 2 /nobreak
+REM Wait 3 seconds for backend to start
+timeout /t 3 /nobreak
 
 echo.
-echo ✅ Both servers are starting!
+echo ✅ Server is starting!
 echo.
-echo Backend:  http://localhost:3000
-echo Frontend: http://localhost:8000
+echo Main Site:  http://localhost:3000
 echo.
 
-REM Open the website in default browser
-start http://localhost:8000
+REM Open multiple browser tabs for different sections
+echo Opening all sections in your default browser...
 
-echo Opening website in your default browser...
+REM Main dashboard
+start http://localhost:3000/index.html
+
+REM Map section
+start http://localhost:3000/map.html
+
+REM Gold/Treasure section
+start http://localhost:3000/gold.html
+
+REM Notes section
+start http://localhost:3000/notes.html
+
+REM Players section
+start http://localhost:3000/players.html
+
 echo.
-echo To stop the servers, close the command windows.
+echo To stop the server, close the command window.
 pause

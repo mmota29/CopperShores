@@ -414,14 +414,14 @@ app.put('/api/treasury/settings', (req, res) => {
   }
 });
 
-// Get loot categories and allocation categories
+// Get loot categories and spending categories
 app.get('/api/treasury/categories', (req, res) => {
   try {
     const lootCategories = db.getLootCategories();
-    const allocationCategories = db.getAllocationCategories();
+    const spendingCategories = db.getSpendingCategories();
     res.json({
       status: 'success',
-      data: { lootCategories, allocationCategories }
+      data: { lootCategories, spendingCategories }
     });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
@@ -499,6 +499,57 @@ app.get('/api/treasury/accounts', (req, res) => {
   try {
     const accounts = db.getAccounts();
     res.json({ status: 'success', data: { accounts } });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// Get spending log
+app.get('/api/treasury/spending-log', (req, res) => {
+  try {
+    const spendingLog = db.listSpendingLog();
+    res.json({ status: 'success', data: { spendingLog } });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// Record spending
+app.post('/api/treasury/spending', (req, res) => {
+  try {
+    const { accountId, amountCp, description, category } = req.body;
+    
+    if (!accountId || typeof amountCp !== 'number' || amountCp <= 0) {
+      return res.status(400).json({ 
+        status: 'error', 
+        message: 'accountId and positive amountCp required' 
+      });
+    }
+    
+    const entry = db.addSpendingEntry({ accountId, amountCp, description, category });
+    if (!entry) {
+      return res.status(400).json({ 
+        status: 'error', 
+        message: 'Failed to record spending (insufficient funds?)' 
+      });
+    }
+    
+    const snapshot = db.getAllocationsSnapshot();
+    res.status(201).json({ status: 'success', data: { entry, snapshot } });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// Delete spending entry
+app.delete('/api/treasury/spending/:id', (req, res) => {
+  try {
+    const ok = db.deleteSpendingEntry(req.params.id);
+    if (!ok) {
+      return res.status(404).json({ status: 'error', message: 'Spending entry not found' });
+    }
+    const snapshot = db.getAllocationsSnapshot();
+    res.json({ status: 'success', data: { snapshot } });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
   }

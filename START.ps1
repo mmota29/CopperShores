@@ -18,32 +18,39 @@ if ($null -eq $nodeCheck) {
 Write-Host "✅ Node.js $nodeCheck found" -ForegroundColor Green
 Write-Host ""
 
-# Start Backend Server
+# Start Backend Server (which also serves the frontend)
 Write-Host "Starting Backend Server on port 3000..." -ForegroundColor Yellow
+Write-Host "(This server serves both the API and all frontend pages)" -ForegroundColor Gray
 Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$pwd\backend'; npm start" -WindowStyle Normal
 
 # Wait for backend to start
-Start-Sleep -Seconds 2
-
-# Start Frontend Server
-Write-Host "Starting Frontend Server on port 8000..." -ForegroundColor Yellow
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$pwd\frontend'; npx http-server -p 8000" -WindowStyle Normal
-
-# Wait a moment
-Start-Sleep -Seconds 2
+Start-Sleep -Seconds 3
 
 Write-Host ""
-Write-Host "✅ Both servers are starting!" -ForegroundColor Green
+Write-Host "✅ Server is starting!" -ForegroundColor Green
 Write-Host ""
-Write-Host "Backend:  http://localhost:3000" -ForegroundColor Cyan
-Write-Host "Frontend: http://localhost:8000" -ForegroundColor Cyan
+Write-Host "Main Site:  http://localhost:3000" -ForegroundColor Cyan
 Write-Host ""
 
-# Open browser
-Write-Host "Opening website in your default browser..." -ForegroundColor Yellow
-Start-Process "http://localhost:8000"
+# Open multiple browser tabs for different sections
+Write-Host "Opening all sections in your default browser..." -ForegroundColor Yellow
+
+# Main dashboard
+Start-Process "http://localhost:3000/index.html"
+
+# Map section
+Start-Process "http://localhost:3000/map.html"
+
+# Gold/Treasure section
+Start-Process "http://localhost:3000/gold.html"
+
+# Notes section
+Start-Process "http://localhost:3000/notes.html"
+
+# Players section
+Start-Process "http://localhost:3000/players.html"
 
 Write-Host ""
-Write-Host "To stop the servers, close the command windows." -ForegroundColor Yellow
+Write-Host "To stop the server, close the command window." -ForegroundColor Yellow
 Write-Host ""
 Read-Host "Press Enter to exit this startup window"

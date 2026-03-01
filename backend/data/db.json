@@ -162,6 +162,22 @@
         ],
         "createdAt": "2026-02-08T01:08:58.451Z",
         "updatedAt": "2026-02-08T01:08:58.451Z"
+      },
+      {
+        "id": "note_mm75dm8m-7hy9ky",
+        "title": "Rahkar",
+        "content": "",
+        "tags": [],
+        "createdAt": "2026-03-01T02:45:18.166Z",
+        "updatedAt": "2026-03-01T02:45:18.166Z"
+      },
+      {
+        "id": "note_mm75ds1v-aqefid",
+        "title": "Blue",
+        "content": "",
+        "tags": [],
+        "createdAt": "2026-03-01T02:45:25.699Z",
+        "updatedAt": "2026-03-01T02:45:25.699Z"
       }
     ],
     "npc": [
@@ -199,6 +215,64 @@
         ],
         "createdAt": "2026-02-19T18:46:21.629Z",
         "updatedAt": "2026-02-19T18:46:21.629Z"
+      },
+      {
+        "id": "note_mm73ekx4-p474s4",
+        "title": "jonik",
+        "content": "The wood elf whom we met at the inn.\nAsk Riven about his opinion on current events.\nPart of the high council\nHead of military\nWas once effected by a white tentical",
+        "tags": [
+          "pinchester",
+          "wood elf",
+          ""
+        ],
+        "createdAt": "2026-03-01T01:50:03.880Z",
+        "updatedAt": "2026-03-01T02:51:00.739Z"
+      },
+      {
+        "id": "note_mm75b4q2-0s1k9v",
+        "title": "The Golden Flame",
+        "content": "TACOS, HE'S A MEXICAN\nowns a mansion.\nfights\nwants a cape that doesn't belong to him",
+        "tags": [
+          "dragonborn",
+          ""
+        ],
+        "createdAt": "2026-03-01T02:43:22.154Z",
+        "updatedAt": "2026-03-01T02:51:28.838Z"
+      },
+      {
+        "id": "note_mm75gw03-orp66g",
+        "title": "High council of pinchchester",
+        "content": "Jonik is part of this group",
+        "tags": [
+          "pinchchester",
+          "Jonik",
+          ""
+        ],
+        "createdAt": "2026-03-01T02:47:50.787Z",
+        "updatedAt": "2026-03-01T02:47:50.787Z"
+      },
+      {
+        "id": "note_mm75rorp-sylx8z",
+        "title": "Thea",
+        "content": "a paladin\na triton\na wife\ncan communcate with souls mia\n",
+        "tags": [
+          "thea",
+          "shelly"
+        ],
+        "createdAt": "2026-03-01T02:56:14.629Z",
+        "updatedAt": "2026-03-01T03:03:10.056Z"
+      },
+      {
+        "id": "note_mm761quz-x5ndpi",
+        "title": "Shelly",
+        "content": "A terrorist\nwrote the big book\nwife of thea\ngil is a big fan of her\n",
+        "tags": [
+          "shelly",
+          "thea",
+          "terrorism"
+        ],
+        "createdAt": "2026-03-01T03:04:03.899Z",
+        "updatedAt": "2026-03-01T03:04:28.609Z"
       }
     ],
     "event": [
@@ -213,6 +287,17 @@
         ],
         "createdAt": "2026-02-17T22:38:05.977Z",
         "updatedAt": "2026-02-17T22:38:05.977Z"
+      },
+      {
+        "id": "note_mm76ptad-3ixx7d",
+        "title": "The quest from jonik",
+        "content": "He has certain access to things, under the city they buried the honored dead, sewers. catacombs. offerings treasure. the tomb of remeberance. He wants to be clear about what we can see, but he wants something returned to him, a raiper? I should have paid attention. undead, cave-ins. we will find a locked gate. gate crasher.",
+        "tags": [
+          "jonik",
+          "pinchester"
+        ],
+        "createdAt": "2026-03-01T03:22:46.789Z",
+        "updatedAt": "2026-03-01T03:27:15.390Z"
       }
     ],
     "enemy": [
@@ -226,6 +311,22 @@
         ],
         "createdAt": "2026-02-08T04:57:11.056Z",
         "updatedAt": "2026-02-08T04:57:11.056Z"
+      },
+      {
+        "id": "note_mm7atvg5-u3bg69",
+        "title": "Dreadtooth",
+        "content": "a famous pirate that is hunt for those who make deals with him. he cuts ships in half. he made a deal with ellie and now is looking to talk with gill.",
+        "tags": [],
+        "createdAt": "2026-03-01T05:17:54.677Z",
+        "updatedAt": "2026-03-01T05:17:54.677Z"
+      },
+      {
+        "id": "note_mm7auno4-kn2uwa",
+        "title": "Ridos",
+        "content": "a ancient black dragon that is attacking the contentent, he has many worshippers and a cult.",
+        "tags": [],
+        "createdAt": "2026-03-01T05:18:31.252Z",
+        "updatedAt": "2026-03-01T05:18:31.252Z"
       }
     ],
     "location": [
@@ -240,6 +341,25 @@
         ],
         "createdAt": "2026-02-08T01:10:22.539Z",
         "updatedAt": "2026-02-08T01:10:22.539Z"
+      },
+      {
+        "id": "note_mm73fr67-vcildu",
+        "title": "Gildhammer",
+        "content": "there was an illitid problem\ndraves\n",
+        "tags": [
+          "mindflayers",
+          "drawvs"
+        ],
+        "createdAt": "2026-03-01T01:50:58.639Z",
+        "updatedAt": "2026-03-01T01:50:58.639Z"
+      },
+      {
+        "id": "note_mm76q9kf-ktysxe",
+        "title": "the tomb of remeberance",
+        "content": "catacombs underneth the city of pinchester.",
+        "tags": [],
+        "createdAt": "2026-03-01T03:23:07.887Z",
+        "updatedAt": "2026-03-01T03:23:07.887Z"
       }
     ],
     "item": [
@@ -277,12 +397,77 @@
         ],
         "createdAt": "2026-02-17T22:42:24.874Z",
         "updatedAt": "2026-02-17T22:42:24.874Z"
+      },
+      {
+        "id": "note_mm7appwx-aze94u",
+        "title": "Dagger that steal souls",
+        "content": "it can steal and store souls. right now there is a soul loose in alsita\nwas once asked to use this weapon against the demon known as mozzie",
+        "tags": [
+          "dagger",
+          "soul",
+          "mozzie"
+        ],
+        "createdAt": "2026-03-01T05:14:40.881Z",
+        "updatedAt": "2026-03-01T05:14:40.881Z"
+      },
+      {
+        "id": "note_mm7asd9m-tlnne6",
+        "title": "ellie dreadtooth ipad",
+        "content": "a tablet that belongs to ellie that allows to commucaton to dreadtooth\nGill touched it and now dreadtooth is looking for him.",
+        "tags": [
+          "gill",
+          "ellie",
+          "dreadtooth"
+        ],
+        "createdAt": "2026-03-01T05:16:44.458Z",
+        "updatedAt": "2026-03-01T05:16:44.458Z"
       }
     ],
     "session": []
   },
   "mapWaypoints": {
-    "world": [],
+    "world": [
+      {
+        "id": "wp_mlvo301n-oi9sdf",
+        "mapId": "world",
+        "x": 875,
+        "y": 725,
+        "title": "Gildhammer",
+        "note": "",
+        "createdAt": "2026-02-21T01:55:41.435Z",
+        "updatedAt": "2026-02-21T01:55:41.435Z"
+      },
+      {
+        "id": "wp_mlvoccaj-hum325",
+        "mapId": "world",
+        "x": 731,
+        "y": 613,
+        "title": "Apalor",
+        "note": "",
+        "createdAt": "2026-02-21T02:02:57.211Z",
+        "updatedAt": "2026-02-21T02:02:57.211Z"
+      },
+      {
+        "id": "wp_mlvodgfj-scsuyc",
+        "mapId": "world",
+        "x": 765,
+        "y": 262,
+        "title": "Briaslone",
+        "note": "",
+        "createdAt": "2026-02-21T02:03:49.231Z",
+        "updatedAt": "2026-02-21T02:03:49.231Z"
+      },
+      {
+        "id": "wp_mm785mv5-pniysi",
+        "mapId": "world",
+        "x": 860,
+        "y": 614,
+        "title": "The real location of pinchester",
+        "note": "",
+        "createdAt": "2026-03-01T04:03:04.577Z",
+        "updatedAt": "2026-03-01T04:03:04.577Z"
+      }
+    ],
     "alsita": [
       {
         "id": "wp_mld9zi51-4rr4hc",
@@ -293,6 +478,36 @@
         "note": "fountain that telaports you to an arena for fighting",
         "createdAt": "2026-02-08T05:01:12.469Z",
         "updatedAt": "2026-02-08T05:01:12.469Z"
+      },
+      {
+        "id": "wp_mm786zil-xhz6rr",
+        "mapId": "alsita",
+        "x": 5336,
+        "y": 2780,
+        "title": "royal seadog",
+        "note": "",
+        "createdAt": "2026-03-01T04:04:07.629Z",
+        "updatedAt": "2026-03-01T04:04:07.629Z"
+      },
+      {
+        "id": "wp_mm787w3b-h3qe9e",
+        "mapId": "alsita",
+        "x": 4372,
+        "y": 1248,
+        "title": "Wayfarer",
+        "note": "",
+        "createdAt": "2026-03-01T04:04:49.847Z",
+        "updatedAt": "2026-03-01T04:04:49.847Z"
+      },
+      {
+        "id": "wp_mm788t7w-wxem8m",
+        "mapId": "alsita",
+        "x": 6196,
+        "y": 2172,
+        "title": "Talon's House",
+        "note": "hey thats my house",
+        "createdAt": "2026-03-01T04:05:32.780Z",
+        "updatedAt": "2026-03-01T04:05:32.780Z"
       }
     ],
     "tosatina": [],

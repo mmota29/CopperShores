@@ -1,7 +1,7 @@
 // Copper Shores Frontend - Main Script
 // This script demonstrates frontend-backend connection and handles DOM interactions
 
-const API_BASE_URL = 'http://localhost:3000/api';
+const API_BASE_URL = '/api';
 
 /**
  * Fetch campaign status from the backend when page loads

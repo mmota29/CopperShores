@@ -1,7 +1,193 @@
-// Postgres database helpers for Copper Shores
-// Replaces JSON file storage while preserving the existing backend API behavior.
+// Simple JSON file database helpers for Copper Shores
+// Provides safe read/write and basic player/character operations
 
-const { query, withTransaction } = require('./lib/pg');
+const fs = require('fs');
+const path = require('path');
+
+const DB_PATH = path.join(__dirname, 'data', 'db.json');
+
+function ensureDb() {
+  if (!fs.existsSync(DB_PATH)) {
+    const dir = path.dirname(DB_PATH);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(DB_PATH, JSON.stringify({ players: [] }, null, 2));
+  }
+}
+
+function readDB() {
+  ensureDb();
+  const raw = fs.readFileSync(DB_PATH, 'utf8');
+  try {
+    return JSON.parse(raw);
+  } catch (err) {
+    // If corrupted, reset to empty DB to avoid crashes
+    const empty = { players: [] };
+    fs.writeFileSync(DB_PATH, JSON.stringify(empty, null, 2));
+    return empty;
+  }
+}
+
+function writeDB(data) {
+  // atomic write: write to temp then rename
+  const tmpPath = DB_PATH + '.tmp';
+  fs.writeFileSync(tmpPath, JSON.stringify(data, null, 2));
+  fs.renameSync(tmpPath, DB_PATH);
+}
+
+function generateId(prefix = '') {
+  return (
+    prefix +
+    Date.now().toString(36) +
+    '-' +
+    Math.random().toString(36).slice(2, 8)
+  );
+}
+
+// Player helpers
+function listPlayers() {
+  const db = readDB();
+  return db.players;
+}
+
+function getPlayer(id) {
+  const players = listPlayers();
+  return players.find(p => p.id === id) || null;
+}
+
+function createPlayer({ name, bio, currentCharacter }) {
+  const db = readDB();
+  const newPlayer = {
+    id: generateId('pl_'),
+    name: name || 'Unnamed Player',
+    bio: bio || '',
+    currentCharacter: currentCharacter || null,
+    characters: []
+  };
+  // If currentCharacter provided, ensure it has an id and add to characters
+  if (currentCharacter) {
+    const char = Object.assign({}, currentCharacter);
+    char.id = char.id || generateId('ch_');
+    char.status = char.status || 'active';
+    newPlayer.currentCharacter = char;
+    newPlayer.characters.push(char);
+  }
+  db.players.push(newPlayer);
+  writeDB(db);
+  return newPlayer;
+}
+
+function updatePlayer(id, patch) {
+  const db = readDB();
+  const idx = db.players.findIndex(p => p.id === id);
+  if (idx === -1) return null;
+  const player = db.players[idx];
+  player.name = patch.name !== undefined ? patch.name : player.name;
+  player.bio = patch.bio !== undefined ? patch.bio : player.bio;
+  // do not allow direct overwrite of characters/currentCharacter here
+  db.players[idx] = player;
+  writeDB(db);
+  return player;
+}
+
+function deletePlayer(id) {
+  const db = readDB();
+  const idx = db.players.findIndex(p => p.id === id);
+  if (idx === -1) return false;
+  db.players.splice(idx, 1);
+  writeDB(db);
+  return true;
+}
+
+// Character management
+function addCharacter(playerId, charObj) {
+  const db = readDB();
+  const pl = db.players.find(p => p.id === playerId);
+  if (!pl) return null;
+  const char = Object.assign({}, charObj);
+  char.id = char.id || generateId('ch_');
+  char.level = Number(char.level) || 1;
+  char.status = char.status || 'retired'; // by default added to previous list unless specified
+  pl.characters.push(char);
+  writeDB(db);
+  return char;
+}
+
+function updateCharacter(playerId, charId, patch) {
+  const db = readDB();
+  const pl = db.players.find(p => p.id === playerId);
+  if (!pl) return null;
+  const char = pl.characters.find(c => c.id === charId);
+  if (!char) return null;
+  // Update character fields
+  if (patch.name !== undefined) char.name = patch.name;
+  if (patch.race !== undefined) char.race = patch.race;
+  if (patch.className !== undefined) char.className = patch.className;
+  if (patch.level !== undefined) char.level = Number(patch.level) || 1;
+  if (patch.status !== undefined) char.status = patch.status;
+  if (patch.displayOrder !== undefined) char.displayOrder = Number(patch.displayOrder) || undefined;
+  // If this is current character, update that too
+  if (pl.currentCharacter && pl.currentCharacter.id === charId) {
+    pl.currentCharacter = char;
+  }
+  writeDB(db);
+  return char;
+}
+
+function deleteCharacter(playerId, charId) {
+  const db = readDB();
+  const pl = db.players.find(p => p.id === playerId);
+  if (!pl) return false;
+  const idx = pl.characters.findIndex(c => c.id === charId);
+  if (idx === -1) return false;
+  // If character is currentCharacter, clear it
+  if (pl.currentCharacter && pl.currentCharacter.id === charId) {
+    pl.currentCharacter = null;
+  }
+  pl.characters.splice(idx, 1);
+  writeDB(db);
+  return true;
+}
+
+function setCurrentCharacter(playerId, charIdOrObject) {
+  const db = readDB();
+  const pl = db.players.find(p => p.id === playerId);
+  if (!pl) return null;
+  let char = null;
+  if (typeof charIdOrObject === 'string') {
+    char = pl.characters.find(c => c.id === charIdOrObject) || null;
+    if (!char) return null;
+    // mark as active
+    char.status = 'active';
+  } else if (typeof charIdOrObject === 'object') {
+    char = Object.assign({}, charIdOrObject);
+    char.id = char.id || generateId('ch_');
+    char.level = Number(char.level) || 1;
+    char.status = char.status || 'active';
+    // add to characters if not already present
+    const exists = pl.characters.find(c => c.id === char.id);
+    if (!exists) pl.characters.push(char);
+  }
+  pl.currentCharacter = char;
+  writeDB(db);
+  return char;
+}
+
+function moveCurrentToPrevious(playerId, status = 'dead') {
+  const db = readDB();
+  const pl = db.players.find(p => p.id === playerId);
+  if (!pl) return null;
+  if (!pl.currentCharacter) return null;
+  // mark status and ensure it's in characters
+  const cur = pl.currentCharacter;
+  cur.status = status;
+  const exists = pl.characters.find(c => c.id === cur.id);
+  if (!exists) pl.characters.push(cur);
+  pl.currentCharacter = null;
+  writeDB(db);
+  return cur;
+}
+
+/* -------------------- Notes Helpers -------------------- */
 
 const NOTE_CATEGORIES = {
   pc: 'PC Notes',
@@ -13,12 +199,174 @@ const NOTE_CATEGORIES = {
   session: 'Session Recaps'
 };
 
-const DEFAULT_MAPS = [
+function getCategories() {
+  return NOTE_CATEGORIES;
+}
+
+function listNotes(category) {
+  if (!NOTE_CATEGORIES[category]) return null;
+  const db = readDB();
+  if (!db.notes) db.notes = {};
+  if (!db.notes[category]) db.notes[category] = [];
+  return db.notes[category];
+}
+
+function getNote(category, noteId) {
+  const notes = listNotes(category);
+  if (!notes) return null;
+  return notes.find(n => n.id === noteId) || null;
+}
+
+function createNote(category, { title, content, tags }) {
+  if (!NOTE_CATEGORIES[category]) return null;
+  if (!title || typeof title !== 'string' || title.trim() === '') return null;
+
+  const db = readDB();
+  if (!db.notes) db.notes = {};
+  if (!db.notes[category]) db.notes[category] = [];
+
+  const now = new Date().toISOString();
+  const newNote = {
+    id: generateId('note_'),
+    title: title.trim(),
+    content: content || '',
+    tags: Array.isArray(tags) ? tags : (tags ? tags.split(',').map(t => t.trim()) : []),
+    createdAt: now,
+    updatedAt: now
+  };
+
+  db.notes[category].push(newNote);
+  writeDB(db);
+  return newNote;
+}
+
+function updateNote(category, noteId, patch) {
+  if (!NOTE_CATEGORIES[category]) return null;
+  const db = readDB();
+  if (!db.notes || !db.notes[category]) return null;
+
+  const idx = db.notes[category].findIndex(n => n.id === noteId);
+  if (idx === -1) return null;
+
+  const note = db.notes[category][idx];
+  if (patch.title !== undefined) note.title = patch.title;
+  if (patch.content !== undefined) note.content = patch.content;
+  if (patch.tags !== undefined) {
+    note.tags = Array.isArray(patch.tags) ? patch.tags : (patch.tags ? patch.tags.split(',').map(t => t.trim()) : []);
+  }
+  note.updatedAt = new Date().toISOString();
+
+  db.notes[category][idx] = note;
+  writeDB(db);
+  return note;
+}
+
+function deleteNote(category, noteId) {
+  if (!NOTE_CATEGORIES[category]) return false;
+  const db = readDB();
+  if (!db.notes || !db.notes[category]) return false;
+
+  const idx = db.notes[category].findIndex(n => n.id === noteId);
+  if (idx === -1) return false;
+
+  db.notes[category].splice(idx, 1);
+  writeDB(db);
+  return true;
+}
+
+/* -------------------- Map Helpers -------------------- */
+
+const MAPS_DEFINITION = [
   { id: 'world', name: 'World Map', imagePath: '/allmaps/coppershores.png' },
   { id: 'alsita', name: 'Alsita', imagePath: '/allmaps/Alsita.PNG' },
   { id: 'tosatina', name: 'Tosatina', imagePath: '/allmaps/Tosatina.PNG' },
   { id: 'tormsicle', name: 'Tormsicle', imagePath: '/allmaps/Tormsicle.png' }
 ];
+
+function getMapsDefinition() {
+  return MAPS_DEFINITION;
+}
+
+function ensureMapWaypointsStructure() {
+  const db = readDB();
+  if (!db.mapWaypoints) {
+    db.mapWaypoints = {};
+    MAPS_DEFINITION.forEach(map => {
+      db.mapWaypoints[map.id] = [];
+    });
+    writeDB(db);
+  }
+}
+
+function listWaypoints(mapId) {
+  ensureMapWaypointsStructure();
+  const db = readDB();
+  if (!db.mapWaypoints[mapId]) return null;
+  return db.mapWaypoints[mapId];
+}
+
+function getWaypoint(mapId, waypointId) {
+  const waypoints = listWaypoints(mapId);
+  if (!waypoints) return null;
+  return waypoints.find(w => w.id === waypointId) || null;
+}
+
+function createWaypoint(mapId, { x, y, title, note }) {
+  const waypoints = listWaypoints(mapId);
+  if (!waypoints) return null;
+
+  const now = new Date().toISOString();
+  const newWaypoint = {
+    id: generateId('wp_'),
+    mapId,
+    x: Number(x) || 0,
+    y: Number(y) || 0,
+    title: title || '',
+    note: note || '',
+    createdAt: now,
+    updatedAt: now
+  };
+
+  const db = readDB();
+  db.mapWaypoints[mapId].push(newWaypoint);
+  writeDB(db);
+  return newWaypoint;
+}
+
+function updateWaypoint(mapId, waypointId, patch) {
+  const db = readDB();
+  const waypoints = db.mapWaypoints[mapId];
+  if (!waypoints) return null;
+
+  const idx = waypoints.findIndex(w => w.id === waypointId);
+  if (idx === -1) return null;
+
+  const waypoint = waypoints[idx];
+  if (patch.x !== undefined) waypoint.x = Number(patch.x) || 0;
+  if (patch.y !== undefined) waypoint.y = Number(patch.y) || 0;
+  if (patch.title !== undefined) waypoint.title = patch.title;
+  if (patch.note !== undefined) waypoint.note = patch.note;
+  waypoint.updatedAt = new Date().toISOString();
+
+  db.mapWaypoints[mapId][idx] = waypoint;
+  writeDB(db);
+  return waypoint;
+}
+
+function deleteWaypoint(mapId, waypointId) {
+  const db = readDB();
+  const waypoints = db.mapWaypoints[mapId];
+  if (!waypoints) return false;
+
+  const idx = waypoints.findIndex(w => w.id === waypointId);
+  if (idx === -1) return false;
+
+  waypoints.splice(idx, 1);
+  writeDB(db);
+  return true;
+}
+
+/* -------------------- Treasury Helpers -------------------- */
 
 const DEFAULT_COIN_VALUES = Object.freeze({
   pp: 1000,
@@ -35,15 +383,6 @@ const DEFAULT_TREASURY_SETTINGS = Object.freeze({
 });
 
 const ALLOCATION_MODES = new Set(['direct', 'equal_split', 'custom_split']);
-
-function generateId(prefix = '') {
-  return (
-    prefix +
-    Date.now().toString(36) +
-    '-' +
-    Math.random().toString(36).slice(2, 8)
-  );
-}
 
 function toInt(value, fallback = 0) {
   const parsed = Number(value);
@@ -69,555 +408,6 @@ function normalizeDate(value) {
   const parsed = new Date(value);
   if (Number.isNaN(parsed.getTime())) return todayIsoDate();
   return value.slice(0, 10);
-}
-
-function rowToCharacter(row) {
-  if (!row) return null;
-  const result = {
-    id: row.id,
-    name: row.name || '',
-    race: row.race || '',
-    className: row.class_name || '',
-    level: Number(row.level) || 1,
-    status: row.status || 'retired'
-  };
-  if (row.display_order !== null && row.display_order !== undefined) {
-    result.displayOrder = Number(row.display_order);
-  }
-  return result;
-}
-
-function rowToPlayer(row, characterRows = []) {
-  const characters = characterRows.map(rowToCharacter);
-  const currentRow = characterRows.find(char => Boolean(char.is_current));
-  const currentCharacter = currentRow ? rowToCharacter(currentRow) : null;
-  return {
-    id: row.id,
-    name: row.name,
-    bio: row.bio || '',
-    currentCharacter,
-    characters
-  };
-}
-
-function rowToNote(row) {
-  return {
-    id: row.id,
-    title: row.title || '',
-    content: row.body || '',
-    tags: Array.isArray(row.tags) ? row.tags : [],
-    createdAt: row.created_at ? new Date(row.created_at).toISOString() : new Date().toISOString(),
-    updatedAt: row.updated_at ? new Date(row.updated_at).toISOString() : new Date().toISOString()
-  };
-}
-
-function rowToWaypoint(row) {
-  return {
-    id: row.id,
-    mapId: row.map_id,
-    x: Number(row.x) || 0,
-    y: Number(row.y) || 0,
-    title: row.title || '',
-    note: row.note || '',
-    createdAt: row.created_at ? new Date(row.created_at).toISOString() : new Date().toISOString(),
-    updatedAt: row.updated_at ? new Date(row.updated_at).toISOString() : new Date().toISOString()
-  };
-}
-
-async function mapExists(mapId) {
-  const result = await query('SELECT 1 FROM maps WHERE id = $1 LIMIT 1', [mapId]);
-  return result.rowCount > 0;
-}
-
-async function healthCheck() {
-  await query('SELECT 1');
-}
-
-async function readDB() {
-  throw new Error('readDB is not supported with Postgres storage.');
-}
-
-async function writeDB() {
-  throw new Error('writeDB is not supported with Postgres storage.');
-}
-
-async function listPlayers() {
-  const playersRes = await query(
-    'SELECT id, name, bio, created_at FROM players ORDER BY created_at ASC, name ASC'
-  );
-  if (playersRes.rowCount === 0) return [];
-
-  const playerIds = playersRes.rows.map(row => row.id);
-  const charsRes = await query(
-    `SELECT id, player_id, name, race, class_name, level, status, is_current, display_order, created_at
-     FROM characters
-     WHERE player_id = ANY($1::text[])
-     ORDER BY created_at ASC, name ASC`,
-    [playerIds]
-  );
-
-  const charsByPlayer = {};
-  charsRes.rows.forEach(row => {
-    if (!charsByPlayer[row.player_id]) charsByPlayer[row.player_id] = [];
-    charsByPlayer[row.player_id].push(row);
-  });
-
-  return playersRes.rows.map(row => rowToPlayer(row, charsByPlayer[row.id] || []));
-}
-
-async function getPlayer(id) {
-  const playerRes = await query(
-    'SELECT id, name, bio, created_at FROM players WHERE id = $1',
-    [id]
-  );
-  if (playerRes.rowCount === 0) return null;
-
-  const charsRes = await query(
-    `SELECT id, player_id, name, race, class_name, level, status, is_current, display_order, created_at
-     FROM characters
-     WHERE player_id = $1
-     ORDER BY created_at ASC, name ASC`,
-    [id]
-  );
-
-  return rowToPlayer(playerRes.rows[0], charsRes.rows);
-}
-
-async function createPlayer({ name, bio, currentCharacter }) {
-  const playerId = generateId('pl_');
-
-  await withTransaction(async client => {
-    await client.query(
-      'INSERT INTO players (id, name, bio) VALUES ($1, $2, $3)',
-      [playerId, name || 'Unnamed Player', bio || '']
-    );
-
-    if (currentCharacter && typeof currentCharacter === 'object') {
-      const charId = currentCharacter.id || generateId('ch_');
-      await client.query(
-        `INSERT INTO characters (id, player_id, name, race, class_name, level, status, is_current, display_order)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, TRUE, $8)`,
-        [
-          charId,
-          playerId,
-          currentCharacter.name || 'Unnamed Character',
-          currentCharacter.race || '',
-          currentCharacter.className || currentCharacter.class || '',
-          Number(currentCharacter.level) || 1,
-          currentCharacter.status || 'active',
-          currentCharacter.displayOrder !== undefined ? toInt(currentCharacter.displayOrder, null) : null
-        ]
-      );
-    }
-  });
-
-  return getPlayer(playerId);
-}
-
-async function updatePlayer(id, patch) {
-  const updates = [];
-  const params = [];
-  let idx = 1;
-
-  if (patch.name !== undefined) {
-    updates.push(`name = $${idx++}`);
-    params.push(patch.name);
-  }
-  if (patch.bio !== undefined) {
-    updates.push(`bio = $${idx++}`);
-    params.push(patch.bio);
-  }
-
-  if (updates.length === 0) {
-    return getPlayer(id);
-  }
-
-  params.push(id);
-  const result = await query(
-    `UPDATE players SET ${updates.join(', ')} WHERE id = $${idx} RETURNING id`,
-    params
-  );
-  if (result.rowCount === 0) return null;
-  return getPlayer(id);
-}
-
-async function deletePlayer(id) {
-  return withTransaction(async client => {
-    const deletedChars = await client.query(
-      'DELETE FROM characters WHERE player_id = $1',
-      [id]
-    );
-    const deletedPlayer = await client.query(
-      'DELETE FROM players WHERE id = $1',
-      [id]
-    );
-    return deletedPlayer.rowCount > 0 || deletedChars.rowCount > 0;
-  });
-}
-
-async function addCharacter(playerId, charObj) {
-  const characterId = (charObj && charObj.id) || generateId('ch_');
-
-  const result = await withTransaction(async client => {
-    const playerExists = await client.query(
-      'SELECT id FROM players WHERE id = $1',
-      [playerId]
-    );
-    if (playerExists.rowCount === 0) return null;
-
-    const inserted = await client.query(
-      `INSERT INTO characters (id, player_id, name, race, class_name, level, status, is_current, display_order)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, FALSE, $8)
-       RETURNING id, player_id, name, race, class_name, level, status, is_current, display_order, created_at`,
-      [
-        characterId,
-        playerId,
-        (charObj && charObj.name) || 'Unnamed Character',
-        (charObj && charObj.race) || '',
-        (charObj && (charObj.className || charObj.class)) || '',
-        Number(charObj && charObj.level) || 1,
-        (charObj && charObj.status) || 'retired',
-        charObj && charObj.displayOrder !== undefined ? toInt(charObj.displayOrder, null) : null
-      ]
-    );
-
-    return inserted.rows[0];
-  });
-
-  return result ? rowToCharacter(result) : null;
-}
-
-async function updateCharacter(playerId, charId, patch) {
-  const updates = [];
-  const params = [];
-  let idx = 1;
-
-  if (patch.name !== undefined) {
-    updates.push(`name = $${idx++}`);
-    params.push(patch.name);
-  }
-  if (patch.race !== undefined) {
-    updates.push(`race = $${idx++}`);
-    params.push(patch.race);
-  }
-  if (patch.className !== undefined || patch.class !== undefined) {
-    updates.push(`class_name = $${idx++}`);
-    params.push(patch.className !== undefined ? patch.className : patch.class);
-  }
-  if (patch.level !== undefined) {
-    updates.push(`level = $${idx++}`);
-    params.push(Number(patch.level) || 1);
-  }
-  if (patch.status !== undefined) {
-    updates.push(`status = $${idx++}`);
-    params.push(patch.status);
-  }
-  if (patch.displayOrder !== undefined) {
-    updates.push(`display_order = $${idx++}`);
-    params.push(toInt(patch.displayOrder, null));
-  }
-
-  if (updates.length === 0) {
-    const existing = await query(
-      `SELECT id, player_id, name, race, class_name, level, status, is_current, display_order, created_at
-       FROM characters
-       WHERE player_id = $1 AND id = $2`,
-      [playerId, charId]
-    );
-    if (existing.rowCount === 0) return null;
-    return rowToCharacter(existing.rows[0]);
-  }
-
-  params.push(playerId, charId);
-  const result = await query(
-    `UPDATE characters
-     SET ${updates.join(', ')}
-     WHERE player_id = $${idx++} AND id = $${idx}
-     RETURNING id, player_id, name, race, class_name, level, status, is_current, display_order, created_at`,
-    params
-  );
-  if (result.rowCount === 0) return null;
-  return rowToCharacter(result.rows[0]);
-}
-
-async function deleteCharacter(playerId, charId) {
-  const result = await query(
-    'DELETE FROM characters WHERE player_id = $1 AND id = $2 RETURNING id',
-    [playerId, charId]
-  );
-  return result.rowCount > 0;
-}
-
-async function setCurrentCharacter(playerId, charIdOrObject) {
-  return withTransaction(async client => {
-    const playerRes = await client.query(
-      'SELECT id FROM players WHERE id = $1',
-      [playerId]
-    );
-    if (playerRes.rowCount === 0) return null;
-
-    await client.query('UPDATE characters SET is_current = FALSE WHERE player_id = $1', [playerId]);
-
-    if (typeof charIdOrObject === 'string') {
-      const selected = await client.query(
-        `UPDATE characters
-         SET is_current = TRUE, status = 'active'
-         WHERE player_id = $1 AND id = $2
-         RETURNING id, player_id, name, race, class_name, level, status, is_current, display_order, created_at`,
-        [playerId, charIdOrObject]
-      );
-      if (selected.rowCount === 0) return null;
-      return rowToCharacter(selected.rows[0]);
-    }
-
-    if (!charIdOrObject || typeof charIdOrObject !== 'object') return null;
-
-    const charId = charIdOrObject.id || generateId('ch_');
-    const existing = await client.query(
-      'SELECT id FROM characters WHERE player_id = $1 AND id = $2',
-      [playerId, charId]
-    );
-
-    let result;
-    if (existing.rowCount > 0) {
-      result = await client.query(
-        `UPDATE characters
-         SET name = $3, race = $4, class_name = $5, level = $6, status = $7, is_current = TRUE, display_order = $8
-         WHERE player_id = $1 AND id = $2
-         RETURNING id, player_id, name, race, class_name, level, status, is_current, display_order, created_at`,
-        [
-          playerId,
-          charId,
-          charIdOrObject.name || 'Unnamed Character',
-          charIdOrObject.race || '',
-          charIdOrObject.className || charIdOrObject.class || '',
-          Number(charIdOrObject.level) || 1,
-          charIdOrObject.status || 'active',
-          charIdOrObject.displayOrder !== undefined ? toInt(charIdOrObject.displayOrder, null) : null
-        ]
-      );
-    } else {
-      result = await client.query(
-        `INSERT INTO characters (id, player_id, name, race, class_name, level, status, is_current, display_order)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, TRUE, $8)
-         RETURNING id, player_id, name, race, class_name, level, status, is_current, display_order, created_at`,
-        [
-          charId,
-          playerId,
-          charIdOrObject.name || 'Unnamed Character',
-          charIdOrObject.race || '',
-          charIdOrObject.className || charIdOrObject.class || '',
-          Number(charIdOrObject.level) || 1,
-          charIdOrObject.status || 'active',
-          charIdOrObject.displayOrder !== undefined ? toInt(charIdOrObject.displayOrder, null) : null
-        ]
-      );
-    }
-
-    return rowToCharacter(result.rows[0]);
-  });
-}
-
-async function moveCurrentToPrevious(playerId, status = 'dead') {
-  const result = await query(
-    `UPDATE characters
-     SET is_current = FALSE, status = $2
-     WHERE player_id = $1 AND is_current = TRUE
-     RETURNING id, player_id, name, race, class_name, level, status, is_current, display_order, created_at`,
-    [playerId, status]
-  );
-  if (result.rowCount === 0) return null;
-  return rowToCharacter(result.rows[0]);
-}
-
-function getCategories() {
-  return NOTE_CATEGORIES;
-}
-
-async function listNotes(category) {
-  if (!NOTE_CATEGORIES[category]) return null;
-  const result = await query(
-    `SELECT id, category, title, body, tags, created_at, updated_at
-     FROM notes
-     WHERE category = $1
-     ORDER BY created_at DESC, id DESC`,
-    [category]
-  );
-  return result.rows.map(rowToNote);
-}
-
-async function getNote(category, noteId) {
-  if (!NOTE_CATEGORIES[category]) return null;
-  const result = await query(
-    `SELECT id, category, title, body, tags, created_at, updated_at
-     FROM notes
-     WHERE category = $1 AND id = $2`,
-    [category, noteId]
-  );
-  if (result.rowCount === 0) return null;
-  return rowToNote(result.rows[0]);
-}
-
-async function createNote(category, { title, content, tags }) {
-  if (!NOTE_CATEGORIES[category]) return null;
-  if (!title || typeof title !== 'string' || title.trim() === '') return null;
-
-  const noteId = generateId('note_');
-  const tagsArray = Array.isArray(tags)
-    ? tags
-    : (tags ? String(tags).split(',').map(tag => tag.trim()) : []);
-
-  const result = await query(
-    `INSERT INTO notes (id, category, title, body, tags, created_at, updated_at)
-     VALUES ($1, $2, $3, $4, $5::jsonb, NOW(), NOW())
-     RETURNING id, category, title, body, tags, created_at, updated_at`,
-    [noteId, category, title.trim(), content || '', JSON.stringify(tagsArray)]
-  );
-
-  return rowToNote(result.rows[0]);
-}
-
-async function updateNote(category, noteId, patch) {
-  if (!NOTE_CATEGORIES[category]) return null;
-  const existing = await getNote(category, noteId);
-  if (!existing) return null;
-
-  const nextTitle = patch.title !== undefined ? patch.title : existing.title;
-  const nextBody = patch.content !== undefined ? patch.content : existing.content;
-  const nextTags = patch.tags !== undefined
-    ? (Array.isArray(patch.tags)
-      ? patch.tags
-      : (patch.tags ? String(patch.tags).split(',').map(tag => tag.trim()) : []))
-    : existing.tags;
-
-  const result = await query(
-    `UPDATE notes
-     SET title = $3, body = $4, tags = $5::jsonb, updated_at = NOW()
-     WHERE category = $1 AND id = $2
-     RETURNING id, category, title, body, tags, created_at, updated_at`,
-    [category, noteId, nextTitle, nextBody, JSON.stringify(nextTags)]
-  );
-  if (result.rowCount === 0) return null;
-  return rowToNote(result.rows[0]);
-}
-
-async function deleteNote(category, noteId) {
-  if (!NOTE_CATEGORIES[category]) return false;
-  const result = await query(
-    'DELETE FROM notes WHERE category = $1 AND id = $2 RETURNING id',
-    [category, noteId]
-  );
-  return result.rowCount > 0;
-}
-
-async function getMapsDefinition() {
-  const result = await query(
-    `SELECT id, name, image_path
-     FROM maps
-     ORDER BY
-       CASE id
-         WHEN 'world' THEN 1
-         WHEN 'alsita' THEN 2
-         WHEN 'tosatina' THEN 3
-         WHEN 'tormsicle' THEN 4
-         ELSE 100
-       END,
-       name ASC`
-  );
-
-  if (result.rowCount === 0) return DEFAULT_MAPS;
-  return result.rows.map(row => ({
-    id: row.id,
-    name: row.name,
-    imagePath: row.image_path
-  }));
-}
-
-async function listWaypoints(mapId) {
-  if (!(await mapExists(mapId))) return null;
-  const result = await query(
-    `SELECT id, map_id, x, y, title, note, created_at, updated_at
-     FROM waypoints
-     WHERE map_id = $1
-     ORDER BY created_at ASC, id ASC`,
-    [mapId]
-  );
-  return result.rows.map(rowToWaypoint);
-}
-
-async function getWaypoint(mapId, waypointId) {
-  if (!(await mapExists(mapId))) return null;
-  const result = await query(
-    `SELECT id, map_id, x, y, title, note, created_at, updated_at
-     FROM waypoints
-     WHERE map_id = $1 AND id = $2`,
-    [mapId, waypointId]
-  );
-  if (result.rowCount === 0) return null;
-  return rowToWaypoint(result.rows[0]);
-}
-
-async function createWaypoint(mapId, { x, y, title, note }) {
-  if (!(await mapExists(mapId))) return null;
-  const waypointId = generateId('wp_');
-  const result = await query(
-    `INSERT INTO waypoints (id, map_id, x, y, title, note, created_at, updated_at)
-     VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())
-     RETURNING id, map_id, x, y, title, note, created_at, updated_at`,
-    [waypointId, mapId, Number(x) || 0, Number(y) || 0, title || '', note || '']
-  );
-  return rowToWaypoint(result.rows[0]);
-}
-
-async function updateWaypoint(mapId, waypointId, patch) {
-  if (!(await mapExists(mapId))) return null;
-  const updates = [];
-  const params = [];
-  let idx = 1;
-
-  if (patch.x !== undefined) {
-    updates.push(`x = $${idx++}`);
-    params.push(Number(patch.x) || 0);
-  }
-  if (patch.y !== undefined) {
-    updates.push(`y = $${idx++}`);
-    params.push(Number(patch.y) || 0);
-  }
-  if (patch.title !== undefined) {
-    updates.push(`title = $${idx++}`);
-    params.push(patch.title);
-  }
-  if (patch.note !== undefined) {
-    updates.push(`note = $${idx++}`);
-    params.push(patch.note);
-  }
-
-  if (updates.length === 0) {
-    return getWaypoint(mapId, waypointId);
-  }
-
-  updates.push('updated_at = NOW()');
-  params.push(mapId, waypointId);
-
-  const result = await query(
-    `UPDATE waypoints
-     SET ${updates.join(', ')}
-     WHERE map_id = $${idx++} AND id = $${idx}
-     RETURNING id, map_id, x, y, title, note, created_at, updated_at`,
-    params
-  );
-
-  if (result.rowCount === 0) return null;
-  return rowToWaypoint(result.rows[0]);
-}
-
-async function deleteWaypoint(mapId, waypointId) {
-  if (!(await mapExists(mapId))) return false;
-  const result = await query(
-    'DELETE FROM waypoints WHERE map_id = $1 AND id = $2 RETURNING id',
-    [mapId, waypointId]
-  );
-  return result.rowCount > 0;
 }
 
 function normalizeCoinValues(coinValues) {
@@ -687,6 +477,7 @@ function formatCoins(totalCp, coinValues = DEFAULT_COIN_VALUES) {
   const absolute = Math.abs(toInt(totalCp, 0));
   let coinBreakdown;
 
+  // Keep small/medium totals in gp/sp/cp for readability.
   if (absolute < coinValues.pp * 10) {
     let remaining = absolute;
     const gp = Math.floor(remaining / coinValues.gp);
@@ -707,23 +498,34 @@ function formatCoins(totalCp, coinValues = DEFAULT_COIN_VALUES) {
   return parts.length === 0 ? '0 cp' : `${sign}${parts.join(', ')}`;
 }
 
-function normalizeInputCoins(inputCoins, totalCp, coinValues) {
-  if (inputCoins && typeof inputCoins === 'object') {
-    return {
-      pp: Math.max(0, toInt(inputCoins.pp, 0)),
-      gp: Math.max(0, toInt(inputCoins.gp, 0)),
-      sp: Math.max(0, toInt(inputCoins.sp, 0)),
-      cp: Math.max(0, toInt(inputCoins.cp, 0))
-    };
-  }
+function getTreasuryCharacters() {
+  const players = listPlayers();
+  const characters = [];
 
-  const fromTotal = cpToCoins(totalCp, coinValues);
-  return {
-    pp: Math.max(0, fromTotal.pp),
-    gp: Math.max(0, fromTotal.gp),
-    sp: Math.max(0, fromTotal.sp),
-    cp: Math.max(0, fromTotal.cp)
-  };
+  players.forEach((player, index) => {
+    const currentCharacter = player.currentCharacter;
+    if (!currentCharacter || !currentCharacter.id) return;
+
+    const derivedOrder = clampInt(
+      currentCharacter.displayOrder,
+      1,
+      Number.MAX_SAFE_INTEGER,
+      index + 1
+    );
+
+    characters.push({
+      id: currentCharacter.id,
+      characterName: currentCharacter.name || 'Unnamed Character',
+      playerName: player.name || 'Unknown Player',
+      isActive: (currentCharacter.status || 'active') === 'active',
+      displayOrder: derivedOrder
+    });
+  });
+
+  return characters.sort((a, b) => {
+    if (a.displayOrder !== b.displayOrder) return a.displayOrder - b.displayOrder;
+    return a.characterName.localeCompare(b.characterName);
+  });
 }
 
 function normalizeAllocation(alloc, type) {
@@ -761,6 +563,25 @@ function inferAllocationMode(allocations) {
   const firstValue = characterAllocs[0].cpDelta;
   const isEven = characterAllocs.every(a => a.cpDelta === firstValue);
   return isEven ? 'equal_split' : 'custom_split';
+}
+
+function normalizeInputCoins(inputCoins, totalCp, coinValues) {
+  if (inputCoins && typeof inputCoins === 'object') {
+    return {
+      pp: Math.max(0, toInt(inputCoins.pp, 0)),
+      gp: Math.max(0, toInt(inputCoins.gp, 0)),
+      sp: Math.max(0, toInt(inputCoins.sp, 0)),
+      cp: Math.max(0, toInt(inputCoins.cp, 0))
+    };
+  }
+
+  const fromTotal = cpToCoins(totalCp, coinValues);
+  return {
+    pp: Math.max(0, fromTotal.pp),
+    gp: Math.max(0, fromTotal.gp),
+    sp: Math.max(0, fromTotal.sp),
+    cp: Math.max(0, fromTotal.cp)
+  };
 }
 
 function normalizeTransactionPayload(payload, existingId = null, settings = DEFAULT_TREASURY_SETTINGS) {
@@ -822,6 +643,11 @@ function normalizeTransactionPayload(payload, existingId = null, settings = DEFA
   };
 }
 
+function buildAccountIdFromAllocation(allocation) {
+  if (allocation.targetType === 'patron') return 'patron';
+  return allocation.characterId ? `character:${allocation.characterId}` : null;
+}
+
 function normalizeStoredTransaction(tx, settings) {
   if (!tx || typeof tx !== 'object') return null;
 
@@ -863,259 +689,155 @@ function normalizeStoredTransaction(tx, settings) {
   };
 }
 
-function mapTreasurySettingsRow(row) {
-  return normalizeTreasurySettings({
-    patronEnabled: row.patron_enabled,
-    defaultPatronPercent: row.default_patron_percent,
-    defaultSplitMode: row.default_split_mode,
-    coinValues: row.coin_values
-  });
+function ensureUniqueId(preferredId, seenIds) {
+  const base = preferredId || generateId('txn_');
+  if (!seenIds.has(base)) {
+    seenIds.add(base);
+    return base;
+  }
+  let counter = 1;
+  while (seenIds.has(`${base}_${counter}`)) counter += 1;
+  const next = `${base}_${counter}`;
+  seenIds.add(next);
+  return next;
 }
 
-function txRowToNormalizedTransaction(row, settings) {
-  return normalizeStoredTransaction({
-    id: row.id,
-    date: row.date,
-    description: row.description || '',
-    type: row.type,
-    totalCp: row.total_cp,
-    inputCoins: row.input_coins,
-    allocationMode: row.allocation_mode,
-    patronEnabledAtTime: row.patron_enabled_at_time,
-    patronPercentAtTime: row.patron_percent_at_time,
-    patronCp: row.patron_cp,
-    allocations: row.allocations,
-    sessionLabel: row.session_label,
-    note: row.note,
-    createdAt: row.created_at ? new Date(row.created_at).toISOString() : undefined,
-    updatedAt: row.updated_at ? new Date(row.updated_at).toISOString() : undefined
-  }, settings);
+function convertLegacyAllocation(accountId, amountCp, isExpense) {
+  const rawAmount = toInt(amountCp, 0);
+  if (rawAmount <= 0) return null;
+  const cpDelta = isExpense ? -rawAmount : rawAmount;
+
+  if (accountId === 'patron') {
+    return { targetType: 'patron', cpDelta };
+  }
+  if (typeof accountId === 'string' && accountId.startsWith('character:')) {
+    return {
+      targetType: 'character',
+      characterId: accountId.slice('character:'.length),
+      shareCount: 1,
+      cpDelta
+    };
+  }
+  return null;
 }
 
-async function ensureTreasurySettingsRow() {
-  const found = await query(
-    'SELECT id, patron_enabled, default_patron_percent, default_split_mode, coin_values, updated_at FROM treasury_settings WHERE id = 1'
-  );
-  if (found.rowCount > 0) return found.rows[0];
+function migrateLegacyGold(legacyGold, normalizedSettings) {
+  const skipped = [];
+  const seenIds = new Set();
+  const transactions = [];
+  let legacyPartyVaultDetected = false;
 
-  const inserted = await query(
-    `INSERT INTO treasury_settings (id, patron_enabled, default_patron_percent, default_split_mode, coin_values)
-     VALUES (1, $1, $2, $3, $4::jsonb)
-     ON CONFLICT (id) DO NOTHING
-     RETURNING id, patron_enabled, default_patron_percent, default_split_mode, coin_values, updated_at`,
-    [
-      DEFAULT_TREASURY_SETTINGS.patronEnabled,
-      DEFAULT_TREASURY_SETTINGS.defaultPatronPercent,
-      DEFAULT_TREASURY_SETTINGS.defaultSplitMode,
-      JSON.stringify(DEFAULT_TREASURY_SETTINGS.coinValues)
-    ]
-  );
-  if (inserted.rowCount > 0) return inserted.rows[0];
+  const legacyLootLog = Array.isArray(legacyGold.lootLog) ? legacyGold.lootLog : [];
+  legacyLootLog.forEach((entry, index) => {
+    const allocations = [];
+    let ignoredPartyCp = 0;
 
-  const fallback = await query(
-    'SELECT id, patron_enabled, default_patron_percent, default_split_mode, coin_values, updated_at FROM treasury_settings WHERE id = 1'
-  );
-  return fallback.rows[0];
-}
+    const rawAllocations = Array.isArray(entry.allocations) ? entry.allocations : [];
+    rawAllocations.forEach(rawAlloc => {
+      const accountId = rawAlloc.accountId || rawAlloc.recipientId;
+      if (accountId === 'party') {
+        ignoredPartyCp += Math.max(0, toInt(rawAlloc.amountCp, 0));
+        return;
+      }
+      const converted = convertLegacyAllocation(accountId, rawAlloc.amountCp, false);
+      if (converted) allocations.push(converted);
+    });
 
-function buildAccountIdFromAllocation(allocation) {
-  if (allocation.targetType === 'patron') return 'patron';
-  return allocation.characterId ? `character:${allocation.characterId}` : null;
-}
+    if (ignoredPartyCp > 0) legacyPartyVaultDetected = true;
+    if (allocations.length === 0) {
+      skipped.push({
+        source: 'lootLog',
+        legacyId: entry.id || `loot_${index + 1}`,
+        reason: ignoredPartyCp > 0
+          ? 'Only Party Vault allocations were present and were omitted.'
+          : 'No usable allocations were found.'
+      });
+      return;
+    }
 
-async function getTreasuryCharacters() {
-  const players = await listPlayers();
-  const characters = [];
+    const allocationTotal = allocations.reduce((sum, alloc) => sum + alloc.cpDelta, 0);
+    const patronCp = allocations
+      .filter(alloc => alloc.targetType === 'patron' && alloc.cpDelta > 0)
+      .reduce((sum, alloc) => sum + alloc.cpDelta, 0);
 
-  players.forEach((player, index) => {
-    const currentCharacter = player.currentCharacter;
-    if (!currentCharacter || !currentCharacter.id) return;
+    const noteParts = ['Migrated from legacy loot log entry.'];
+    if (ignoredPartyCp > 0) noteParts.push(`Ignored legacy Party Vault portion: ${ignoredPartyCp} cp.`);
+    if (entry.category) noteParts.push(`Legacy category: ${entry.category}.`);
 
-    const derivedOrder = clampInt(
-      currentCharacter.displayOrder,
-      1,
-      Number.MAX_SAFE_INTEGER,
-      index + 1
-    );
-
-    characters.push({
-      id: currentCharacter.id,
-      characterName: currentCharacter.name || 'Unnamed Character',
-      playerName: player.name || 'Unknown Player',
-      isActive: (currentCharacter.status || 'active') === 'active',
-      displayOrder: derivedOrder
+    transactions.push({
+      id: ensureUniqueId(entry.id || generateId('txn_'), seenIds),
+      date: normalizeDate(entry.date),
+      description: typeof entry.description === 'string' ? entry.description : '',
+      type: 'income',
+      totalCp: allocationTotal,
+      inputCoins: normalizeInputCoins(null, allocationTotal, normalizedSettings.coinValues),
+      allocationMode: inferAllocationMode(allocations),
+      patronEnabledAtTime: patronCp > 0,
+      patronPercentAtTime: clampInt(
+        legacyGold.settings && legacyGold.settings.patronPercentage,
+        0,
+        100,
+        normalizedSettings.defaultPatronPercent
+      ),
+      patronCp,
+      allocations,
+      sessionLabel: entry.session ? `Session ${entry.session}` : undefined,
+      note: noteParts.join(' '),
+      createdAt: typeof entry.date === 'string' ? entry.date : new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     });
   });
 
-  return characters.sort((a, b) => {
-    if (a.displayOrder !== b.displayOrder) return a.displayOrder - b.displayOrder;
-    return a.characterName.localeCompare(b.characterName);
+  const legacySpendingLog = Array.isArray(legacyGold.spendingLog) ? legacyGold.spendingLog : [];
+  legacySpendingLog.forEach((entry, index) => {
+    const accountId = entry.accountId;
+    if (accountId === 'party') {
+      legacyPartyVaultDetected = true;
+      skipped.push({
+        source: 'spendingLog',
+        legacyId: entry.id || `spending_${index + 1}`,
+        reason: 'Legacy Party Vault spending was omitted during migration.'
+      });
+      return;
+    }
+
+    const allocation = convertLegacyAllocation(accountId, entry.amountCp, true);
+    if (!allocation) {
+      skipped.push({
+        source: 'spendingLog',
+        legacyId: entry.id || `spending_${index + 1}`,
+        reason: 'No usable account mapping was found.'
+      });
+      return;
+    }
+
+    const totalCp = Math.abs(allocation.cpDelta);
+    const noteParts = ['Migrated from legacy spending log entry.'];
+    if (entry.category) noteParts.push(`Legacy category: ${entry.category}.`);
+
+    transactions.push({
+      id: ensureUniqueId(entry.id || generateId('txn_'), seenIds),
+      date: normalizeDate(entry.date),
+      description: typeof entry.description === 'string' ? entry.description : '',
+      type: 'expense',
+      totalCp,
+      inputCoins: normalizeInputCoins(null, totalCp, normalizedSettings.coinValues),
+      allocationMode: 'direct',
+      patronEnabledAtTime: false,
+      patronPercentAtTime: 0,
+      patronCp: 0,
+      allocations: [allocation],
+      note: noteParts.join(' '),
+      createdAt: typeof entry.date === 'string' ? entry.date : new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    });
   });
-}
 
-async function getTreasurySettings() {
-  const row = await ensureTreasurySettingsRow();
-  return mapTreasurySettingsRow(row);
-}
-
-async function updateTreasurySettings(patch) {
-  const current = await getTreasurySettings();
-  const source = patch || {};
-
-  const updated = {
-    patronEnabled: source.patronEnabled !== undefined ? Boolean(source.patronEnabled) : current.patronEnabled,
-    defaultPatronPercent: source.defaultPatronPercent !== undefined
-      ? clampInt(source.defaultPatronPercent, 0, 100, current.defaultPatronPercent)
-      : current.defaultPatronPercent,
-    defaultSplitMode: ALLOCATION_MODES.has(source.defaultSplitMode)
-      ? source.defaultSplitMode
-      : current.defaultSplitMode,
-    coinValues: normalizeCoinValues(source.coinValues || current.coinValues)
+  return {
+    transactions,
+    skipped,
+    legacyPartyVaultDetected
   };
-
-  const normalized = normalizeTreasurySettings(updated);
-  const result = await query(
-    `UPDATE treasury_settings
-     SET patron_enabled = $1,
-         default_patron_percent = $2,
-         default_split_mode = $3,
-         coin_values = $4::jsonb,
-         updated_at = NOW()
-     WHERE id = 1
-     RETURNING id, patron_enabled, default_patron_percent, default_split_mode, coin_values, updated_at`,
-    [
-      normalized.patronEnabled,
-      normalized.defaultPatronPercent,
-      normalized.defaultSplitMode,
-      JSON.stringify(normalized.coinValues)
-    ]
-  );
-  return mapTreasurySettingsRow(result.rows[0]);
-}
-
-async function listTreasuryTransactions() {
-  const settings = await getTreasurySettings();
-  const result = await query(
-    `SELECT id, date, description, type, total_cp, input_coins, allocation_mode,
-            patron_enabled_at_time, patron_percent_at_time, patron_cp, allocations,
-            session_label, note, created_at, updated_at
-     FROM treasury_transactions
-     ORDER BY date DESC, updated_at DESC, id DESC`
-  );
-
-  return result.rows
-    .map(row => txRowToNormalizedTransaction(row, settings))
-    .filter(Boolean)
-    .sort((a, b) => {
-      const dateCompare = new Date(b.date).getTime() - new Date(a.date).getTime();
-      if (dateCompare !== 0) return dateCompare;
-      return b.updatedAt.localeCompare(a.updatedAt);
-    });
-}
-
-async function addTreasuryTransaction(payload) {
-  const settings = await getTreasurySettings();
-  const normalized = normalizeTransactionPayload(payload, null, settings);
-  if (normalized.error) return { error: normalized.error };
-
-  const tx = normalized.value;
-  await query(
-    `INSERT INTO treasury_transactions (
-       id, date, description, type, total_cp, input_coins, allocation_mode,
-       patron_enabled_at_time, patron_percent_at_time, patron_cp, allocations,
-       session_label, note, created_at, updated_at
-     )
-     VALUES (
-       $1, $2, $3, $4, $5, $6::jsonb, $7, $8, $9, $10, $11::jsonb, $12, $13, $14, $15
-     )`,
-    [
-      tx.id,
-      tx.date,
-      tx.description || '',
-      tx.type,
-      tx.totalCp,
-      JSON.stringify(tx.inputCoins || { pp: 0, gp: 0, sp: 0, cp: 0 }),
-      tx.allocationMode,
-      Boolean(tx.patronEnabledAtTime),
-      toInt(tx.patronPercentAtTime, 0),
-      toInt(tx.patronCp, 0),
-      JSON.stringify(tx.allocations || []),
-      tx.sessionLabel || null,
-      tx.note || null,
-      tx.createdAt || new Date().toISOString(),
-      tx.updatedAt || new Date().toISOString()
-    ]
-  );
-
-  return { transaction: tx };
-}
-
-async function updateTreasuryTransaction(id, payload) {
-  const settings = await getTreasurySettings();
-  const existingRes = await query(
-    `SELECT id, date, description, type, total_cp, input_coins, allocation_mode,
-            patron_enabled_at_time, patron_percent_at_time, patron_cp, allocations,
-            session_label, note, created_at, updated_at
-     FROM treasury_transactions
-     WHERE id = $1`,
-    [id]
-  );
-
-  if (existingRes.rowCount === 0) return { error: 'Transaction not found.' };
-  const existing = txRowToNormalizedTransaction(existingRes.rows[0], settings);
-  if (!existing) return { error: 'Stored transaction is invalid.' };
-
-  const mergedPayload = Object.assign({}, existing, payload || {});
-  const normalized = normalizeTransactionPayload(mergedPayload, id, settings);
-  if (normalized.error) return { error: normalized.error };
-  normalized.value.createdAt = existing.createdAt || normalized.value.createdAt;
-
-  const tx = normalized.value;
-  await query(
-    `UPDATE treasury_transactions
-     SET date = $2,
-         description = $3,
-         type = $4,
-         total_cp = $5,
-         input_coins = $6::jsonb,
-         allocation_mode = $7,
-         patron_enabled_at_time = $8,
-         patron_percent_at_time = $9,
-         patron_cp = $10,
-         allocations = $11::jsonb,
-         session_label = $12,
-         note = $13,
-         created_at = $14,
-         updated_at = $15
-     WHERE id = $1`,
-    [
-      id,
-      tx.date,
-      tx.description || '',
-      tx.type,
-      tx.totalCp,
-      JSON.stringify(tx.inputCoins || { pp: 0, gp: 0, sp: 0, cp: 0 }),
-      tx.allocationMode,
-      Boolean(tx.patronEnabledAtTime),
-      toInt(tx.patronPercentAtTime, 0),
-      toInt(tx.patronCp, 0),
-      JSON.stringify(tx.allocations || []),
-      tx.sessionLabel || null,
-      tx.note || null,
-      tx.createdAt || new Date().toISOString(),
-      tx.updatedAt || new Date().toISOString()
-    ]
-  );
-
-  return { transaction: tx };
-}
-
-async function deleteTreasuryTransaction(id) {
-  const result = await query(
-    'DELETE FROM treasury_transactions WHERE id = $1 RETURNING id',
-    [id]
-  );
-  return result.rowCount > 0;
 }
 
 function deriveTreasuryState(transactions, characters) {
@@ -1158,12 +880,170 @@ function deriveTreasuryState(transactions, characters) {
   };
 }
 
-async function getTreasuryState() {
-  const [settings, transactions, characters] = await Promise.all([
-    getTreasurySettings(),
-    listTreasuryTransactions(),
-    getTreasuryCharacters()
-  ]);
+function createEmptyTreasuryRoot() {
+  return {
+    version: 2,
+    transactions: [],
+    settings: normalizeTreasurySettings(DEFAULT_TREASURY_SETTINGS),
+    migration: {
+      migratedAt: new Date().toISOString(),
+      skippedLegacyEntries: [],
+      skippedCount: 0,
+      legacyPartyVaultDetected: false
+    }
+  };
+}
+
+function ensureTreasuryStructure() {
+  const db = readDB();
+  let changed = false;
+
+  if (!db.gold || typeof db.gold !== 'object') {
+    db.gold = createEmptyTreasuryRoot();
+    changed = true;
+  } else {
+    const hasLegacyShape =
+      Array.isArray(db.gold.lootLog) ||
+      Array.isArray(db.gold.spendingLog) ||
+      db.gold.allocationsSnapshot !== undefined;
+
+    if (hasLegacyShape || !Array.isArray(db.gold.transactions)) {
+      const normalizedSettings = normalizeTreasurySettings(db.gold.settings);
+      const migration = migrateLegacyGold(db.gold, normalizedSettings);
+      db.gold = {
+        version: 2,
+        transactions: migration.transactions,
+        settings: normalizedSettings,
+        migration: {
+          migratedAt: new Date().toISOString(),
+          skippedLegacyEntries: migration.skipped,
+          skippedCount: migration.skipped.length,
+          legacyPartyVaultDetected: migration.legacyPartyVaultDetected
+        }
+      };
+      changed = true;
+    } else {
+      const normalizedSettings = normalizeTreasurySettings(db.gold.settings);
+      const normalizedTransactions = db.gold.transactions
+        .map(tx => normalizeStoredTransaction(tx, normalizedSettings))
+        .filter(Boolean);
+
+      if (JSON.stringify(normalizedSettings) !== JSON.stringify(db.gold.settings)) {
+        db.gold.settings = normalizedSettings;
+        changed = true;
+      }
+      if (JSON.stringify(normalizedTransactions) !== JSON.stringify(db.gold.transactions)) {
+        db.gold.transactions = normalizedTransactions;
+        changed = true;
+      }
+      if (db.gold.version !== 2) {
+        db.gold.version = 2;
+        changed = true;
+      }
+      if (!db.gold.migration || typeof db.gold.migration !== 'object') {
+        db.gold.migration = {
+          migratedAt: new Date().toISOString(),
+          skippedLegacyEntries: [],
+          skippedCount: 0,
+          legacyPartyVaultDetected: false
+        };
+        changed = true;
+      }
+    }
+  }
+
+  if (changed) {
+    writeDB(db);
+  }
+}
+
+function getTreasurySettings() {
+  ensureTreasuryStructure();
+  const db = readDB();
+  return normalizeTreasurySettings(db.gold.settings);
+}
+
+function updateTreasurySettings(patch) {
+  ensureTreasuryStructure();
+  const db = readDB();
+  const current = normalizeTreasurySettings(db.gold.settings);
+  const source = patch || {};
+
+  const updated = {
+    patronEnabled: source.patronEnabled !== undefined ? Boolean(source.patronEnabled) : current.patronEnabled,
+    defaultPatronPercent: source.defaultPatronPercent !== undefined
+      ? clampInt(source.defaultPatronPercent, 0, 100, current.defaultPatronPercent)
+      : current.defaultPatronPercent,
+    defaultSplitMode: ALLOCATION_MODES.has(source.defaultSplitMode)
+      ? source.defaultSplitMode
+      : current.defaultSplitMode,
+    coinValues: normalizeCoinValues(source.coinValues || current.coinValues)
+  };
+
+  db.gold.settings = normalizeTreasurySettings(updated);
+  writeDB(db);
+  return db.gold.settings;
+}
+
+function listTreasuryTransactions() {
+  ensureTreasuryStructure();
+  const db = readDB();
+  const settings = normalizeTreasurySettings(db.gold.settings);
+
+  return (db.gold.transactions || [])
+    .map(tx => normalizeStoredTransaction(tx, settings))
+    .filter(Boolean)
+    .sort((a, b) => {
+      const dateCompare = new Date(b.date).getTime() - new Date(a.date).getTime();
+      if (dateCompare !== 0) return dateCompare;
+      return b.updatedAt.localeCompare(a.updatedAt);
+    });
+}
+
+function addTreasuryTransaction(payload) {
+  ensureTreasuryStructure();
+  const db = readDB();
+  const settings = normalizeTreasurySettings(db.gold.settings);
+  const normalized = normalizeTransactionPayload(payload, null, settings);
+  if (normalized.error) return { error: normalized.error };
+
+  db.gold.transactions.push(normalized.value);
+  writeDB(db);
+  return { transaction: normalized.value };
+}
+
+function updateTreasuryTransaction(id, payload) {
+  ensureTreasuryStructure();
+  const db = readDB();
+  const idx = (db.gold.transactions || []).findIndex(tx => tx.id === id);
+  if (idx === -1) return { error: 'Transaction not found.' };
+
+  const existing = db.gold.transactions[idx];
+  const settings = normalizeTreasurySettings(db.gold.settings);
+  const mergedPayload = Object.assign({}, existing, payload || {});
+  const normalized = normalizeTransactionPayload(mergedPayload, id, settings);
+  if (normalized.error) return { error: normalized.error };
+  normalized.value.createdAt = existing.createdAt || normalized.value.createdAt;
+
+  db.gold.transactions[idx] = normalized.value;
+  writeDB(db);
+  return { transaction: normalized.value };
+}
+
+function deleteTreasuryTransaction(id) {
+  ensureTreasuryStructure();
+  const db = readDB();
+  const idx = (db.gold.transactions || []).findIndex(tx => tx.id === id);
+  if (idx === -1) return false;
+  db.gold.transactions.splice(idx, 1);
+  writeDB(db);
+  return true;
+}
+
+function getTreasuryState() {
+  const settings = getTreasurySettings();
+  const transactions = listTreasuryTransactions();
+  const characters = getTreasuryCharacters();
   const derived = deriveTreasuryState(transactions, characters);
 
   return {
@@ -1174,8 +1054,8 @@ async function getTreasuryState() {
   };
 }
 
-async function getTreasuryAccounts() {
-  const characters = (await getTreasuryCharacters()).slice().sort((a, b) => {
+function getTreasuryAccounts() {
+  const characters = getTreasuryCharacters().slice().sort((a, b) => {
     if (a.displayOrder !== b.displayOrder) return a.displayOrder - b.displayOrder;
     return a.characterName.localeCompare(b.characterName);
   });
@@ -1196,8 +1076,8 @@ async function getTreasuryAccounts() {
   return accounts;
 }
 
-async function getLegacyWalletSnapshotFromLedger() {
-  const state = await getTreasuryState();
+function getLegacyWalletSnapshotFromLedger() {
+  const state = getTreasuryState();
   const wallets = {};
 
   Object.keys(state.derived.characterBalancesCp).forEach(characterId => {
@@ -1208,9 +1088,8 @@ async function getLegacyWalletSnapshotFromLedger() {
   return wallets;
 }
 
-async function listLegacyLootLogFromTransactions() {
-  const transactions = await listTreasuryTransactions();
-  return transactions
+function listLegacyLootLogFromTransactions() {
+  return listTreasuryTransactions()
     .filter(tx => tx.type === 'income')
     .map(tx => ({
       id: tx.id,
@@ -1227,9 +1106,8 @@ async function listLegacyLootLogFromTransactions() {
     }));
 }
 
-async function listLegacySpendingLogFromTransactions() {
-  const transactions = await listTreasuryTransactions();
-  return transactions
+function listLegacySpendingLogFromTransactions() {
+  return listTreasuryTransactions()
     .filter(tx => tx.type === 'expense')
     .map(tx => {
       const first = tx.allocations[0];
@@ -1246,9 +1124,6 @@ async function listLegacySpendingLogFromTransactions() {
 module.exports = {
   readDB,
   writeDB,
-  generateId,
-  healthCheck,
-  // Players / Characters
   listPlayers,
   getPlayer,
   createPlayer,
@@ -1259,6 +1134,7 @@ module.exports = {
   deleteCharacter,
   setCurrentCharacter,
   moveCurrentToPrevious,
+  generateId,
   // Notes
   getCategories,
   listNotes,

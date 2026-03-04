@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="gold.css">
 </head>
 <body>
-    <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="nav-container">
             <h1 class="nav-title">The Copper Shores</h1>
@@ -22,340 +21,231 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="page-wrapper">
-        <div class="treasury-container">
-            <!-- Page Header -->
-            <div class="page-header">
-                <h1>💰 Party Treasury</h1>
-                <p>Manage loot, track spending, and allocate funds</p>
+    <main class="page-wrapper">
+        <section class="treasury-shell">
+            <header class="treasury-header">
+                <h1>Campaign Treasury</h1>
+                <p>Character wallets, ledger history, and split tools for the party.</p>
+            </header>
+
+            <section class="summary-cards">
+                <article class="summary-card">
+                    <div class="summary-label">Combined Party Wealth</div>
+                    <div class="summary-value" id="summary-combined">0 cp</div>
+                </article>
+                <article class="summary-card">
+                    <div class="summary-label">Total Spent This Session</div>
+                    <div class="summary-value summary-value-warn" id="summary-spent">0 cp</div>
+                </article>
+                <article class="summary-card" id="summary-patron-card">
+                    <div class="summary-label">Patron Fund</div>
+                    <div class="summary-value" id="summary-patron">0 cp</div>
+                </article>
+            </section>
+
+            <div class="treasury-toolbar">
+                <button id="btn-add-transaction" class="btn btn-primary">+ Add Transaction</button>
             </div>
 
-            <!-- Quick Stats -->
-            <div class="quick-stats">
-                <div class="stat-card">
-                    <div class="stat-label">Total Party Vault</div>
-                    <div class="stat-value" id="stat-party">0 gp</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Total Individual Funds</div>
-                    <div class="stat-value" id="stat-individual">0 gp</div>
-                </div>
-                <div class="stat-card alert">
-                    <div class="stat-label">Total Spent This Session</div>
-                    <div class="stat-value" id="stat-spent">0 gp</div>
-                </div>
-            </div>
-
-            <!-- Tabs Navigation -->
-            <div class="tab-navigation">
+            <nav class="treasury-tabs">
                 <button class="tab-btn active" data-tab="wallets">Wallets</button>
-                <button class="tab-btn" data-tab="loot-log">Loot Log</button>
-                <button class="tab-btn" data-tab="spending-log">Spending Log</button>
+                <button class="tab-btn" data-tab="log">Loot Log</button>
                 <button class="tab-btn" data-tab="settings">Settings</button>
-            </div>
+            </nav>
 
-            <!-- TAB 1: Wallets (Quick Overview) -->
-            <div id="tab-wallets" class="tab-content active">
-                <div class="tab-header">
-                    <h2>💳 Account Balances</h2>
-                    <div class="tab-actions">
-                        <button id="btn-add-loot" class="btn btn-success">➕ Add Loot</button>
-                        <button id="btn-record-spending" class="btn btn-warning">💸 Record Spending</button>
+            <section class="tab-panel active" id="tab-wallets">
+                <h2>Character Wallets</h2>
+                <div id="wallets-empty" class="empty-state" style="display:none;">No active characters found.</div>
+                <div id="wallets-grid" class="wallets-grid"></div>
+            </section>
+
+            <section class="tab-panel" id="tab-log">
+                <div class="log-header">
+                    <h2>Treasury Log</h2>
+                    <div class="log-filters" id="log-filter-group">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="income">Income</button>
+                        <button class="filter-btn" data-filter="expense">Expense</button>
                     </div>
                 </div>
 
-                <div class="wallets-section">
-                    <div class="wallets-subsection">
-                        <h3>🏰 Party & Special Funds</h3>
-                        <div class="wallets-grid">
-                            <div class="wallet-card premium">
-                                <div class="wallet-label">Party Vault</div>
-                                <div class="wallet-balance" id="wallet-party">0 gp</div>
-                            </div>
-                            <div class="wallet-card">
-                                <div class="wallet-label">Patron Fund</div>
-                                <div class="wallet-balance" id="wallet-patron">0 gp</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="wallets-subsection">
-                        <h3>👥 Character Accounts</h3>
-                        <div id="player-wallets-container" class="wallets-list">
-                            <!-- Populated by renderWallets() -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 2: Loot Log -->
-            <div id="tab-loot-log" class="tab-content" style="display: none;">
-                <div class="tab-header">
-                    <h2>🎁 Loot Log</h2>
-                    <button id="btn-add-loot-2" class="btn btn-success">➕ Add Loot</button>
-                </div>
-
-                <div class="ledger-wrapper">
-                    <table class="ledger-table" id="loot-log-table">
+                <div class="ledger-wrap">
+                    <table class="ledger-table">
                         <thead>
                             <tr>
                                 <th>Date</th>
                                 <th>Description</th>
-                                <th>Category</th>
+                                <th>Type</th>
                                 <th>Total</th>
-                                <th>Main Recipients</th>
-                                <th>Session</th>
-                                <th>Action</th>
+                                <th>Allocation Summary</th>
+                                <th>Session / Note</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="loot-log-body">
-                            <!-- Rows inserted here -->
-                        </tbody>
+                        <tbody id="ledger-body"></tbody>
                     </table>
-                    <div id="empty-loot-log" class="empty-message" style="display: none;">
-                        No loot entries yet. Add one to get started!
+                    <div id="ledger-empty" class="empty-state" style="display:none;">No transactions yet.</div>
+                </div>
+            </section>
+
+            <section class="tab-panel" id="tab-settings">
+                <h2>Treasury Settings</h2>
+                <div class="settings-panel">
+                    <label class="setting-row">
+                        <span>Patron Fund Enabled</span>
+                        <input type="checkbox" id="setting-patron-enabled">
+                    </label>
+
+                    <label class="setting-row">
+                        <span>Default Patron Percent</span>
+                        <input type="number" id="setting-default-patron-percent" min="0" max="100">
+                    </label>
+
+                    <label class="setting-row">
+                        <span>Default Split Mode</span>
+                        <select id="setting-default-split-mode">
+                            <option value="equal_split">Even Split</option>
+                            <option value="custom_split">Custom Split</option>
+                            <option value="direct">Direct</option>
+                        </select>
+                    </label>
+
+                    <div class="coin-setting-grid">
+                        <label>
+                            <span>PP Value (cp)</span>
+                            <input type="number" id="setting-coin-pp" min="1">
+                        </label>
+                        <label>
+                            <span>GP Value (cp)</span>
+                            <input type="number" id="setting-coin-gp" min="1">
+                        </label>
+                        <label>
+                            <span>SP Value (cp)</span>
+                            <input type="number" id="setting-coin-sp" min="1">
+                        </label>
+                        <label>
+                            <span>CP Value (cp)</span>
+                            <input type="number" id="setting-coin-cp" min="1">
+                        </label>
                     </div>
-                </div>
-            </div>
 
-            <!-- TAB 3: Spending Log -->
-            <div id="tab-spending-log" class="tab-content" style="display: none;">
-                <div class="tab-header">
-                    <h2>💸 Spending Log</h2>
-                    <button id="btn-record-spending-2" class="btn btn-warning">💸 Record Spending</button>
-                </div>
-
-                <div class="filters-section">
-                    <select id="spending-filter-account" class="filter-select">
-                        <option value="">All Accounts</option>
-                    </select>
-                    <select id="spending-filter-category" class="filter-select">
-                        <option value="">All Categories</option>
-                    </select>
-                </div>
-
-                <div class="ledger-wrapper">
-                    <table class="ledger-table" id="spending-log-table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Account</th>
-                                <th>Description</th>
-                                <th>Category</th>
-                                <th>Amount</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="spending-log-body">
-                            <!-- Rows inserted here -->
-                        </tbody>
-                    </table>
-                    <div id="empty-spending-log" class="empty-message" style="display: none;">
-                        No spending recorded yet!
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 4: Settings -->
-            <div id="tab-settings" class="tab-content" style="display: none;">
-                <h2>⚙️ Treasury Settings</h2>
-                <div class="settings-section">
-                    <div class="setting-group">
-                        <h3>Auto-allocation Rules</h3>
-                        <div class="setting-item">
-                            <label>
-                                <input type="checkbox" id="setting-allocate-patron" />
-                                <span>Auto-allocate percentage to Patron on new loot</span>
-                            </label>
-                        </div>
-                        <div class="setting-item">
-                            <label for="setting-patron-percent">Patron Percentage:</label>
-                            <div class="input-group">
-                                <input type="number" id="setting-patron-percent" min="0" max="100" value="10" />
-                                <span class="unit">%</span>
-                            </div>
-                        </div>
-                    </div>
+                    <div id="settings-error" class="form-error"></div>
                     <button id="btn-save-settings" class="btn btn-primary">Save Settings</button>
                 </div>
-            </div>
-        </div>
-    </div>
+            </section>
+        </section>
+    </main>
 
-    <!-- Add Loot Modal -->
-    <div id="modal-add-loot" class="modal" style="display: none;">
-        <div class="modal-content large">
+    <div id="transaction-modal" class="modal" style="display:none;">
+        <div class="modal-dialog">
             <div class="modal-header">
-                <h3>Add Loot Entry</h3>
-                <button class="modal-close" id="modal-close-loot">&times;</button>
-            </div>
-            
-            <div class="modal-body">
-                <!-- Step 1: Loot Details -->
-                <div id="step-1-details" class="step active">
-                    <div class="step-indicator">Step 1 of 2: Loot Details</div>
-                    <h4>Enter Loot Amount & Details</h4>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="loot-gp">Gold (gp):</label>
-                            <input type="number" id="loot-gp" class="currency-input" min="0" value="0" />
-                        </div>
-                        <div class="form-group">
-                            <label for="loot-sp">Silver (sp):</label>
-                            <input type="number" id="loot-sp" class="currency-input" min="0" value="0" />
-                        </div>
-                        <div class="form-group">
-                            <label for="loot-cp">Copper (cp):</label>
-                            <input type="number" id="loot-cp" class="currency-input" min="0" value="0" />
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="loot-category">Source Category:</label>
-                        <select id="loot-category"></select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="loot-description">Description (optional):</label>
-                        <input type="text" id="loot-description" placeholder="e.g., Dragon hoard from cave encounter" />
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="loot-session">Session #:</label>
-                        <input type="number" id="loot-session" min="1" placeholder="(optional)" />
-                    </div>
-                    
-                    <div class="total-display success">
-                        <strong>Total Loot:</strong> <span id="total-amount-display">0 gp</span>
-                    </div>
-                </div>
-
-                <!-- Step 2: Allocation -->
-                <div id="step-2-allocation" class="step">
-                    <div class="step-indicator">Step 2 of 2: Allocate Funds</div>
-                    <h4>Distribute Loot Across Accounts</h4>
-                    <p class="step-hint">Click accounts below to allocate funds. Amounts must match the total!</p>
-                    
-                    <div class="allocation-quick-buttons">
-                        <button class="quick-btn" id="quick-even-split">Split Evenly</button>
-                        <button class="quick-btn" id="quick-party-all">All to Party Vault</button>
-                        <button class="quick-btn" id="quick-patron-pct">Patron %</button>
-                        <button class="quick-btn" id="quick-custom-pct">Custom %</button>
-                        <button class="quick-btn" id="quick-clear-alloc">Clear All</button>
-                    </div>
-                    
-                    <div class="allocation-table-wrapper">
-                        <table class="allocation-table">
-                            <thead>
-                                <tr>
-                                    <th>Recipient</th>
-                                    <th>GP</th>
-                                    <th>SP</th>
-                                    <th>CP</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            <tbody id="allocation-body">
-                                <!-- Rows inserted here -->
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <div class="allocation-check">
-                        <div class="check-line">
-                            <span>Loot Total:</span> 
-                            <strong id="alloc-loot-total">0 cp</strong>
-                        </div>
-                        <div class="check-line">
-                            <span>Allocated:</span> 
-                            <strong id="alloc-allocated-total">0 cp</strong>
-                        </div>
-                        <div id="alloc-match-status" class="status-bad">❌ Amounts don't match</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button id="btn-back-step1" class="btn btn-secondary" style="display: none;">← Back</button>
-                <button id="btn-cancel-loot" class="btn btn-secondary">Cancel</button>
-                <button id="btn-next-step2" class="btn btn-primary">Next: Allocate →</button>
-                <button id="btn-confirm-loot" class="btn btn-success" style="display: none;">✓ Add Loot Entry</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Record Spending Modal -->
-    <div id="modal-record-spending" class="modal" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Record Spending</h3>
-                <button class="modal-close" id="modal-close-spending">&times;</button>
-            </div>
-            
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="spending-account">Account/Character:</label>
-                    <select id="spending-account" required></select>
-                </div>
-
-                <div class="form-group">
-                    <label for="spending-category">Category:</label>
-                    <select id="spending-category" required></select>
-                </div>
-
-                <div class="form-group">
-                    <label for="spending-description">Description:</label>
-                    <input type="text" id="spending-description" placeholder="e.g., Tavern dinner with barkeep" />
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="spending-gp">Gold (gp):</label>
-                        <input type="number" id="spending-gp" class="currency-input" min="0" value="0" />
-                    </div>
-                    <div class="form-group">
-                        <label for="spending-sp">Silver (sp):</label>
-                        <input type="number" id="spending-sp" class="currency-input" min="0" value="0" />
-                    </div>
-                    <div class="form-group">
-                        <label for="spending-cp">Copper (cp):</label>
-                        <input type="number" id="spending-cp" class="currency-input" min="0" value="0" />
-                    </div>
-                </div>
-
-                <div class="total-display warning">
-                    <strong>Amount:</strong> <span id="spending-amount-display">0 gp</span>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button id="btn-cancel-spending" class="btn btn-secondary">Cancel</button>
-                <button id="btn-confirm-spending" class="btn btn-primary">✓ Record Spending</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal: Custom Percentages -->
-    <div id="modal-custom-pct" class="modal-overlay">
-        <div class="modal-content small">
-            <div class="modal-header">
-                <h3>🎯 Custom Percentage Allocation</h3>
-                <button class="modal-close" id="modal-close-pct">✕</button>
+                <h3 id="transaction-modal-title">Add Transaction</h3>
+                <button id="btn-close-modal" class="modal-close" type="button">&times;</button>
             </div>
 
             <div class="modal-body">
-                <p class="hint-text">Assign percentages to each account (total should reach 100%). Enter 0 to skip an account.</p>
-                <div id="pct-inputs-container"></div>
-                <div class="total-display warning">
-                    <strong>Total %:</strong> <span id="pct-total-display">0%</span>
+                <div class="form-grid two-col">
+                    <label>
+                        <span>Description</span>
+                        <input type="text" id="tx-description" placeholder="e.g., Temple reward">
+                    </label>
+                    <label>
+                        <span>Date</span>
+                        <input type="date" id="tx-date">
+                    </label>
                 </div>
+
+                <div class="form-grid two-col">
+                    <label>
+                        <span>Type</span>
+                        <select id="tx-type">
+                            <option value="income">Income</option>
+                            <option value="expense">Expense</option>
+                        </select>
+                    </label>
+                    <label>
+                        <span>Allocation Mode</span>
+                        <select id="tx-allocation-mode">
+                            <option value="direct">Direct</option>
+                            <option value="equal_split">Even Split</option>
+                            <option value="custom_split">Custom Split</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="form-grid coin-grid">
+                    <label><span>PP</span><input type="number" min="0" id="tx-pp" value="0"></label>
+                    <label><span>GP</span><input type="number" min="0" id="tx-gp" value="0"></label>
+                    <label><span>SP</span><input type="number" min="0" id="tx-sp" value="0"></label>
+                    <label><span>CP</span><input type="number" min="0" id="tx-cp" value="0"></label>
+                </div>
+
+                <div class="form-grid two-col">
+                    <label>
+                        <span>Session Label (optional)</span>
+                        <input type="text" id="tx-session-label" placeholder="e.g., Session 14">
+                    </label>
+                    <label>
+                        <span>Note (optional)</span>
+                        <input type="text" id="tx-note" placeholder="Optional note">
+                    </label>
+                </div>
+
+                <section id="patron-cut-section" class="split-section">
+                    <h4>Patron Cut (Income Only)</h4>
+                    <div class="form-grid two-col">
+                        <label class="inline-toggle">
+                            <input type="checkbox" id="tx-patron-cut-enabled">
+                            <span>Apply Patron Cut</span>
+                        </label>
+                        <label>
+                            <span>Patron Percent</span>
+                            <input type="number" id="tx-patron-percent" min="0" max="100">
+                        </label>
+                    </div>
+                </section>
+
+                <section id="direct-section" class="split-section">
+                    <h4>Direct Target</h4>
+                    <select id="tx-direct-target"></select>
+                </section>
+
+                <section id="equal-section" class="split-section">
+                    <h4>Even Split Recipients</h4>
+                    <div class="split-quick-actions">
+                        <button type="button" class="chip-btn" id="btn-equal-select-all">Select All Active</button>
+                        <label class="inline-toggle" id="equal-patron-toggle-wrap">
+                            <input type="checkbox" id="tx-equal-include-patron">
+                            <span>Include Patron as payer</span>
+                        </label>
+                    </div>
+                    <div id="equal-recipient-list" class="recipient-list"></div>
+                </section>
+
+                <section id="custom-section" class="split-section">
+                    <h4>Custom Shares</h4>
+                    <div class="split-quick-actions">
+                        <button type="button" class="chip-btn" id="btn-custom-even">Even Split</button>
+                        <button type="button" class="chip-btn" id="btn-custom-reset">Reset Shares</button>
+                        <button type="button" class="chip-btn" id="btn-custom-select-all">Select All Active</button>
+                    </div>
+                    <div id="custom-share-list" class="share-list"></div>
+                </section>
+
+                <section class="preview-panel">
+                    <h4>Live Allocation Preview</h4>
+                    <div class="preview-line"><span>Total Entered:</span><strong id="preview-total">0 cp</strong></div>
+                    <div class="preview-line"><span>Patron Cut:</span><strong id="preview-patron">0 cp</strong></div>
+                    <div class="preview-line"><span>Distributable:</span><strong id="preview-distributable">0 cp</strong></div>
+                    <div id="preview-allocation-list" class="preview-list"></div>
+                </section>
+
+                <div id="transaction-errors" class="form-error"></div>
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-secondary" id="btn-cancel-pct">Cancel</button>
-                <button class="btn btn-primary" id="btn-confirm-pct">✓ Apply Percentages</button>
+                <button id="btn-cancel-modal" class="btn btn-secondary" type="button">Cancel</button>
+                <button id="btn-save-transaction" class="btn btn-primary" type="button">Save Transaction</button>
             </div>
         </div>
     </div>

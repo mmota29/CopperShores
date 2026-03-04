@@ -391,9 +391,17 @@ app.delete('/api/maps/:mapId/waypoints/:id', (req, res) => {
   }
 });
 
-/* -------------------- Gold Treasury API Routes -------------------- */
+/* -------------------- Treasury API Routes -------------------- */
 
-// Get treasury settings
+app.get('/api/treasury/state', (req, res) => {
+  try {
+    const treasury = db.getTreasuryState();
+    res.json({ status: 'success', data: treasury });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
 app.get('/api/treasury/settings', (req, res) => {
   try {
     const settings = db.getTreasurySettings();
@@ -403,7 +411,6 @@ app.get('/api/treasury/settings', (req, res) => {
   }
 });
 
-// Update treasury settings
 app.put('/api/treasury/settings', (req, res) => {
   try {
     const patch = req.body || {};
@@ -414,142 +421,95 @@ app.put('/api/treasury/settings', (req, res) => {
   }
 });
 
-// Get loot categories and spending categories
-app.get('/api/treasury/categories', (req, res) => {
+app.get('/api/treasury/transactions', (req, res) => {
   try {
-    const lootCategories = db.getLootCategories();
-    const spendingCategories = db.getSpendingCategories();
-    res.json({
-      status: 'success',
-      data: { lootCategories, spendingCategories }
-    });
+    const transactions = db.listTreasuryTransactions();
+    res.json({ status: 'success', data: { transactions } });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
   }
 });
 
-// Get loot log
-app.get('/api/treasury/loot-log', (req, res) => {
+app.post('/api/treasury/transactions', (req, res) => {
   try {
-    const lootLog = db.listLootLog();
-    res.json({ status: 'success', data: { lootLog } });
+    const result = db.addTreasuryTransaction(req.body || {});
+    if (result.error) {
+      return res.status(400).json({ status: 'error', message: result.error });
+    }
+    const treasury = db.getTreasuryState();
+    res.status(201).json({ status: 'success', data: { transaction: result.transaction, treasury } });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
   }
 });
 
-// Add loot entry
-app.post('/api/treasury/loot', (req, res) => {
+app.put('/api/treasury/transactions/:id', (req, res) => {
   try {
-    const { totalCp, description, category, session, allocations } = req.body;
-    
-    if (typeof totalCp !== 'number' || totalCp <= 0) {
-      return res.status(400).json({ status: 'error', message: 'totalCp must be positive' });
+    const result = db.updateTreasuryTransaction(req.params.id, req.body || {});
+    if (result.error) {
+      const status = result.error === 'Transaction not found.' ? 404 : 400;
+      return res.status(status).json({ status: 'error', message: result.error });
     }
-    if (!Array.isArray(allocations) || allocations.length === 0) {
-      return res.status(400).json({ status: 'error', message: 'allocations array required' });
-    }
-    
-    const allocSum = allocations.reduce((sum, a) => sum + (a.amountCp || 0), 0);
-    if (allocSum !== totalCp) {
-      return res.status(400).json({
-        status: 'error',
-        message: `Allocations sum (${allocSum}) != total (${totalCp})`
-      });
-    }
-    
-    const entry = db.addLootEntry({ totalCp, description, category, session, allocations });
-    if (!entry) {
-      return res.status(400).json({ status: 'error', message: 'Failed to create loot entry' });
-    }
-    
-    const snapshot = db.getAllocationsSnapshot();
-    res.status(201).json({ status: 'success', data: { entry, snapshot } });
+    const treasury = db.getTreasuryState();
+    res.json({ status: 'success', data: { transaction: result.transaction, treasury } });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
   }
 });
 
-// Delete loot entry
-app.delete('/api/treasury/loot/:id', (req, res) => {
+app.delete('/api/treasury/transactions/:id', (req, res) => {
   try {
-    const ok = db.deleteLootEntry(req.params.id);
+    const ok = db.deleteTreasuryTransaction(req.params.id);
     if (!ok) {
-      return res.status(404).json({ status: 'error', message: 'Loot entry not found' });
+      return res.status(404).json({ status: 'error', message: 'Transaction not found' });
     }
-    const snapshot = db.getAllocationsSnapshot();
-    res.json({ status: 'success', data: { snapshot } });
+    const treasury = db.getTreasuryState();
+    res.json({ status: 'success', data: { treasury } });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
   }
 });
 
-// Get allocations snapshot (wallets)
-app.get('/api/treasury/wallets', (req, res) => {
+app.get('/api/treasury/characters', (req, res) => {
   try {
-    const snapshot = db.getAllocationsSnapshot();
-    res.json({ status: 'success', data: { wallets: snapshot } });
+    const characters = db.getTreasuryCharacters();
+    res.json({ status: 'success', data: { characters } });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
   }
 });
 
-// Get accounts list (party, patron, characters)
 app.get('/api/treasury/accounts', (req, res) => {
   try {
-    const accounts = db.getAccounts();
+    const accounts = db.getTreasuryAccounts();
     res.json({ status: 'success', data: { accounts } });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
   }
 });
 
-// Get spending log
+app.get('/api/treasury/wallets', (req, res) => {
+  try {
+    const wallets = db.getLegacyWalletSnapshotFromLedger();
+    res.json({ status: 'success', data: { wallets } });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+app.get('/api/treasury/loot-log', (req, res) => {
+  try {
+    const lootLog = db.listLegacyLootLogFromTransactions();
+    res.json({ status: 'success', data: { lootLog } });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
 app.get('/api/treasury/spending-log', (req, res) => {
   try {
-    const spendingLog = db.listSpendingLog();
+    const spendingLog = db.listLegacySpendingLogFromTransactions();
     res.json({ status: 'success', data: { spendingLog } });
-  } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
-  }
-});
-
-// Record spending
-app.post('/api/treasury/spending', (req, res) => {
-  try {
-    const { accountId, amountCp, description, category } = req.body;
-    
-    if (!accountId || typeof amountCp !== 'number' || amountCp <= 0) {
-      return res.status(400).json({ 
-        status: 'error', 
-        message: 'accountId and positive amountCp required' 
-      });
-    }
-    
-    const entry = db.addSpendingEntry({ accountId, amountCp, description, category });
-    if (!entry) {
-      return res.status(400).json({ 
-        status: 'error', 
-        message: 'Failed to record spending (insufficient funds?)' 
-      });
-    }
-    
-    const snapshot = db.getAllocationsSnapshot();
-    res.status(201).json({ status: 'success', data: { entry, snapshot } });
-  } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
-  }
-});
-
-// Delete spending entry
-app.delete('/api/treasury/spending/:id', (req, res) => {
-  try {
-    const ok = db.deleteSpendingEntry(req.params.id);
-    if (!ok) {
-      return res.status(404).json({ status: 'error', message: 'Spending entry not found' });
-    }
-    const snapshot = db.getAllocationsSnapshot();
-    res.json({ status: 'success', data: { snapshot } });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
   }

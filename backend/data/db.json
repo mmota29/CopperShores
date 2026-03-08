@@ -3,7 +3,7 @@
     {
       "id": "pl_mlb5lycv-kwicif",
       "name": "Michael Mota",
-      "bio": "Hey its the me",
+      "bio": "Hey its the me, i have very very guilty conscience that won't let me sleep at night. send help",
       "currentCharacter": {
         "name": "Gill",
         "race": "Triton",
@@ -166,10 +166,10 @@
       {
         "id": "note_mm75dm8m-7hy9ky",
         "title": "Rahkar",
-        "content": "",
+        "content": "Student of Talon Malsear. Originally from the Shadowfell. may have Nobel Heirtigdge, unsure",
         "tags": [],
         "createdAt": "2026-03-01T02:45:18.166Z",
-        "updatedAt": "2026-03-01T02:45:18.166Z"
+        "updatedAt": "2026-03-08T01:41:21.733Z"
       },
       {
         "id": "note_mm75ds1v-aqefid",
@@ -370,10 +370,16 @@
       {
         "id": "note_mm76q9kf-ktysxe",
         "title": "the tomb of remeberance",
-        "content": "catacombs underneth the city of pinchester.",
-        "tags": [],
+        "content": "catacombs under the city of Pinchester. In one of the rooms lies 4 statues at the four corners, one for the golden flame, one for the hero known as the tempest, which is destroyed, one known as the matrearch(Riven seems to have something with the statue.one looks former.",
+        "tags": [
+          "tempest",
+          "matriach",
+          "the golden flame",
+          "former",
+          "graveyard"
+        ],
         "createdAt": "2026-03-01T03:23:07.887Z",
-        "updatedAt": "2026-03-01T03:23:07.887Z"
+        "updatedAt": "2026-03-08T01:01:50.529Z"
       }
     ],
     "item": [

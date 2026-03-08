@@ -8,7 +8,7 @@
         "name": "Gill",
         "race": "Triton",
         "className": "Artificer",
-        "level": 3,
+        "level": 4,
         "status": "active",
         "id": "ch_mlb5meab-2tthli"
       },
@@ -17,7 +17,7 @@
           "name": "Gill",
           "race": "Triton",
           "className": "Artificer",
-          "level": 3,
+          "level": 4,
           "status": "active",
           "id": "ch_mlb5meab-2tthli"
         }
@@ -38,7 +38,7 @@
         "name": "Corelia",
         "race": "aasimar",
         "className": "Fighter",
-        "level": 3,
+        "level": 4,
         "id": "ch_mlb5okkf-o7v4qu",
         "status": "active"
       },
@@ -47,7 +47,7 @@
           "name": "Corelia",
           "race": "aasimar",
           "className": "Fighter",
-          "level": 3,
+          "level": 4,
           "id": "ch_mlb5okkf-o7v4qu",
           "status": "active"
         }
@@ -61,7 +61,7 @@
         "name": "Blue",
         "race": "Dragonborn",
         "className": "Bard",
-        "level": 3,
+        "level": 4,
         "id": "ch_mlb63uh7-tzw9ht",
         "status": "active"
       },
@@ -70,7 +70,7 @@
           "name": "Blue",
           "race": "Dragonborn",
           "className": "Bard",
-          "level": 3,
+          "level": 4,
           "id": "ch_mlb63uh7-tzw9ht",
           "status": "active"
         }
@@ -84,7 +84,7 @@
         "name": "Rahkar",
         "race": "shadar kai",
         "className": "Sorcerer",
-        "level": 3,
+        "level": 4,
         "id": "ch_mlbheiog-c82mut",
         "status": "active"
       },
@@ -93,7 +93,7 @@
           "name": "Rahkar",
           "race": "shadar kai",
           "className": "Sorcerer",
-          "level": 3,
+          "level": 4,
           "id": "ch_mlbheiog-c82mut",
           "status": "active"
         }
@@ -107,7 +107,7 @@
         "name": "Riven",
         "race": "Sea elf",
         "className": "Bard",
-        "level": 3,
+        "level": 4,
         "id": "ch_mlbhfekw-5lrtjs",
         "status": "active"
       },
@@ -116,7 +116,7 @@
           "name": "Riven",
           "race": "Sea elf",
           "className": "Bard",
-          "level": 3,
+          "level": 4,
           "id": "ch_mlbhfekw-5lrtjs",
           "status": "active"
         }
@@ -128,14 +128,14 @@
       {
         "id": "note_mlbhumlh-42oy9w",
         "title": "Gill",
-        "content": "Gill the triton artificer, came to the festival to explore the city and see what inventions can be made, he met ellie and from there join the party in the quest for the celestial droplet.",
+        "content": "Gill the triton artificer, came to the festival to explore the city and see what inventions can be made, he met ellie and from there join the party in the quest for the celestial droplet. He likes to watch",
         "tags": [
           "PC",
           "Michael",
           "Triton"
         ],
         "createdAt": "2026-02-06T23:05:49.541Z",
-        "updatedAt": "2026-02-06T23:05:49.541Z"
+        "updatedAt": "2026-03-08T00:48:07.881Z"
       },
       {
         "id": "note_mlbin281-qdv0ng",
@@ -188,10 +188,11 @@
         "tags": [
           "Michael",
           "rahkar",
-          "pale silence"
+          "pale silence",
+          "Alsicta"
         ],
         "createdAt": "2026-02-19T18:41:51.066Z",
-        "updatedAt": "2026-02-19T18:41:51.066Z"
+        "updatedAt": "2026-03-07T19:37:46.865Z"
       },
       {
         "id": "note_mltta4sz-h0wqz7",
@@ -273,6 +274,19 @@
         ],
         "createdAt": "2026-03-01T03:04:03.899Z",
         "updatedAt": "2026-03-01T03:04:28.609Z"
+      },
+      {
+        "id": "note_mmh17s1v-krc61q",
+        "title": "Mira Dahlien",
+        "content": "matriarch of the Dahlien Family, she co-owns the WayFarer Tavern with her husband, as her family works there alongside her and the demon mozzie.",
+        "tags": [
+          "Dahlien",
+          "Wayfarer Tavern",
+          "Mozzie",
+          ""
+        ],
+        "createdAt": "2026-03-08T00:46:29.058Z",
+        "updatedAt": "2026-03-08T00:46:29.058Z"
       }
     ],
     "event": [
@@ -318,7 +332,7 @@
         "content": "a famous pirate that is hunt for those who make deals with him. he cuts ships in half. he made a deal with ellie and now is looking to talk with gill.",
         "tags": [],
         "createdAt": "2026-03-01T05:17:54.677Z",
-        "updatedAt": "2026-03-01T05:17:54.677Z"
+        "updatedAt": "2026-03-08T00:46:58.785Z"
       },
       {
         "id": "note_mm7auno4-kn2uwa",
@@ -466,6 +480,66 @@
         "note": "",
         "createdAt": "2026-03-05T22:05:51.195Z",
         "updatedAt": "2026-03-05T22:05:51.195Z"
+      },
+      {
+        "id": "wp_mmgq8egq-m2gfby",
+        "mapId": "world",
+        "x": 594,
+        "y": 414,
+        "title": "Origin isles",
+        "note": "",
+        "createdAt": "2026-03-07T19:39:02.330Z",
+        "updatedAt": "2026-03-07T19:39:02.330Z"
+      },
+      {
+        "id": "wp_mmgq8okx-dsbgvf",
+        "mapId": "world",
+        "x": 451,
+        "y": 647,
+        "title": "Cloud isle",
+        "note": "",
+        "createdAt": "2026-03-07T19:39:15.441Z",
+        "updatedAt": "2026-03-07T19:39:15.441Z"
+      },
+      {
+        "id": "wp_mmgq96fl-ie14en",
+        "mapId": "world",
+        "x": 356,
+        "y": 563,
+        "title": "Golden Cay",
+        "note": "",
+        "createdAt": "2026-03-07T19:39:38.577Z",
+        "updatedAt": "2026-03-07T19:39:38.577Z"
+      },
+      {
+        "id": "wp_mmgq9gp3-zwg719",
+        "mapId": "world",
+        "x": 337,
+        "y": 268,
+        "title": "Crooked Sands",
+        "note": "",
+        "createdAt": "2026-03-07T19:39:51.879Z",
+        "updatedAt": "2026-03-07T19:39:51.879Z"
+      },
+      {
+        "id": "wp_mmgq9vb3-ik6pwm",
+        "mapId": "world",
+        "x": 78,
+        "y": 458,
+        "title": "Tealshore",
+        "note": "",
+        "createdAt": "2026-03-07T19:40:10.815Z",
+        "updatedAt": "2026-03-07T19:40:10.815Z"
+      },
+      {
+        "id": "wp_mmgqa7nx-5jnt4e",
+        "mapId": "world",
+        "x": 546,
+        "y": 89,
+        "title": "Silver reef",
+        "note": "",
+        "createdAt": "2026-03-07T19:40:26.829Z",
+        "updatedAt": "2026-03-07T19:40:26.829Z"
       }
     ],
     "alsita": [
@@ -490,24 +564,24 @@
         "updatedAt": "2026-03-01T04:04:07.629Z"
       },
       {
-        "id": "wp_mm787w3b-h3qe9e",
+        "id": "wp_mmfwi0qn-tzl28t",
         "mapId": "alsita",
-        "x": 4372,
-        "y": 1248,
-        "title": "Wayfarer",
-        "note": "",
-        "createdAt": "2026-03-01T04:04:49.847Z",
-        "updatedAt": "2026-03-01T04:04:49.847Z"
+        "x": 4464,
+        "y": 1267,
+        "title": "Wayfarer Tavern",
+        "note": "owed and managed by the Dahlien, this tavern serves many Alsitian and a wonderful place to eat, also mozzie works there",
+        "createdAt": "2026-03-07T05:46:42.622Z",
+        "updatedAt": "2026-03-07T05:46:42.622Z"
       },
       {
-        "id": "wp_mm788t7w-wxem8m",
+        "id": "wp_mmfwo4st-1xf85a",
         "mapId": "alsita",
-        "x": 6196,
-        "y": 2172,
+        "x": 6134,
+        "y": 2253,
         "title": "Talon's House",
-        "note": "hey thats my house",
-        "createdAt": "2026-03-01T04:05:32.780Z",
-        "updatedAt": "2026-03-01T04:05:32.780Z"
+        "note": "The House of famouse hero and adventuter Talon.",
+        "createdAt": "2026-03-07T05:51:27.821Z",
+        "updatedAt": "2026-03-07T05:51:27.821Z"
       }
     ],
     "tosatina": [],

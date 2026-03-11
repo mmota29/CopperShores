@@ -184,7 +184,7 @@
       {
         "id": "note_mltt587z-oz86vm",
         "title": "Talon Malsir",
-        "content": "One of the great heroes, a wild magic sorcerer, who helped defeat the pale silence, now a resident celebrity and living in Alsicta, master of the rahkar. may have clostrol problems. father of soren malsir. seems to have issues. best not to press. (hey its my boy). At one point he seemed to encounter the dragon born known as the golden flame.",
+        "content": "One of the great heroes, a wild-magic sorcerer who helped defeat the pale silence, now a resident celebrity living in Alsicta, master of the rahkar. may have clostrol problems. father of Soren Malsir. seems to have issues. best not to press. (hey its my boy). At one point, he encountered the dragonborn known as the golden flame. this golden flame seemed to be the orginal one, a golden dragonborn.",
         "tags": [
           "Michael",
           "rahkar",
@@ -192,18 +192,18 @@
           "Alsicta"
         ],
         "createdAt": "2026-02-19T18:41:51.066Z",
-        "updatedAt": "2026-03-08T03:42:19.771Z"
+        "updatedAt": "2026-03-11T22:02:15.918Z"
       },
       {
         "id": "note_mltta4sz-h0wqz7",
         "title": "Unknown Captain of the Riverwalker/Former",
-        "content": "seen in a vision, Going by an alias right now, cannot remember his name\nHis first mate isn’t here (the other one in the vision)\nRemembers vaguely the man who he travelled with, believes his friend\nwasn’t a good person. was able to sense some sort of magic from blue and riven, then associated it with Gill. ",
+        "content": "seen in a vision, Going by an alias right now, cannot remember his name\nHis first mate isn’t here (the other one in the vision)\nRemembers vaguely the man who he travelled with, believes his friend\nwasn’t a good person. was able to sense some sort of magic from blue and riven, then associated it with Gill. \nHe and gill are on much better terms now",
         "tags": [
           "river walker strider",
           "ghost"
         ],
         "createdAt": "2026-02-19T18:45:39.923Z",
-        "updatedAt": "2026-02-19T18:45:39.923Z"
+        "updatedAt": "2026-03-11T22:02:44.219Z"
       },
       {
         "id": "note_mlttb0zh-3vdqwi",
@@ -232,13 +232,13 @@
       {
         "id": "note_mm75b4q2-0s1k9v",
         "title": "The Golden Flame",
-        "content": "TACOS, HE'S A MEXICAN\nowns a mansion.\nfights\nwants a cape that doesn't belong to him",
+        "content": "TACOS, HE'S A MEXICAN\nowns a mansion.\nfights\nwants a cape that doesn't belong to him\nThis cape seems to belonged to the orginal golden flame",
         "tags": [
           "dragonborn",
           ""
         ],
         "createdAt": "2026-03-01T02:43:22.154Z",
-        "updatedAt": "2026-03-01T02:51:28.838Z"
+        "updatedAt": "2026-03-11T22:03:28.654Z"
       },
       {
         "id": "note_mm75gw03-orp66g",
@@ -266,14 +266,15 @@
       {
         "id": "note_mm761quz-x5ndpi",
         "title": "Shelly",
-        "content": "A terrorist\nwrote the big book\nwife of thea\ngil is a big fan of her\n",
+        "content": "A terrorist\nwrote the big book\nwife of thea\ngil is a big fan of her becuase of her book and inventions\n",
         "tags": [
           "shelly",
           "thea",
-          "terrorism"
+          "terrorism",
+          "the big book"
         ],
         "createdAt": "2026-03-01T03:04:03.899Z",
-        "updatedAt": "2026-03-01T03:04:28.609Z"
+        "updatedAt": "2026-03-11T22:03:55.873Z"
       },
       {
         "id": "note_mmh17s1v-krc61q",
@@ -358,26 +359,39 @@
       {
         "id": "note_mm7atvg5-u3bg69",
         "title": "Dreadtooth",
-        "content": "a famous pirate that is hunt for those who make deals with him. he cuts ships in half. he made a deal with ellie and now is looking to talk with gill.",
-        "tags": [],
+        "content": "a famous pirate who hunts those who make deals with him. he cuts ships in half. He made a deal with Ellie and is now looking to talk with Gill. Arron (they/them) seems to work for/with him.",
+        "tags": [
+          "Ellie",
+          "Pirate",
+          "Gill",
+          "Arron"
+        ],
         "createdAt": "2026-03-01T05:17:54.677Z",
-        "updatedAt": "2026-03-08T00:46:58.785Z"
+        "updatedAt": "2026-03-11T22:00:17.896Z"
       },
       {
         "id": "note_mm7auno4-kn2uwa",
-        "title": "Ridos",
+        "title": "Rindos",
         "content": "a ancient black dragon that is attacking the contentent, he has many worshippers and a cult.",
-        "tags": [],
+        "tags": [
+          "Dragon",
+          "Black",
+          "Cult"
+        ],
         "createdAt": "2026-03-01T05:18:31.252Z",
-        "updatedAt": "2026-03-01T05:18:31.252Z"
+        "updatedAt": "2026-03-11T21:57:46.685Z"
       },
       {
         "id": "note_mmhayc0q-v6h1rq",
         "title": "Weird slimy thing",
-        "content": "a slimy enemy, mozzie took the enmey, he and his kind appeared during the pale silence, as remeber by riven",
-        "tags": [],
+        "content": "a slimy enemy, mozzie took the enemy; he and his kind appeared during the pale silence, as remembered by Riven. We first found this enemy in Pinchchester, in the tomb of Rememberance. ",
+        "tags": [
+          "The pale Silence",
+          "mozzie",
+          "pinchchester"
+        ],
         "createdAt": "2026-03-08T05:19:04.538Z",
-        "updatedAt": "2026-03-08T05:19:04.538Z"
+        "updatedAt": "2026-03-11T21:59:15.534Z"
       }
     ],
     "location": [
@@ -446,14 +460,14 @@
       {
         "id": "note_mlr6uw2y-vopyyb",
         "title": "White tentacle",
-        "content": "Not much is known about this tentacle other than it was from the time of the pale silence, it was housed in the church but was taken away, and is now being taken to Pinchester. The dragon seems to be interested in it. The government is willing to pay 5000 gold per adventuring party to keep it safe and its secret kept.",
+        "content": "Not much is known about this tentacle other than it was from the time of the pale silence, it was housed in the church but was taken away, and is now being taken to Pinchester. The dragon Rindos seems to be interested in it. The government is willing to pay 5000 gold per adventuring party to keep it safe and its secret kept.",
         "tags": [
           "government",
           "pale silence",
           "dragon"
         ],
         "createdAt": "2026-02-17T22:42:24.874Z",
-        "updatedAt": "2026-02-17T22:42:24.874Z"
+        "updatedAt": "2026-03-11T22:05:59.399Z"
       },
       {
         "id": "note_mm7appwx-aze94u",
@@ -478,6 +492,32 @@
         ],
         "createdAt": "2026-03-01T05:16:44.458Z",
         "updatedAt": "2026-03-01T05:16:44.458Z"
+      },
+      {
+        "id": "note_mmml8a45-ruip7m",
+        "title": "Party Crasher",
+        "content": "A powerful hammer that once belong to the man named Gate crasher, it is magical in nature and seems to allow the user to speak and understand goblin. it also seems to have more abitlies. more test will need to be taken to understand",
+        "tags": [
+          "Gate Crasher",
+          "Hammer",
+          "Goblin"
+        ],
+        "createdAt": "2026-03-11T22:05:35.667Z",
+        "updatedAt": "2026-03-11T22:05:35.667Z"
+      },
+      {
+        "id": "note_mmmlfddl-hvb6e1",
+        "title": "The big book",
+        "content": "A book co-authored by Thea and Shelly (Shelly was the one who made the science and Thea annotated.) Currently it is in the possession of Gill ",
+        "tags": [
+          "gill",
+          "thea",
+          "shelly",
+          "terroism",
+          "inventions"
+        ],
+        "createdAt": "2026-03-11T22:11:06.489Z",
+        "updatedAt": "2026-03-11T22:11:06.489Z"
       }
     ],
     "session": []
@@ -527,12 +567,12 @@
       {
         "id": "wp_mmgq8egq-m2gfby",
         "mapId": "world",
-        "x": 594,
-        "y": 414,
+        "x": 600,
+        "y": 405,
         "title": "Origin isles",
         "note": "",
         "createdAt": "2026-03-07T19:39:02.330Z",
-        "updatedAt": "2026-03-07T19:39:02.330Z"
+        "updatedAt": "2026-03-11T21:56:29.794Z"
       },
       {
         "id": "wp_mmgq8okx-dsbgvf",

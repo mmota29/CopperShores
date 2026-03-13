@@ -128,14 +128,14 @@
       {
         "id": "note_mlbhumlh-42oy9w",
         "title": "Gill",
-        "content": "Gill the triton artificer, came to the festival to explore the city and see what inventions can be made, he met ellie and from there join the party in the quest for the celestial droplet. He likes to watch",
+        "content": "Gill the triton artificer, came to the festival to explore the city and see what inventions can be made, he met ellie and from there join the party in the quest for the celestial droplet. He likes to watch\n\nPut the puzzle in his head together \nthe magic effecting gill seems to be a topic banned by the Celestials.",
         "tags": [
           "PC",
           "Michael",
           "Triton"
         ],
         "createdAt": "2026-02-06T23:05:49.541Z",
-        "updatedAt": "2026-03-08T00:48:07.881Z"
+        "updatedAt": "2026-03-13T01:06:56.361Z"
       },
       {
         "id": "note_mlbin281-qdv0ng",
@@ -158,26 +158,37 @@
           "PC",
           "Shawn",
           "sea elf",
-          "curse"
+          "curse",
+          "bard"
         ],
         "createdAt": "2026-02-08T01:08:58.451Z",
-        "updatedAt": "2026-02-08T01:08:58.451Z"
+        "updatedAt": "2026-03-13T00:01:10.356Z"
       },
       {
         "id": "note_mm75dm8m-7hy9ky",
         "title": "Rahkar",
         "content": "Student of Talon Malsear. Originally from the Shadowfell. may have Nobel Heirtigdge, unsure",
-        "tags": [],
+        "tags": [
+          "Talon",
+          "ShadowFell",
+          "Raven Queen",
+          "Raven King"
+        ],
         "createdAt": "2026-03-01T02:45:18.166Z",
-        "updatedAt": "2026-03-08T01:41:21.733Z"
+        "updatedAt": "2026-03-12T23:59:53.391Z"
       },
       {
         "id": "note_mm75ds1v-aqefid",
         "title": "Blue",
         "content": "",
-        "tags": [],
+        "tags": [
+          "Homeless",
+          "Bard",
+          "dragonborn",
+          "piano"
+        ],
         "createdAt": "2026-03-01T02:45:25.699Z",
-        "updatedAt": "2026-03-01T02:45:25.699Z"
+        "updatedAt": "2026-03-13T00:01:00.638Z"
       }
     ],
     "npc": [
@@ -309,6 +320,14 @@
         ],
         "createdAt": "2026-03-08T05:19:42.108Z",
         "updatedAt": "2026-03-08T05:19:42.108Z"
+      },
+      {
+        "id": "note_mmo79s9h-qck3hx",
+        "title": "tom riddle(Rhaekar main voice)",
+        "content": "the main voice in Rhaekar's voice, he may be in the vault of rindos",
+        "tags": [],
+        "createdAt": "2026-03-13T01:10:23.573Z",
+        "updatedAt": "2026-03-13T01:10:23.573Z"
       }
     ],
     "event": [
@@ -327,13 +346,13 @@
       {
         "id": "note_mm76ptad-3ixx7d",
         "title": "The quest from jonik",
-        "content": "He has certain access to things, under the city they buried the honored dead, sewers. catacombs. offerings treasure. the tomb of remeberance. He wants to be clear about what we can see, but he wants something returned to him, a raiper? I should have paid attention. undead, cave-ins. we will find a locked gate. gate crasher.",
+        "content": "He has certain access to things, under the city they buried the honored dead, sewers. catacombs. offerings treasure. the tomb of remeberance. He wants to be clear about what we can see, but he wants something returned to him, a raiper? I should have paid attention. undead, cave-ins. we will find a locked gate. gate crasher.\nthe rapiar is with the body of gate crasher",
         "tags": [
           "jonik",
           "pinchester"
         ],
         "createdAt": "2026-03-01T03:22:46.789Z",
-        "updatedAt": "2026-03-01T03:27:15.390Z"
+        "updatedAt": "2026-03-13T00:36:41.683Z"
       },
       {
         "id": "note_mmh85ev9-d9bgdk",
@@ -421,7 +440,7 @@
       {
         "id": "note_mm76q9kf-ktysxe",
         "title": "the tomb of remeberance",
-        "content": "catacombs under the city of Pinchester. In one of the rooms lies 4 statues at the four corners, one for the golden flame, one for the hero known as the tempest, which is destroyed, one known as the matrearch(Riven seems to have something with the statue as if he knew her) one looks former.",
+        "content": "catacombs under the city of Pinchester. In one of the rooms lies 4 statues at the four corners, one for the golden flame, one for the hero known as the tempest, which is destroyed, one known as the matrearch(Riven seems to have something with the statue as if he knew her) one looks former.\nIn one of the rooms lies a picture of a snake with wings",
         "tags": [
           "tempest",
           "matriach",
@@ -430,7 +449,19 @@
           "graveyard"
         ],
         "createdAt": "2026-03-01T03:23:07.887Z",
-        "updatedAt": "2026-03-08T01:46:39.855Z"
+        "updatedAt": "2026-03-13T00:20:06.301Z"
+      },
+      {
+        "id": "note_mmo4wfoh-32go02",
+        "title": "Pinchchester",
+        "content": "The city of heros",
+        "tags": [
+          "golden flame",
+          "heros",
+          "jonik"
+        ],
+        "createdAt": "2026-03-13T00:04:01.505Z",
+        "updatedAt": "2026-03-13T00:04:01.505Z"
       }
     ],
     "item": [
@@ -496,14 +527,14 @@
       {
         "id": "note_mmml8a45-ruip7m",
         "title": "Party Crasher",
-        "content": "A powerful hammer that once belong to the man named Gate crasher, it is magical in nature and seems to allow the user to speak and understand goblin. it also seems to have more abitlies. more test will need to be taken to understand",
+        "content": "Weapon (light hammer), (requires attunement)\n\nHidden in the rubble of the Tomb of Remembrance, Partycrasher is an expertly forged hammer engraved with goblin scripture. The hammer flies through the air with overwhelming force when thrown, being especially effective against structures and constructs.\n\nYou gain a +1 bonus to attack rolls and damage rolls made with this magic weapon.\n\nYou may make a ranged weapon attack with this weapon as a bonus action so long as the weapon isn’t currently equipped. When you hit with a ranged attack using this weapon, it deals an extra 1d4 Force damage, or an extra 4d4 Force damage if the target is a Construct. Immediately after hitting or missing, the weapon reforms back in your hand (or wherever it was thrown from).\n\nSentience. Partycrasher is a sentient lawful neutral weapon with an Intelligence of 11, a Wisdom of 16, and a Charisma of 15. It has hearing and darkvision out to a range of 120 feet\nThe weapon communicates telepathically with its wielder and can speak both Common and Goblin. While attuned or holding it, the wielder gains the ability to speak, read and understand Goblin.\n\nHappy Weapon, happy Warrior",
         "tags": [
           "Gate Crasher",
           "Hammer",
           "Goblin"
         ],
         "createdAt": "2026-03-11T22:05:35.667Z",
-        "updatedAt": "2026-03-11T22:05:35.667Z"
+        "updatedAt": "2026-03-13T00:10:21.664Z"
       },
       {
         "id": "note_mmmlfddl-hvb6e1",

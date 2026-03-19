@@ -1,53 +1,281 @@
 // Copper Shores Frontend - Main Script
-// This script demonstrates frontend-backend connection and handles DOM interactions
+// Shared UI helpers for homepage and player pages
 
 const API_BASE_URL = '/api';
+const TREASURY_API_BASE = `${API_BASE_URL}/treasury`;
+const DEFAULT_COIN_VALUES = {
+    pp: 1000,
+    gp: 100,
+    sp: 10,
+    cp: 1
+};
 
-/**
- * Fetch campaign status from the backend when page loads
- * This demonstrates the frontend-backend connection
- */
-function loadCampaignStatus() {
-    const apiInfoDiv = document.getElementById('api-info');
-    if (!apiInfoDiv) return; // Only runs on pages with #api-info (index.html)
-    
-    // Fetch data from the Gold API endpoint (as an example)
-    fetch(`${API_BASE_URL}/gold`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
+async function requestJson(url, options) {
+    const response = await fetch(url, options);
+    const payload = await response.json().catch(() => ({
+        status: 'error',
+        message: 'Invalid JSON response'
+    }));
+
+    if (!response.ok || payload.status !== 'success') {
+        throw new Error(payload.message || `Request failed (${response.status})`);
+    }
+
+    return payload.data || {};
+}
+
+function normalizeCoinValues(rawCoinValues) {
+    const coinValues = rawCoinValues || {};
+    return {
+        pp: Math.max(1, Number(coinValues.pp) || DEFAULT_COIN_VALUES.pp),
+        gp: Math.max(1, Number(coinValues.gp) || DEFAULT_COIN_VALUES.gp),
+        sp: Math.max(1, Number(coinValues.sp) || DEFAULT_COIN_VALUES.sp),
+        cp: Math.max(1, Number(coinValues.cp) || DEFAULT_COIN_VALUES.cp)
+    };
+}
+
+function cpToCoins(totalCp, coinValues) {
+    const normalizedCoinValues = normalizeCoinValues(coinValues);
+    const sign = totalCp < 0 ? -1 : 1;
+    let remaining = Math.abs(Math.trunc(Number(totalCp) || 0));
+
+    const pp = Math.floor(remaining / normalizedCoinValues.pp);
+    remaining -= pp * normalizedCoinValues.pp;
+    const gp = Math.floor(remaining / normalizedCoinValues.gp);
+    remaining -= gp * normalizedCoinValues.gp;
+    const sp = Math.floor(remaining / normalizedCoinValues.sp);
+    remaining -= sp * normalizedCoinValues.sp;
+    const cp = Math.floor(remaining / normalizedCoinValues.cp);
+
+    return {
+        pp: pp * sign,
+        gp: gp * sign,
+        sp: sp * sign,
+        cp: cp * sign
+    };
+}
+
+function formatCoins(totalCp, coinValues) {
+    const normalizedCoinValues = normalizeCoinValues(coinValues);
+    const absolute = Math.abs(Math.trunc(Number(totalCp) || 0));
+    const sign = totalCp < 0 ? '-' : '';
+    let coins;
+
+    // Keep small and medium totals in gp/sp/cp for readability.
+    if (absolute < normalizedCoinValues.pp * 10) {
+        let remaining = absolute;
+        const gp = Math.floor(remaining / normalizedCoinValues.gp);
+        remaining -= gp * normalizedCoinValues.gp;
+        const sp = Math.floor(remaining / normalizedCoinValues.sp);
+        remaining -= sp * normalizedCoinValues.sp;
+        const cp = Math.floor(remaining / normalizedCoinValues.cp);
+        coins = { pp: 0, gp, sp, cp };
+    } else {
+        coins = cpToCoins(absolute, normalizedCoinValues);
+    }
+
+    const parts = [];
+    if (coins.pp > 0) parts.push(`${coins.pp} pp`);
+    if (coins.gp > 0) parts.push(`${coins.gp} gp`);
+    if (coins.sp > 0) parts.push(`${coins.sp} sp`);
+    if (coins.cp > 0) parts.push(`${coins.cp} cp`);
+    return parts.length ? `${sign}${parts.join(', ')}` : '0 cp';
+}
+
+function extractActivePartyFromPlayers(players) {
+    if (!Array.isArray(players)) return [];
+
+    return players
+        .map((player, index) => {
+            const currentCharacter = player && player.currentCharacter;
+            if (!currentCharacter || !currentCharacter.id) return null;
+            if ((currentCharacter.status || 'active') !== 'active') return null;
+
+            return {
+                characterId: currentCharacter.id,
+                characterName: currentCharacter.name || 'Unnamed Character',
+                playerName: player.name || 'Unknown Player',
+                race: currentCharacter.race || '',
+                className: currentCharacter.className || currentCharacter.class || '',
+                level: Number(currentCharacter.level) || null,
+                displayOrder: Number(currentCharacter.displayOrder) || index + 1
+            };
         })
-        .then(data => {
-            // Display the API response on the page
-            apiInfoDiv.innerHTML = `
-                <p class="success">✓ Backend Connected</p>
-                <p class="message"><strong>Message:</strong> ${data.message}</p>
-                <p class="message"><strong>Status:</strong> ${data.status}</p>
-                <p class="message"><em>API endpoint: GET /api/gold</em></p>
-            `;
-        })
-        .catch(error => {
-            console.error('Error fetching campaign data:', error);
-            apiInfoDiv.innerHTML = `
-                <p style="color: #ff6b6b;"><strong>⚠️ Connection Error</strong></p>
-                <p style="color: #ff6b6b;">Unable to reach backend server at ${API_BASE_URL}</p>
-                <p style="color: #ffd93d;">Make sure the Node.js server is running on port 3000</p>
-            `;
+        .filter(Boolean);
+}
+
+function extractActivePartyFromTreasury(characters) {
+    if (!Array.isArray(characters)) return [];
+
+    return characters
+        .filter(character => character && character.id && character.isActive)
+        .map((character, index) => ({
+            characterId: character.id,
+            characterName: character.characterName || 'Unnamed Character',
+            playerName: character.playerName || 'Unknown Player',
+            race: '',
+            className: '',
+            level: null,
+            displayOrder: Number(character.displayOrder) || index + 1
+        }));
+}
+
+function sortPartyEntries(entries) {
+    return entries
+        .slice()
+        .sort((a, b) => {
+            const aOrder = Number(a.displayOrder) || 0;
+            const bOrder = Number(b.displayOrder) || 0;
+            if (aOrder !== bOrder) return aOrder - bOrder;
+            return (a.characterName || '').localeCompare(b.characterName || '');
         });
 }
 
-/**
- * Setup refresh button to reload campaign status
- */
-function setupRefreshButton() {
-    const refreshBtn = document.getElementById('refresh-btn');
-    if (refreshBtn) {
-        refreshBtn.addEventListener('click', loadCampaignStatus);
+function buildCharacterDetails(entry) {
+    const details = [];
+    if (entry.race) details.push(entry.race);
+    if (entry.className) details.push(entry.className);
+
+    let line = details.join(' ');
+    if (entry.level) {
+        line = line ? `${line}, Level ${entry.level}` : `Level ${entry.level}`;
     }
+
+    return line;
 }
 
+function renderPartyBanner(container, partyEntries) {
+    container.innerHTML = '';
+
+    if (!partyEntries.length) {
+        container.innerHTML = '<p class="overview-empty">No active characters are assigned right now.</p>';
+        return;
+    }
+
+    const fragment = document.createDocumentFragment();
+    partyEntries.forEach(entry => {
+        const card = document.createElement('article');
+        card.className = 'party-entry';
+
+        const characterName = document.createElement('h4');
+        characterName.className = 'party-entry-name';
+        characterName.textContent = entry.characterName || 'Unnamed Character';
+
+        const playerName = document.createElement('p');
+        playerName.className = 'party-entry-player';
+        playerName.textContent = `Player: ${entry.playerName || 'Unknown Player'}`;
+
+        card.appendChild(characterName);
+        card.appendChild(playerName);
+
+        const details = buildCharacterDetails(entry);
+        if (details) {
+            const meta = document.createElement('p');
+            meta.className = 'party-entry-meta';
+            meta.textContent = details;
+            card.appendChild(meta);
+        }
+
+        fragment.appendChild(card);
+    });
+
+    container.appendChild(fragment);
+}
+
+function renderWalletPreview(container, partyEntries, treasuryData) {
+    container.innerHTML = '';
+
+    if (!partyEntries.length) {
+        container.innerHTML = '<p class="overview-empty">No active characters are assigned right now.</p>';
+        return;
+    }
+
+    if (!treasuryData) {
+        container.innerHTML = '<p class="overview-error">Unable to load party overview right now.</p>';
+        return;
+    }
+
+    const coinValues = normalizeCoinValues(treasuryData.settings && treasuryData.settings.coinValues);
+    const balancesByCharacter = (treasuryData.derived && treasuryData.derived.characterBalancesCp) || {};
+    let totalCp = 0;
+
+    const list = document.createElement('div');
+    list.className = 'wallet-preview-list';
+
+    partyEntries.forEach(entry => {
+        const balanceCp = Math.trunc(Number(balancesByCharacter[entry.characterId]) || 0);
+        totalCp += balanceCp;
+
+        const row = document.createElement('div');
+        row.className = 'wallet-preview-row';
+
+        const name = document.createElement('span');
+        name.className = 'wallet-preview-name';
+        name.textContent = entry.characterName || 'Unnamed Character';
+
+        const amount = document.createElement('span');
+        amount.className = 'wallet-preview-value';
+        amount.textContent = formatCoins(balanceCp, coinValues);
+
+        row.appendChild(name);
+        row.appendChild(amount);
+        list.appendChild(row);
+    });
+
+    const totalRow = document.createElement('div');
+    totalRow.className = 'wallet-preview-total';
+
+    const totalLabel = document.createElement('span');
+    totalLabel.textContent = 'Total Party Wealth';
+
+    const totalAmount = document.createElement('strong');
+    totalAmount.textContent = formatCoins(totalCp, coinValues);
+
+    totalRow.appendChild(totalLabel);
+    totalRow.appendChild(totalAmount);
+
+    container.appendChild(list);
+    container.appendChild(totalRow);
+}
+
+async function loadHomePartyOverview() {
+    const partyBannerEl = document.getElementById('party-banner');
+    const walletPreviewEl = document.getElementById('wallet-preview');
+    if (!partyBannerEl || !walletPreviewEl) return;
+
+    partyBannerEl.innerHTML = '<p class="overview-loading">Gathering adventurers...</p>';
+    walletPreviewEl.innerHTML = '<p class="overview-loading">Counting coins...</p>';
+
+    const [playersResult, treasuryResult] = await Promise.allSettled([
+        requestJson(`${API_BASE_URL}/players`),
+        requestJson(`${TREASURY_API_BASE}/state`)
+    ]);
+
+    const treasuryData = treasuryResult.status === 'fulfilled' ? treasuryResult.value : null;
+    let partyEntries = [];
+
+    if (playersResult.status === 'fulfilled') {
+        partyEntries = extractActivePartyFromPlayers(playersResult.value.players);
+    }
+
+    if (!partyEntries.length && treasuryData) {
+        partyEntries = extractActivePartyFromTreasury(treasuryData.characters);
+    }
+
+    partyEntries = sortPartyEntries(partyEntries);
+
+    if (playersResult.status === 'rejected' && !partyEntries.length) {
+        partyBannerEl.innerHTML = '<p class="overview-error">Unable to load party overview right now.</p>';
+    } else {
+        renderPartyBanner(partyBannerEl, partyEntries);
+    }
+
+    if (!treasuryData) {
+        walletPreviewEl.innerHTML = '<p class="overview-error">Unable to load party overview right now.</p>';
+    } else {
+        renderWalletPreview(walletPreviewEl, partyEntries, treasuryData);
+    }
+}
 /**
  * Update active navigation link based on current page
  */
@@ -70,11 +298,11 @@ function updateActiveNav() {
  */
 document.addEventListener('DOMContentLoaded', function() {
     updateActiveNav();
-    loadCampaignStatus();
-    setupRefreshButton();
-    // Page-specific initialization
+
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    if (currentPage === 'players.html') {
+    if (currentPage === 'index.html') {
+        loadHomePartyOverview();
+    } else if (currentPage === 'players.html') {
         initPlayersPage();
     } else if (currentPage === 'player.html') {
         // player.html has its own DOMContentLoaded inline but expose helper
@@ -333,4 +561,5 @@ function saveEditCharacter(playerId) {
             showMessage('Network error: ' + err.message, true);
         });
 }
+
 

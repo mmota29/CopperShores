@@ -33,13 +33,28 @@
             <p>Your campaign headquarters for epic adventures and legendary tales</p>
         </div>
 
-        <!-- API Test Section -->
-        <section class="info-section">
-            <h2>Campaign Status</h2>
-            <div id="api-info" class="info-box">
-                <p>Loading campaign data...</p>
+        <section class="party-overview-section" aria-labelledby="party-overview-title">
+            <div class="party-overview-header">
+                <h2 id="party-overview-title">Current Party</h2>
+                <p>Meet the active crew and check a quick wallet snapshot before heading into the next scene.</p>
             </div>
-            <button id="refresh-btn" class="btn">Refresh Status</button>
+
+            <div class="party-overview-grid">
+                <article class="overview-card">
+                    <h3>Party Banner</h3>
+                    <div id="party-banner" class="party-list">
+                        <p class="overview-loading">Gathering adventurers...</p>
+                    </div>
+                </article>
+
+                <article class="overview-card">
+                    <h3>Wallet Preview</h3>
+                    <div id="wallet-preview" class="wallet-preview">
+                        <p class="overview-loading">Counting coins...</p>
+                    </div>
+                    <a href="gold.html" class="btn wallet-preview-link">Open Gold Ledger</a>
+                </article>
+            </div>
         </section>
 
         <!-- Quick Links Grid -->

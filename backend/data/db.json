@@ -170,20 +170,21 @@
       {
         "id": "note_mm75dm8m-7hy9ky",
         "title": "Rahkar",
-        "content": "Student of Talon Malsir. Originally from the Shadowfell. May have noble heritage, unsure. Hears voices in his head and is prone to spontaneous teleporting and wild surges. There are signs someone cursed his bloodline to inhibit magical abilities; this may tie to a prophecy. Raven King apparently tried to warn his family. Parents are dead.",
+        "content": "Student of Talon Malsir. Originally from the Shadowfell. May have noble heritage, unsure. Hears voices in his head and is prone to spontaneous teleporting and wild surges. Raven King apparently tried to warn his family. Parents are dead. insane",
         "tags": [
           "Talon",
           "ShadowFell",
           "Raven Queen",
-          "Raven King"
+          "Raven King",
+          "insane"
         ],
         "createdAt": "2026-03-01T02:45:18.166Z",
-        "updatedAt": "2026-03-24T21:17:21.145Z"
+        "updatedAt": "2026-03-26T01:06:50.604Z"
       },
       {
         "id": "note_mm75ds1v-aqefid",
         "title": "Blue",
-        "content": "Sapphire dragonborn bard (Blue/Tiff, with Tiff seeming to be a personal name). Was once part of a troupe with Riven and Elly. Alandra said it feels like two people are constantly present around Blue, and Blue's dreams are very present: \"Someone is constantly betraying you, and they don't know it themselves.\" There may be family ties to someone named Abi Asmur (amethyst dragonborn with silver eyes) connected to piano lessons.",
+        "content": "Sapphire dragonborn bard (Blue/Tiff, with Tiff seeming to be a personal name). Was once part of a troupe with Riven and Elly. Alandra said it feels like two people are constantly present around Blue, and Blue's dreams are very present: \"Someone is constantly betraying you, and they don't know it themselves.\"",
         "tags": [
           "Homeless",
           "Bard",
@@ -191,7 +192,7 @@
           "piano"
         ],
         "createdAt": "2026-03-01T02:45:25.699Z",
-        "updatedAt": "2026-03-24T21:17:21.145Z"
+        "updatedAt": "2026-03-26T01:06:28.232Z"
       }
     ],
     "npc": [
@@ -667,7 +668,7 @@
       {
         "id": "note_mmmlfddl-hvb6e1",
         "title": "The big book",
-        "content": "A book co-authored by Thea and Shelly (Shelly made the science and Thea annotated). Currently it is in the possession of Gill. May include relevant notes about deep-ocean creatures, gods/goddesses, and possible Soulsong context.",
+        "content": "A book co-authored by Thea and Shelly (Shelly made the science and Thea annotated). Currently it is in the possession of Gill. ",
         "tags": [
           "gill",
           "thea",
@@ -676,18 +677,18 @@
           "inventions"
         ],
         "createdAt": "2026-03-11T22:11:06.489Z",
-        "updatedAt": "2026-03-24T21:17:21.145Z"
+        "updatedAt": "2026-03-26T01:08:08.405Z"
       },
       {
         "id": "note_mn548bcv-7yi8ar",
         "title": "Roger plushie",
-        "content": "Plushie with familiar-like behavior. Follows in its own way and can absorb up to one instance of damage before dying.",
+        "content": "Plushie with familiar-like behavior. Follows in its own way and can absorb up to one instance of damage before dying. has bonded with gill, has been trying to get rid of it. unsuccessfully.",
         "tags": [
           "familiar",
           "plushie"
         ],
         "createdAt": "2026-03-24T21:17:21.145Z",
-        "updatedAt": "2026-03-24T21:17:21.145Z"
+        "updatedAt": "2026-03-26T01:07:54.616Z"
       }
     ],
     "session": []

@@ -840,7 +840,28 @@
     ],
     "tosatina": [],
     "tormsicle": [],
-    "pinchester": []
+    "pinchester": [
+      {
+        "id": "wp_mn7vagcr-x7forc",
+        "mapId": "pinchester",
+        "x": 3888,
+        "y": 3512,
+        "title": "Town Square",
+        "note": "Gill got his ass beaten here",
+        "createdAt": "2026-03-26T19:30:22.922Z",
+        "updatedAt": "2026-03-26T19:30:22.922Z"
+      },
+      {
+        "id": "wp_mn7vbmjd-2wy0q5",
+        "mapId": "pinchester",
+        "x": 4572,
+        "y": 3744,
+        "title": "The golden flame home",
+        "note": "the home of the golden (illegal mexican) flame",
+        "createdAt": "2026-03-26T19:31:17.593Z",
+        "updatedAt": "2026-03-26T19:31:17.593Z"
+      }
+    ]
   },
   "gold": {
     "version": 2,

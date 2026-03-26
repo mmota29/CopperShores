@@ -280,7 +280,8 @@ const MAPS_DEFINITION = [
   { id: 'world', name: 'World Map', imagePath: '/allmaps/coppershores.png' },
   { id: 'alsita', name: 'Alsita', imagePath: '/allmaps/Alsita.PNG' },
   { id: 'tosatina', name: 'Tosatina', imagePath: '/allmaps/Tosatina.PNG' },
-  { id: 'tormsicle', name: 'Tormsicle', imagePath: '/allmaps/Tormsicle.png' }
+  { id: 'tormsicle', name: 'Tormsicle', imagePath: '/allmaps/Tormsicle.png' },
+  { id: 'pinchester', name: 'Pinchester', imagePath: '/allmaps/Pinchester.PNG' }
 ];
 
 function getMapsDefinition() {
@@ -289,11 +290,22 @@ function getMapsDefinition() {
 
 function ensureMapWaypointsStructure() {
   const db = readDB();
-  if (!db.mapWaypoints) {
+  let shouldWrite = false;
+
+  if (!db.mapWaypoints || typeof db.mapWaypoints !== 'object') {
     db.mapWaypoints = {};
-    MAPS_DEFINITION.forEach(map => {
+    shouldWrite = true;
+  }
+
+  // Backfill newly added maps without removing existing waypoint data.
+  MAPS_DEFINITION.forEach(map => {
+    if (!Array.isArray(db.mapWaypoints[map.id])) {
       db.mapWaypoints[map.id] = [];
-    });
+      shouldWrite = true;
+    }
+  });
+
+  if (shouldWrite) {
     writeDB(db);
   }
 }

@@ -31,6 +31,12 @@ const CITY_MARKERS = {
       mapId: 'tormsicle',
       coords: [102, 783], // TODO: Update coordinates
       icon: '🏰'
+    },
+    {
+      name: 'Pinchester',
+      mapId: 'pinchester',
+      coords: [614, 860], // TODO: Update coordinates
+      icon: '🏰'
     }
   ]
 };

@@ -142,7 +142,7 @@
       {
         "id": "note_mlbin281-qdv0ng",
         "title": "Corelia Harrendyl",
-        "content": "Aasimar Samurai Fighter, a friend of Mozzie the devil, currently looking for an item that used to belong to her family. Helped interrogate Gill into the party. She has been hearing voices: \"Return the final piece, and reawaken the ship.\" They have stopped once we got the ship",
+        "content": "Aasimar Samurai Fighter, a friend of Mozzie the devil, currently looking for an item that used to belong to her family. Helped interrogate Gill for mozzie. She has been hearing voices: \"Return the final piece, and reawaken the ship.\" They have stopped once we got the ship.\n\ndoes not let everyone call her cory, lets gill now after feeling bad about interrogating him",
         "tags": [
           "Aasimar",
           "Fighter",
@@ -150,7 +150,7 @@
           "PC"
         ],
         "createdAt": "2026-02-06T23:27:56.161Z",
-        "updatedAt": "2026-03-24T21:20:19.028Z"
+        "updatedAt": "2026-03-27T03:09:58.224Z"
       },
       {
         "id": "note_mld1oul0-9dqspz",
@@ -389,14 +389,14 @@
       {
         "id": "note_mlr6pcbd-my6ouw",
         "title": "DREAM BATTLES",
-        "content": "For some reason, in Riven's dreams, he has been dragging party members into his dreams to fight some sort of shadow demon. Currently, Corelia and Rahkar have been sent into these dreams. Mozzie showed up to aid Corelia, and Rahkar got a boost from his voices in his head. Xim described Riven's dreams as terrifying and almost alive.",
+        "content": "For some reason, in Riven's dreams, he has been dragging party members into his dreams to fight some sort of shadow demon. Currently, Corelia and Rahkar have been sent into these dreams. Mozzie showed up to aid Corelia, and Rahkar got a boost from his voices in his head. Xim described Riven's dreams as terrifying and almost alive. we feel it may be safe to assume that the next victum is between blue or gill",
         "tags": [
           "dream",
           "riven",
           "shadow"
         ],
         "createdAt": "2026-02-17T22:38:05.977Z",
-        "updatedAt": "2026-03-24T21:17:21.145Z"
+        "updatedAt": "2026-03-26T20:39:30.171Z"
       },
       {
         "id": "note_mm76ptad-3ixx7d",
@@ -830,12 +830,22 @@
       {
         "id": "wp_mmfwo4st-1xf85a",
         "mapId": "alsita",
-        "x": 6140,
-        "y": 2244,
+        "x": 5952,
+        "y": 2232,
         "title": "Talon's House",
         "note": "The House of famouse hero and adventuter Talon.",
         "createdAt": "2026-03-07T05:51:27.821Z",
-        "updatedAt": "2026-03-19T21:06:37.227Z"
+        "updatedAt": "2026-03-28T23:34:38.143Z"
+      },
+      {
+        "id": "wp_mnayvwrf-35hyah",
+        "mapId": "alsita",
+        "x": 7040,
+        "y": 1840,
+        "title": "general location of corey home",
+        "note": "",
+        "createdAt": "2026-03-28T23:34:21.339Z",
+        "updatedAt": "2026-03-28T23:34:25.240Z"
       }
     ],
     "tosatina": [],

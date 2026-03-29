@@ -3,7 +3,7 @@
     {
       "id": "pl_mlb5lycv-kwicif",
       "name": "Michael Mota",
-      "bio": "Hey its the me, i have very very guilty conscience that won't let me sleep at night. send help",
+      "bio": "Hey its the me, i can't spell so forgive me. george is god of the dnd, but i am god of this website",
       "currentCharacter": {
         "name": "Gill",
         "race": "Triton",
@@ -33,7 +33,7 @@
     {
       "id": "pl_mlb5okkf-tgu539",
       "name": "Gabi",
-      "bio": "",
+      "bio": "spelling nazi, its like a grammer nazi",
       "currentCharacter": {
         "name": "Corelia",
         "race": "aasimar",
@@ -81,7 +81,7 @@
       "name": "Tyler",
       "bio": "",
       "currentCharacter": {
-        "name": "Rahkar",
+        "name": "Rhaekar",
         "race": "shadar kai",
         "className": "Sorcerer",
         "level": 4,
@@ -90,7 +90,7 @@
       },
       "characters": [
         {
-          "name": "Rahkar",
+          "name": "Rhaekar",
           "race": "shadar kai",
           "className": "Sorcerer",
           "level": 4,
@@ -162,14 +162,14 @@
           "sea elf",
           "curse",
           "bard",
-          "homewrecker"
+          "HOMEWRECKER"
         ],
         "createdAt": "2026-02-08T01:08:58.451Z",
-        "updatedAt": "2026-03-24T21:19:36.657Z"
+        "updatedAt": "2026-03-29T02:04:39.223Z"
       },
       {
         "id": "note_mm75dm8m-7hy9ky",
-        "title": "Rahkar",
+        "title": "Rhaekar ",
         "content": "Student of Talon Malsir. Originally from the Shadowfell. May have noble heritage, unsure. Hears voices in his head and is prone to spontaneous teleporting and wild surges. Raven King apparently tried to warn his family. Parents are dead. insane",
         "tags": [
           "Talon",
@@ -179,7 +179,7 @@
           "insane"
         ],
         "createdAt": "2026-03-01T02:45:18.166Z",
-        "updatedAt": "2026-03-26T01:06:50.604Z"
+        "updatedAt": "2026-03-29T01:57:44.160Z"
       },
       {
         "id": "note_mm75ds1v-aqefid",
@@ -199,26 +199,26 @@
       {
         "id": "note_mltt587z-oz86vm",
         "title": "Talon Malsir",
-        "content": "One of the great heroes, a wild-magic sorcerer who helped defeat the Pale Silence, now a resident celebrity living in Alsicta, mentor/master of Rahkar. Father of Soren Malsir. Seems to have issues; best not to press. At one point, he encountered the dragonborn known as the Golden Flame, possibly the original one. He also announced the hunt for the Celestial Droplet on behalf of Alsita's government.",
+        "content": "One of the great heroes, a wild-magic sorcerer who helped defeat the Pale Silence, now a resident celebrity living in Alsicta, mentor/master of Rhaekar. Father of Soren Malsir. Seems to have issues; best not to press. At one point, he encountered the dragonborn known as the Golden Flame, possibly the original one. He also announced the hunt for the Celestial Droplet on behalf of Alsita's government.",
         "tags": [
           "Michael",
-          "rahkar",
+          "Rhaekar",
           "pale silence",
           "Alsicta"
         ],
         "createdAt": "2026-02-19T18:41:51.066Z",
-        "updatedAt": "2026-03-24T21:17:21.145Z"
+        "updatedAt": "2026-03-29T02:00:13.709Z"
       },
       {
         "id": "note_mltta4sz-h0wqz7",
         "title": "Unknown Captain of the Riverwalker/Former",
-        "content": "Seen in a vision (the same one Corelia saw). Going by an alias right now, cannot remember his name. His first mate is not here (the other one in the vision). Remembers vaguely the man he traveled with and believes his friend was not a good person. Was able to sense some sort of magic from Blue and Riven, then associated it with Gill. He and Gill are on much better terms now.",
+        "content": "Seen in a vision (the same one Corelia saw). Going by an alias right now, cannot remember his name. His first mate is not here (the other one in the vision). Remembers vaguely the man he traveled with and believes his friend was not a good person. Was able to sense some sort of magic from Blue and Riven, then associated it with Gill. He and Gill are on much better terms now.\n\nIn the vision in the tomb, he is seen with an older gentleman holding an ornate dagger, cleaning the seas one step at a time. the dagger is the same as the same from the deep gaurd. ",
         "tags": [
           "river walker strider",
           "ghost"
         ],
         "createdAt": "2026-02-19T18:45:39.923Z",
-        "updatedAt": "2026-03-24T21:17:21.145Z"
+        "updatedAt": "2026-03-29T01:10:22.021Z"
       },
       {
         "id": "note_mlttb0zh-3vdqwi",
@@ -234,7 +234,7 @@
       },
       {
         "id": "note_mm73ekx4-p474s4",
-        "title": "jonik",
+        "title": "Jonik Briley",
         "content": "The wood elf whom we met at the inn. Ask Riven about his opinion on current events. Part of the High Council and head of military in Pinchchester. Was once affected by a white tentacle.",
         "tags": [
           "pinchester",
@@ -242,7 +242,7 @@
           ""
         ],
         "createdAt": "2026-03-01T01:50:03.880Z",
-        "updatedAt": "2026-03-24T21:17:21.145Z"
+        "updatedAt": "2026-03-29T01:49:53.032Z"
       },
       {
         "id": "note_mm75b4q2-0s1k9v",
@@ -273,10 +273,12 @@
         "content": "A paladin. A triton. A wife. Can communicate with souls. Co-authored The Big Book by annotating Shelly's science. rummored to have abilty to influcnece souls",
         "tags": [
           "thea",
-          "shelly"
+          "shelly",
+          "triton",
+          "souls"
         ],
         "createdAt": "2026-03-01T02:56:14.629Z",
-        "updatedAt": "2026-03-26T01:10:10.256Z"
+        "updatedAt": "2026-03-28T23:40:37.795Z"
       },
       {
         "id": "note_mm761quz-x5ndpi",
@@ -328,10 +330,10 @@
       {
         "id": "note_mmo79s9h-qck3hx",
         "title": "tom riddle(Rhaekar main voice)",
-        "content": "The main voice in Rahkar's head; he may be in the Vault of Rindos.",
+        "content": "The main voice in Rhaekar head; he may be in the Vault of Rindos.",
         "tags": [],
         "createdAt": "2026-03-13T01:10:23.573Z",
-        "updatedAt": "2026-03-24T21:17:21.145Z"
+        "updatedAt": "2026-03-29T01:58:32.494Z"
       },
       {
         "id": "note_mn548bcv-gyt4dk",
@@ -377,26 +379,75 @@
         "title": "Raven King",
         "content": "Not associated with the Raven Queen. Appears to offer guidance to Rahkar and discuss fear, prophecy, and misunderstood power.",
         "tags": [
-          "Rahkar",
+          "Rhaekar",
           "Raven King",
           "Prophecy"
         ],
         "createdAt": "2026-03-24T21:17:21.145Z",
-        "updatedAt": "2026-03-24T21:17:21.145Z"
+        "updatedAt": "2026-03-29T01:58:46.069Z"
+      },
+      {
+        "id": "note_mnaz2xef-kkbqgv",
+        "title": "The matron",
+        "content": "When touching the stone raiper, a visson of a women using water magic and fighting enemnys, may have connection to riven",
+        "tags": [
+          "riven",
+          "pinchester",
+          "water"
+        ],
+        "createdAt": "2026-03-28T23:39:48.759Z",
+        "updatedAt": "2026-03-28T23:39:48.759Z"
+      },
+      {
+        "id": "note_mnb0sm41-x68qqu",
+        "title": "Akris the firestarter",
+        "content": "a otherworldly phoenix a moment to all of those looking for their place to belong",
+        "tags": [],
+        "createdAt": "2026-03-29T00:27:46.801Z",
+        "updatedAt": "2026-03-29T01:56:22.240Z"
+      },
+      {
+        "id": "note_mnb1k8gp-3uibqm",
+        "title": "Trashluc",
+        "content": "a kolbold we found in the tomb of rememebece. ",
+        "tags": [],
+        "createdAt": "2026-03-29T00:49:15.481Z",
+        "updatedAt": "2026-03-29T00:49:15.481Z"
+      },
+      {
+        "id": "note_mnb3xsum-a0vy1a",
+        "title": "tabaxi that delivers",
+        "content": "A tabixe man stealing slash delvinging message",
+        "tags": [],
+        "createdAt": "2026-03-29T01:55:47.662Z",
+        "updatedAt": "2026-03-29T01:55:47.662Z"
+      },
+      {
+        "id": "note_mnb4x3g9-3pcbx0",
+        "title": "the old shader kai",
+        "content": "an man that has saved Rhaekar a couple times. who is he",
+        "tags": [
+          "shadar kai",
+          "Rhaekar"
+        ],
+        "createdAt": "2026-03-29T02:23:14.361Z",
+        "updatedAt": "2026-03-29T02:23:14.361Z"
       }
     ],
     "event": [
       {
         "id": "note_mlr6pcbd-my6ouw",
         "title": "DREAM BATTLES",
-        "content": "For some reason, in Riven's dreams, he has been dragging party members into his dreams to fight some sort of shadow demon. Currently, Corelia and Rahkar have been sent into these dreams. Mozzie showed up to aid Corelia, and Rahkar got a boost from his voices in his head. Xim described Riven's dreams as terrifying and almost alive. we feel it may be safe to assume that the next victum is between blue or gill",
+        "content": "For some reason, in Riven's dreams, he has been dragging party members into his dreams to fight some sort of shadow demon. Currently, Corelia and Rahkar have been sent into these dreams. Mozzie showed up to aid Corelia, and Rhaekar got a boost from his voices in his head. Xim described Riven's dreams as terrifying and almost alive. we feel it may be safe to assume that the next victum is between blue or gill",
         "tags": [
           "dream",
           "riven",
-          "shadow"
+          "shadow",
+          "Rhaekar",
+          "corey"
         ],
         "createdAt": "2026-02-17T22:38:05.977Z",
-        "updatedAt": "2026-03-26T20:39:30.171Z"
+        "updatedAt": "2026-03-29T02:02:10.471Z"
       },
       {
         "id": "note_mm76ptad-3ixx7d",
@@ -591,6 +642,14 @@
         ],
         "createdAt": "2026-03-24T21:17:21.145Z",
         "updatedAt": "2026-03-24T21:17:21.145Z"
+      },
+      {
+        "id": "note_mnb4u6nl-c1suo4",
+        "title": "cheesecake tavern",
+        "content": "a cheesecake factory",
+        "tags": [],
+        "createdAt": "2026-03-29T02:20:58.545Z",
+        "updatedAt": "2026-03-29T02:20:58.545Z"
       }
     ],
     "item": [
@@ -609,13 +668,13 @@
       {
         "id": "note_mlbk79a1-2nl4v8",
         "title": "Random Monolith",
-        "content": "Some form of ward/protection. The language cannot be understood. Rahkar's mind is clear when he's there.",
+        "content": "Some form of ward/protection. The language cannot be understood. Rhaekar mind is clear when he's there.",
         "tags": [
           "Grafgate",
           "Rhaekar"
         ],
         "createdAt": "2026-02-07T00:11:38.041Z",
-        "updatedAt": "2026-03-24T21:17:21.145Z"
+        "updatedAt": "2026-03-29T02:02:56.028Z"
       },
       {
         "id": "note_mlr6uw2y-vopyyb",
@@ -738,12 +797,12 @@
       {
         "id": "wp_mmgq8egq-m2gfby",
         "mapId": "world",
-        "x": 600,
-        "y": 405,
+        "x": 598,
+        "y": 413,
         "title": "Origin isles",
         "note": "",
         "createdAt": "2026-03-07T19:39:02.330Z",
-        "updatedAt": "2026-03-11T21:56:29.794Z"
+        "updatedAt": "2026-03-29T02:29:44.720Z"
       },
       {
         "id": "wp_mmgq8okx-dsbgvf",
@@ -1010,6 +1069,85 @@
         ],
         "createdAt": "2026-03-04T06:19:21.340Z",
         "updatedAt": "2026-03-04T06:19:21.340Z"
+      },
+      {
+        "id": "txn_mnb3kijm-s8z6zl",
+        "date": "2026-03-29",
+        "description": "Tomb or rembernce",
+        "type": "income",
+        "totalCp": 120259,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 1143,
+          "sp": 523,
+          "cp": 729
+        },
+        "allocationMode": "equal_split",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": 24052,
+            "characterId": "ch_mlb5meab-2tthli",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": 24052,
+            "characterId": "ch_mlb5okkf-o7v4qu",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": 24052,
+            "characterId": "ch_mlb63uh7-tzw9ht",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": 24052,
+            "characterId": "ch_mlbheiog-c82mut",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": 24051,
+            "characterId": "ch_mlbhfekw-5lrtjs",
+            "shareCount": 1
+          }
+        ],
+        "note": "from the hoard of duengion after lying to the kobold",
+        "createdAt": "2026-03-29T01:45:27.778Z",
+        "updatedAt": "2026-03-29T01:45:27.778Z"
+      },
+      {
+        "id": "txn_mnb71c41-pm07pt",
+        "date": "2026-03-29",
+        "description": "corey clothe tip",
+        "type": "expense",
+        "totalCp": 200,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 2,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "direct",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -200,
+            "characterId": "ch_mlb5okkf-o7v4qu",
+            "shareCount": 1
+          }
+        ],
+        "createdAt": "2026-03-29T03:22:31.441Z",
+        "updatedAt": "2026-03-29T03:22:31.441Z"
       }
     ],
     "settings": {

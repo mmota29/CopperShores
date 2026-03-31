@@ -3,7 +3,7 @@
     {
       "id": "pl_mlb5lycv-kwicif",
       "name": "Michael Mota",
-      "bio": "Hey its the me, i can't spell so forgive me. george is god of the dnd, but i am god of this website",
+      "bio": "Hey its the me, i can't spell so forgive me. george is god of the dnd, but i am god of this website. ",
       "currentCharacter": {
         "name": "Gill",
         "race": "Triton",
@@ -26,7 +26,7 @@
     {
       "id": "pl_mlb5n58a-wrw2yo",
       "name": "George",
-      "bio": "GOD aka the DM",
+      "bio": "god aka the DM",
       "currentCharacter": null,
       "characters": []
     },
@@ -102,7 +102,7 @@
     {
       "id": "pl_mlbhfekw-do6aav",
       "name": "Shawn",
-      "bio": "",
+      "bio": "i am pretty sure he wants to kill michael(me)",
       "currentCharacter": {
         "name": "Riven",
         "race": "Sea elf",
@@ -481,6 +481,27 @@
         ],
         "createdAt": "2026-03-24T21:17:21.145Z",
         "updatedAt": "2026-03-24T21:17:21.145Z"
+      },
+      {
+        "id": "note_mnb7r13f-gmrazq",
+        "title": "blue tells riven and gill something",
+        "content": "Blue pulled Gill and Riven aside in the Pinchester library as she confessed to them, that Mozzie told her that stuff in the pages ripped in the book",
+        "tags": [
+          "blue",
+          "gill",
+          "riven",
+          "mozzie"
+        ],
+        "createdAt": "2026-03-29T03:42:30.219Z",
+        "updatedAt": "2026-03-29T03:58:22.447Z"
+      },
+      {
+        "id": "note_mnb8ahv7-popsks",
+        "title": "The river of souls",
+        "content": "a passage of the afterlife, something happened that cause it to disapper and allow souls to comeback.",
+        "tags": [],
+        "createdAt": "2026-03-29T03:57:38.419Z",
+        "updatedAt": "2026-03-29T03:57:38.419Z"
       }
     ],
     "enemy": [
@@ -1148,6 +1169,61 @@
         ],
         "createdAt": "2026-03-29T03:22:31.441Z",
         "updatedAt": "2026-03-29T03:22:31.441Z"
+      },
+      {
+        "id": "txn_mnb8px5x-xzwafy",
+        "date": "2026-03-29",
+        "description": "apothecary  bill",
+        "type": "expense",
+        "totalCp": 1200,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 12,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "direct",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -1200,
+            "characterId": "ch_mlbhfekw-5lrtjs",
+            "shareCount": 1
+          }
+        ],
+        "createdAt": "2026-03-29T04:09:38.085Z",
+        "updatedAt": "2026-03-29T04:09:38.085Z"
+      },
+      {
+        "id": "txn_mnb8t5u9-pjwafg",
+        "date": "2026-03-29",
+        "description": "OIL bill party crasher",
+        "type": "expense",
+        "totalCp": 100,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 1,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "direct",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -100,
+            "characterId": "ch_mlb5okkf-o7v4qu",
+            "shareCount": 1
+          }
+        ],
+        "note": "oil for corey and party crasher",
+        "createdAt": "2026-03-29T04:12:09.297Z",
+        "updatedAt": "2026-03-29T04:12:38.573Z"
       }
     ],
     "settings": {

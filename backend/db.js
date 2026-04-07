@@ -196,7 +196,8 @@ const NOTE_CATEGORIES = {
   enemy: 'Enemy Notes',
   location: 'Location Notes',
   item: 'Item Notes',
-  session: 'Session Recaps'
+  session: 'Session Recaps',
+  gillcorner: 'Gill corner'
 };
 
 function getCategories() {

@@ -33,7 +33,7 @@
     {
       "id": "pl_mlb5okkf-tgu539",
       "name": "Gabi",
-      "bio": "spelling nazi, its like a grammer nazi",
+      "bio": "Awsome person",
       "currentCharacter": {
         "name": "Corelia",
         "race": "aasimar",
@@ -250,10 +250,12 @@
         "content": "TACOS, HE'S A MEXICAN. Owns a mansion. Fights. Wants a cape that does not belong to him. This cape seems to have belonged to the original Golden Flame.",
         "tags": [
           "dragonborn",
+          "Mexican",
+          "ay mi corazon",
           ""
         ],
         "createdAt": "2026-03-01T02:43:22.154Z",
-        "updatedAt": "2026-03-24T21:17:21.145Z"
+        "updatedAt": "2026-04-04T23:50:03.251Z"
       },
       {
         "id": "note_mm75gw03-orp66g",
@@ -296,7 +298,7 @@
       {
         "id": "note_mmh17s1v-krc61q",
         "title": "Mira Dahlien",
-        "content": "Matriarch of the Dahlien Family. She co-owns the WayFarer Tavern with her husband Akris; her family works there alongside her and the demon Mozzie. Family order (oldest to youngest): Elazar, Pride, Euphie, Pura, Sol. Mira asked Corelia to look after Nero and see if he will come home one day.",
+        "content": "Matriarch of the Dahlien Family. She co-owns the WayFarer Tavern with her husband Akris; her family works there alongside her and the demon Mozzie. Family order (oldest to youngest): Elazar, Pride, Euphie, Pura, Sol. Mira asked Corelia to look after Nero and see if he will come home one day. Was once a pirate lord known as the crimson cyclone",
         "tags": [
           "Dahlien",
           "Wayfarer Tavern",
@@ -304,7 +306,7 @@
           ""
         ],
         "createdAt": "2026-03-08T00:46:29.058Z",
-        "updatedAt": "2026-03-24T21:17:21.145Z"
+        "updatedAt": "2026-04-05T00:11:10.260Z"
       },
       {
         "id": "note_mmh7cs3q-lw2ssj",
@@ -410,9 +412,12 @@
         "id": "note_mnb1k8gp-3uibqm",
         "title": "Trashluc",
         "content": "a kolbold we found in the tomb of rememebece. ",
-        "tags": [],
+        "tags": [
+          "pinchester",
+          ""
+        ],
         "createdAt": "2026-03-29T00:49:15.481Z",
-        "updatedAt": "2026-03-29T00:49:15.481Z"
+        "updatedAt": "2026-04-04T23:50:20.738Z"
       },
       {
         "id": "note_mnb3xsum-a0vy1a",
@@ -432,13 +437,72 @@
         ],
         "createdAt": "2026-03-29T02:23:14.361Z",
         "updatedAt": "2026-03-29T02:23:14.361Z"
+      },
+      {
+        "id": "note_mnkzgoxj-x11ya3",
+        "title": "Thieves guild",
+        "content": "Mozzie and Layrian are part of this organization, run by the son of Akris, father of Nero Elazar.",
+        "tags": [
+          "akris",
+          "thieves guild",
+          "corelia",
+          "nero",
+          "mozzie"
+        ],
+        "createdAt": "2026-04-04T23:48:12.726Z",
+        "updatedAt": "2026-04-04T23:52:08.747Z"
+      },
+      {
+        "id": "note_mnkzn7u6-vok99m",
+        "title": "Elazar",
+        "content": "Son of Akris and Mira, the strongest in his family, best with the blade, leader of the thieves Guild. father of Nero",
+        "tags": [
+          "Akris",
+          "Mira",
+          "Wayfarer tavern",
+          "nero"
+        ],
+        "createdAt": "2026-04-04T23:53:17.166Z",
+        "updatedAt": "2026-04-04T23:53:17.166Z"
+      },
+      {
+        "id": "note_mnkzqbhy-s3w8h4",
+        "title": "Klaren",
+        "content": "A artist, now part of the ships crew. he likes to draw.",
+        "tags": [
+          "ship",
+          "crew",
+          ""
+        ],
+        "createdAt": "2026-04-04T23:55:41.878Z",
+        "updatedAt": "2026-04-04T23:55:41.878Z"
+      },
+      {
+        "id": "note_mnkzzfn5-h93q5m",
+        "title": "Queen Prima",
+        "content": "a singer, an icon,",
+        "tags": [
+          "singer"
+        ],
+        "createdAt": "2026-04-05T00:02:47.153Z",
+        "updatedAt": "2026-04-05T00:02:47.153Z"
+      },
+      {
+        "id": "note_mnl0rrzj-4otzb5",
+        "title": "Ivo",
+        "content": "Half orc that arm wrestled Corelia \nTravelling with Godrian, Llairm, and Seradyl/Sera \n",
+        "tags": [
+          "half orc"
+        ],
+        "createdAt": "2026-04-05T00:24:49.519Z",
+        "updatedAt": "2026-04-05T00:24:49.519Z"
       }
     ],
     "event": [
       {
         "id": "note_mlr6pcbd-my6ouw",
         "title": "DREAM BATTLES",
-        "content": "For some reason, in Riven's dreams, he has been dragging party members into his dreams to fight some sort of shadow demon. Currently, Corelia and Rahkar have been sent into these dreams. Mozzie showed up to aid Corelia, and Rhaekar got a boost from his voices in his head. Xim described Riven's dreams as terrifying and almost alive. we feel it may be safe to assume that the next victum is between blue or gill",
+        "content": "For some reason, in Riven's dreams, he or something has been dragging party members into his dreams to fight some sort of shadow demon. Currently, Corelia and Rahkar have been sent into these dreams. Mozzie showed up to aid Corelia, and Rhaekar got a boost from his voices in his head. Xim described Riven's dreams as terrifying and almost alive. we feel it may be safe to assume that the next victum is between blue or gill",
         "tags": [
           "dream",
           "riven",
@@ -447,7 +511,7 @@
           "corey"
         ],
         "createdAt": "2026-02-17T22:38:05.977Z",
-        "updatedAt": "2026-03-29T02:02:10.471Z"
+        "updatedAt": "2026-04-04T23:51:42.341Z"
       },
       {
         "id": "note_mm76ptad-3ixx7d",
@@ -502,6 +566,17 @@
         "tags": [],
         "createdAt": "2026-03-29T03:57:38.419Z",
         "updatedAt": "2026-03-29T03:57:38.419Z"
+      },
+      {
+        "id": "note_mnl6ha0w-srxudu",
+        "title": "Music Festival",
+        "content": "there is a music Festival in nuecroft",
+        "tags": [
+          "music",
+          "nuecroft"
+        ],
+        "createdAt": "2026-04-05T03:04:37.376Z",
+        "updatedAt": "2026-04-05T03:04:37.376Z"
       }
     ],
     "enemy": [
@@ -765,25 +840,83 @@
         "content": "Plushie with familiar-like behavior. Follows in its own way and can absorb up to one instance of damage before dying. has bonded with gill, has been trying to get rid of it. unsuccessfully.",
         "tags": [
           "familiar",
-          "plushie"
+          "plushie",
+          "gill"
         ],
         "createdAt": "2026-03-24T21:17:21.145Z",
-        "updatedAt": "2026-03-26T01:07:54.616Z"
+        "updatedAt": "2026-04-04T23:44:55.287Z"
       }
     ],
-    "session": []
+    "session": [],
+    "gillcorner": [
+      {
+        "id": "note_mnf4mxuq-1netgc",
+        "title": "Corelia Blade",
+        "content": "after meeting corelia, gill had saw her saw and done her the liberty of upgrading it, currently it has the enchanced weapon infusion which makes magic and plus 1 weapon",
+        "tags": [
+          "Corelia",
+          "infusion"
+        ],
+        "createdAt": "2026-03-31T21:26:25.250Z",
+        "updatedAt": "2026-03-31T21:26:25.250Z"
+      },
+      {
+        "id": "note_mnf4oax8-qfnchr",
+        "title": "Gill Returning Spear (GRS)",
+        "content": "Gill has turned his once ordinary weapon into a magical spear that returns to him after throwing. i",
+        "tags": [
+          "Gill",
+          "Infusion",
+          "Spear"
+        ],
+        "createdAt": "2026-03-31T21:27:28.844Z",
+        "updatedAt": "2026-03-31T21:27:28.844Z"
+      },
+      {
+        "id": "note_mnf4tpp5-uzm50d",
+        "title": "Robert De Turtle",
+        "content": "After reading a book written by a woman named Shelly, Gill got the idea for his most proud creation: a mechanical turtle made from the scraps Gill had found over the years. Robert is his most powerful creation by far, capable of great speed and bite power like no other tomower. Do not get on this turtle's bad side.\n\nThere is something weird about this turtle and gill, gill has swrone he has heard it talk before but everyone claims is a normal turtle\n\nGill:\"i am not crazy i am not Rhaekar, that turtle is talking i swear\"",
+        "tags": [
+          "Gill",
+          "turtle",
+          "steel defender",
+          "big book",
+          ""
+        ],
+        "createdAt": "2026-03-31T21:31:41.273Z",
+        "updatedAt": "2026-03-31T21:31:41.273Z"
+      },
+      {
+        "id": "note_mnf56hur-zpmg5i",
+        "title": "The mysterious magic",
+        "content": "After taking possession of the ship, the River Walker Strider, they soon found they had a new passenger: the former captain. Former saw something affecting the members Blue and Riven, then saw Gill and assumed Gill did it. But after talking with him realize gill had nothing to do with it, but refused to talk about it with gill. then in torncilce when meeting with Krokas the giant snake, he also saw magic coming from Gill and led him to investigate with sirens from a book in Alsicta. The book, unfortunately, turned out to be missing pages courtesy of one mozzie. Then, in Pinchester, an oracle told him that the subject was banned from discussion by order of the celestials. with every puzzle piece they find, they have 10 more puzzle pieces to find",
+        "tags": [
+          "Gill",
+          "Blue",
+          "Riven",
+          "Former",
+          "krokas",
+          "mozzie",
+          "the sea",
+          "CONSPIRACY",
+          ""
+        ],
+        "createdAt": "2026-03-31T21:41:37.635Z",
+        "updatedAt": "2026-03-31T21:41:47.789Z"
+      }
+    ]
   },
   "mapWaypoints": {
     "world": [
       {
         "id": "wp_mlvo301n-oi9sdf",
         "mapId": "world",
-        "x": 875,
-        "y": 725,
+        "x": 872,
+        "y": 709,
         "title": "Gildhammer",
         "note": "",
         "createdAt": "2026-02-21T01:55:41.435Z",
-        "updatedAt": "2026-02-21T01:55:41.435Z"
+        "updatedAt": "2026-04-07T20:47:26.876Z"
       },
       {
         "id": "wp_mlvodgfj-scsuyc",
@@ -818,12 +951,12 @@
       {
         "id": "wp_mmgq8egq-m2gfby",
         "mapId": "world",
-        "x": 598,
-        "y": 413,
+        "x": 601,
+        "y": 412,
         "title": "Origin isles",
         "note": "",
         "createdAt": "2026-03-07T19:39:02.330Z",
-        "updatedAt": "2026-03-29T02:29:44.720Z"
+        "updatedAt": "2026-04-05T02:41:13.373Z"
       },
       {
         "id": "wp_mmgq8okx-dsbgvf",
@@ -1224,6 +1357,112 @@
         "note": "oil for corey and party crasher",
         "createdAt": "2026-03-29T04:12:09.297Z",
         "updatedAt": "2026-03-29T04:12:38.573Z"
+      },
+      {
+        "id": "txn_mnl4sgxw-gpnlox",
+        "date": "2026-04-05",
+        "description": "Blue hag spending",
+        "type": "expense",
+        "totalCp": 700,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 7,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "direct",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -700,
+            "characterId": "ch_mlb63uh7-tzw9ht",
+            "shareCount": 1
+          }
+        ],
+        "createdAt": "2026-04-05T02:17:20.324Z",
+        "updatedAt": "2026-04-05T02:17:20.324Z"
+      },
+      {
+        "id": "txn_mnl7z8qj-856tgs",
+        "date": "2026-04-05",
+        "description": "mozzie favor money",
+        "type": "expense",
+        "totalCp": 25000,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 250,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "equal_split",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -5000,
+            "characterId": "ch_mlb5meab-2tthli",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": -5000,
+            "characterId": "ch_mlb5okkf-o7v4qu",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": -5000,
+            "characterId": "ch_mlb63uh7-tzw9ht",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": -5000,
+            "characterId": "ch_mlbheiog-c82mut",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": -5000,
+            "characterId": "ch_mlbhfekw-5lrtjs",
+            "shareCount": 1
+          }
+        ],
+        "note": "mozzie price for checking on ell",
+        "createdAt": "2026-04-05T03:46:35.131Z",
+        "updatedAt": "2026-04-05T03:46:35.131Z"
+      },
+      {
+        "id": "txn_mnl89i97-6r5is0",
+        "date": "2026-04-05",
+        "description": "riven bribe to gondrian",
+        "type": "expense",
+        "totalCp": 5000,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 50,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "direct",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -5000,
+            "characterId": "ch_mlbhfekw-5lrtjs",
+            "shareCount": 1
+          }
+        ],
+        "createdAt": "2026-04-05T03:54:34.027Z",
+        "updatedAt": "2026-04-07T20:36:27.400Z"
       }
     ],
     "settings": {

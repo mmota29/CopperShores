@@ -28,12 +28,18 @@
 
     <!-- Main Content -->
     <main class="container">
-        <h1>Campaign Notes</h1>
-        <p style="color: var(--secondary-color); margin-bottom:2rem;">Organize your campaign knowledge</p>
+        <section class="panel-shell">
+            <header class="page-header">
+                <div class="title-stack">
+                    <h1>Campaign Notes</h1>
+                    <p class="page-subtitle">Organize your campaign lore, rumors, and clues.</p>
+                </div>
+            </header>
 
-        <div id="categories-grid" class="links-grid" style="margin-top:1rem;">
-            <!-- Populated by JS -->
-        </div>
+            <div id="categories-grid" class="links-grid">
+                <!-- Populated by JS -->
+            </div>
+        </section>
     </main>
 
     <!-- Footer -->
@@ -65,8 +71,7 @@
                     Object.entries(cats).forEach(([key, label]) => {
                         const description = categoryDescriptions[key] || `Manage your ${label.toLowerCase()}`;
                         const card = document.createElement('div');
-                        card.className = 'link-card';
-                        card.style.cursor = 'pointer';
+                        card.className = 'link-card category-card';
                         card.onclick = () => { window.location = `notes_category.html?cat=${key}`; };
                         card.innerHTML = `
                             <h3>${label}</h3>

@@ -681,13 +681,13 @@
       {
         "id": "note_mm73fr67-vcildu",
         "title": "Gildhammer",
-        "content": "There was an illitid problem. Draves. Also noted as Godrian's original home.",
+        "content": "There was an illitid problem. Draves. Also noted as Godrian's original home. Tremors from the mountains are being sus",
         "tags": [
           "mindflayers",
           "drawvs"
         ],
         "createdAt": "2026-03-01T01:50:58.639Z",
-        "updatedAt": "2026-03-24T21:17:21.145Z"
+        "updatedAt": "2026-04-07T23:55:51.510Z"
       },
       {
         "id": "note_mm76q9kf-ktysxe",
@@ -746,6 +746,18 @@
         "tags": [],
         "createdAt": "2026-03-29T02:20:58.545Z",
         "updatedAt": "2026-03-29T02:20:58.545Z"
+      },
+      {
+        "id": "note_mnpa0ni0-7th0ae",
+        "title": "The Field of Convergence",
+        "content": "Something happened here involving planar travel, and now this field is riddled with elementals of all kinds. West of Pinchester",
+        "tags": [
+          "pinchester",
+          "Elemental",
+          ""
+        ],
+        "createdAt": "2026-04-07T23:54:44.856Z",
+        "updatedAt": "2026-04-07T23:54:44.856Z"
       }
     ],
     "item": [
@@ -845,6 +857,17 @@
         ],
         "createdAt": "2026-03-24T21:17:21.145Z",
         "updatedAt": "2026-04-04T23:44:55.287Z"
+      },
+      {
+        "id": "note_mnpet565-jiupjc",
+        "title": "Fire Elemental Gem",
+        "content": "have some leftover energy from the plane of fire.\ncould do something with it\nmaterial",
+        "tags": [
+          "Elemental",
+          "planes"
+        ],
+        "createdAt": "2026-04-08T02:08:52.589Z",
+        "updatedAt": "2026-04-08T02:09:01.564Z"
       }
     ],
     "session": [],
@@ -903,6 +926,20 @@
         ],
         "createdAt": "2026-03-31T21:41:37.635Z",
         "updatedAt": "2026-03-31T21:41:47.789Z"
+      },
+      {
+        "id": "note_mnpalw2t-44i0ra",
+        "title": "Musical dreams",
+        "content": "Gill has been hearing music when sleeping next to either blue or riven, with blue its mainley piano and with riven it varys but there is sometimes humming",
+        "tags": [
+          "riven",
+          "blue",
+          "dreams",
+          "music",
+          "piano"
+        ],
+        "createdAt": "2026-04-08T00:11:15.749Z",
+        "updatedAt": "2026-04-08T00:11:15.749Z"
       }
     ]
   },
@@ -1007,6 +1044,16 @@
         "note": "",
         "createdAt": "2026-03-07T19:40:26.829Z",
         "updatedAt": "2026-03-07T19:40:26.829Z"
+      },
+      {
+        "id": "wp_mnp9vfze-57qqrz",
+        "mapId": "world",
+        "x": 841,
+        "y": 612,
+        "title": "Field of Convergence",
+        "note": "A field often filled with all kinds of elementals",
+        "createdAt": "2026-04-07T23:50:41.833Z",
+        "updatedAt": "2026-04-07T23:52:38.857Z"
       }
     ],
     "alsita": [
@@ -1463,6 +1510,96 @@
         ],
         "createdAt": "2026-04-05T03:54:34.027Z",
         "updatedAt": "2026-04-07T20:36:27.400Z"
+      },
+      {
+        "id": "txn_mnpaitwm-dahqhh",
+        "date": "2026-04-08",
+        "description": "mozart gold",
+        "type": "income",
+        "totalCp": 2000,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 20,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "equal_split",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": 1000,
+            "characterId": "ch_mlb5meab-2tthli",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": 1000,
+            "characterId": "ch_mlbhfekw-5lrtjs",
+            "shareCount": 1
+          }
+        ],
+        "note": "stay in characters folks",
+        "createdAt": "2026-04-08T00:08:52.966Z",
+        "updatedAt": "2026-04-08T00:08:52.966Z"
+      },
+      {
+        "id": "txn_mnpez7qc-8eisc7",
+        "date": "2026-04-08",
+        "description": "Fire elemental quest",
+        "type": "income",
+        "totalCp": 120000,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 1200,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "equal_split",
+        "patronEnabledAtTime": true,
+        "patronPercentAtTime": 10,
+        "patronCp": 12000,
+        "allocations": [
+          {
+            "targetType": "patron",
+            "cpDelta": 12000
+          },
+          {
+            "targetType": "character",
+            "cpDelta": 21600,
+            "characterId": "ch_mlb5meab-2tthli",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": 21600,
+            "characterId": "ch_mlb5okkf-o7v4qu",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": 21600,
+            "characterId": "ch_mlb63uh7-tzw9ht",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": 21600,
+            "characterId": "ch_mlbheiog-c82mut",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": 21600,
+            "characterId": "ch_mlbhfekw-5lrtjs",
+            "shareCount": 1
+          }
+        ],
+        "note": "reward for killing the fire elemental",
+        "createdAt": "2026-04-08T02:13:35.844Z",
+        "updatedAt": "2026-04-08T02:13:35.844Z"
       }
     ],
     "settings": {

@@ -326,7 +326,7 @@ function initPlayersPage() {
 function showMessage(msg, isError) {
     const el = document.getElementById('message') || document.getElementById('player-message');
     if (!el) return;
-    el.innerHTML = `<p style="color:${isError? '#ff6b6b':'#90ee90'}">${msg}</p>`;
+    el.innerHTML = `<p class="status-message ${isError ? 'error' : 'success'}">${msg}</p>`;
     setTimeout(()=>{ if (el) el.innerHTML=''; }, 4000);
 }
 
@@ -339,7 +339,7 @@ function clearAddPlayerForm() {
 
 function truncate(text, n=80) {
     if (!text) return '';
-    return text.length > n ? text.slice(0,n-1) + '…' : text;
+    return text.length > n ? text.slice(0, Math.max(0, n - 3)) + '...' : text;
 }
 
 function loadPlayersList() {
@@ -349,14 +349,18 @@ function loadPlayersList() {
             if (resp.status !== 'success') { showMessage('Failed to load players', true); return; }
             const tbody = document.getElementById('players-tbody');
             tbody.innerHTML = '';
-            resp.data.players.forEach(p => {
+            const players = resp.data.players || [];
+            if (!players.length) {
                 const tr = document.createElement('tr');
-                tr.style.borderBottom = '1px solid rgba(255,255,255,0.03)';
-                tr.style.cursor = 'pointer';
+                tr.innerHTML = '<td colspan="3" class="players-empty">No players yet. Add one to get started.</td>';
+                tbody.appendChild(tr);
+                return;
+            }
+            players.forEach(p => {
+                const tr = document.createElement('tr');
                 tr.addEventListener('click', ()=>{ window.location = `player.html?id=${p.id}`; });
 
                 const tdName = document.createElement('td');
-                tdName.style.padding = '0.75rem';
                 tdName.textContent = p.name;
 
                 const tdChar = document.createElement('td');
@@ -433,12 +437,16 @@ function renderCurrentCharacter(player) {
     box.innerHTML = '';
     const cur = player.currentCharacter;
     if (!cur) {
-        box.innerHTML = '<p>No current character</p>';
+        box.innerHTML = '<p class="players-empty">No current character.</p>';
         return;
     }
+    const classText = cur.className || cur.class || '';
+    const detailParts = [cur.race, classText].filter(Boolean);
+    const details = detailParts.length ? `${detailParts.join(' ')} (Level ${cur.level || 1})` : `Level ${cur.level || 1}`;
     box.innerHTML = `
-        <div style="background: rgba(0,0,0,0.2); padding:0.75rem; border-radius:6px;">
-            <strong>${cur.name}</strong> — ${cur.race || ''} ${cur.className || cur.class || ''} (Level ${cur.level || 1})
+        <div class="current-character-card">
+            <strong>${cur.name}</strong>
+            <div class="char-meta">${details}</div>
         </div>
     `;
 }
@@ -447,16 +455,19 @@ function renderPreviousCharacters(player) {
     const list = document.getElementById('previous-characters-list');
     list.innerHTML = '';
     const chars = player.characters || [];
-    if (!chars.length) { list.innerHTML = '<p>No previous characters</p>'; return; }
+    if (!chars.length) { list.innerHTML = '<p class="players-empty">No previous characters.</p>'; return; }
     chars.forEach(c => {
         const div = document.createElement('div');
         div.className = 'char-row';
+        const classText = c.className || c.class || '';
+        const detailParts = [c.race, classText].filter(Boolean);
+        const details = detailParts.length ? ` - ${detailParts.join(' ')}` : '';
         div.innerHTML = `
             <div>
-                <strong>${c.name}</strong> — ${c.race || ''} ${c.className || c.class || ''} (Lv ${c.level || 1})
-                <div style="font-size:0.9rem; color:#ccc">${c.status || ''}</div>
+                <strong>${c.name}</strong>${details} (Lv ${c.level || 1})
+                <div class="char-meta">${c.status || ''}</div>
             </div>
-            <div style="display:flex; gap:0.5rem;">
+            <div class="button-row">
                 <button class="btn" onclick="editCharacter('${player.id}','${c.id}')">Edit</button>
                 <button class="btn" onclick="setAsCurrent('${player.id}','${c.id}')">Set as Current</button>
                 <button class="btn" onclick="removeCharacter('${player.id}','${c.id}')">Remove</button>

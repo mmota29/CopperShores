@@ -525,7 +525,17 @@ app.get('/', (req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`🐉 Copper Shores server is running on http://localhost:${PORT}`);
-  console.log(`📡 API endpoints available at http://localhost:${PORT}/api`);
-});
+async function startServer() {
+  try {
+    await db.ready();
+    app.listen(PORT, () => {
+      console.log('Copper Shores server is running on http://localhost:' + PORT);
+      console.log('API endpoints available at http://localhost:' + PORT + '/api');
+    });
+  } catch (err) {
+    console.error('Failed to initialize database cache:', err.message);
+    process.exit(1);
+  }
+}
+
+startServer();

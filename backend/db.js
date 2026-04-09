@@ -2,36 +2,84 @@
 // Provides safe read/write and basic player/character operations
 
 const fs = require('fs');
+const fsp = fs.promises;
 const path = require('path');
 
 const DB_PATH = path.join(__dirname, 'data', 'db.json');
 
-function ensureDb() {
-  if (!fs.existsSync(DB_PATH)) {
-    const dir = path.dirname(DB_PATH);
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(DB_PATH, JSON.stringify({ players: [] }, null, 2));
+function createEmptyDbState() {
+  return { players: [] };
+}
+
+let dbCache = null;
+let dbInitialized = false;
+let persistChain = Promise.resolve();
+
+async function ensureDb() {
+  const dir = path.dirname(DB_PATH);
+  await fsp.mkdir(dir, { recursive: true });
+
+  try {
+    await fsp.access(DB_PATH, fs.constants.F_OK);
+  } catch {
+    await fsp.writeFile(DB_PATH, JSON.stringify(createEmptyDbState(), null, 2), 'utf8');
   }
+}
+
+async function initializeDb() {
+  await ensureDb();
+  const raw = await fsp.readFile(DB_PATH, 'utf8');
+
+  try {
+    dbCache = JSON.parse(raw);
+  } catch (err) {
+    // If corrupted, reset to empty DB to avoid crashes.
+    dbCache = createEmptyDbState();
+    await fsp.writeFile(DB_PATH, JSON.stringify(dbCache, null, 2), 'utf8');
+  }
+
+  if (!dbCache || typeof dbCache !== 'object') {
+    dbCache = createEmptyDbState();
+  }
+  if (!Array.isArray(dbCache.players)) {
+    dbCache.players = [];
+  }
+
+  dbInitialized = true;
+}
+
+const dbReadyPromise = initializeDb();
+
+function assertDbInitialized() {
+  if (!dbInitialized || !dbCache) {
+    throw new Error('Database is not initialized yet.');
+  }
+}
+
+function queuePersist() {
+  const snapshot = JSON.stringify(dbCache, null, 2);
+  persistChain = persistChain
+    .then(async () => {
+      const tmpPath = DB_PATH + '.tmp';
+      await fsp.writeFile(tmpPath, snapshot, 'utf8');
+      await fsp.rename(tmpPath, DB_PATH);
+    })
+    .catch(err => {
+      console.error('Failed to persist db.json:', err.message);
+    });
+
+  return persistChain;
 }
 
 function readDB() {
-  ensureDb();
-  const raw = fs.readFileSync(DB_PATH, 'utf8');
-  try {
-    return JSON.parse(raw);
-  } catch (err) {
-    // If corrupted, reset to empty DB to avoid crashes
-    const empty = { players: [] };
-    fs.writeFileSync(DB_PATH, JSON.stringify(empty, null, 2));
-    return empty;
-  }
+  assertDbInitialized();
+  return dbCache;
 }
 
 function writeDB(data) {
-  // atomic write: write to temp then rename
-  const tmpPath = DB_PATH + '.tmp';
-  fs.writeFileSync(tmpPath, JSON.stringify(data, null, 2));
-  fs.renameSync(tmpPath, DB_PATH);
+  assertDbInitialized();
+  dbCache = data;
+  queuePersist();
 }
 
 function generateId(prefix = '') {
@@ -1134,7 +1182,17 @@ function listLegacySpendingLogFromTransactions() {
     });
 }
 
+function ready() {
+  return dbReadyPromise;
+}
+
+function flushWrites() {
+  return persistChain;
+}
+
 module.exports = {
+  ready,
+  flushWrites,
   readDB,
   writeDB,
   listPlayers,

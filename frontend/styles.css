@@ -918,6 +918,32 @@ main > h1 {
     margin: 0;
 }
 
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    body::before {
+        animation: none !important;
+        opacity: 0.2;
+    }
+
+    .navbar {
+        backdrop-filter: none;
+    }
+
+    .btn:hover,
+    .nav-link:hover,
+    .nav-logo:hover,
+    .link-card:hover,
+    .note-row:hover {
+        transform: none;
+    }
+}
+
 /* Responsive Design */
 @media (max-width: 900px) {
     .nav-title {

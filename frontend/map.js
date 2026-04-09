@@ -171,58 +171,45 @@ function loadMapImage(mapId) {
 
     const img = new Image();
     img.onload = function() {
-      // Create bounds based on image dimensions
       const width = img.width;
       const height = img.height;
       const bounds = [[0, 0], [height, width]];
+      const boundsLL = L.latLngBounds(bounds);
 
-      // Create image layer and add to map
       mapState.imageLayer = L.imageOverlay(mapDef.imagePath, bounds).addTo(mapState.mapInstance);
+      const map = mapState.mapInstance;
 
-      // Ensure Leaflet knows the container size
-      mapState.mapInstance.invalidateSize(true); // force immediate resize
-      
-      // Wait for layout to settle, then fit the image to the view
-      setTimeout(() => {
+      // Reset constraints before fitting this map image.
+      map.setMinZoom(0);
+      map.setMaxZoom(28);
+      map.setMaxBounds(null);
+
+      // Let layout settle without forcing an artificial fixed delay.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          map.invalidateSize({ pan: false });
+
+          // Fit the image to the viewport - this shows the entire image.
+          map.fitBounds(boundsLL, { padding: [10, 10], animate: false });
+
+          const fitZoom = map.getZoom();
+          const MIN_ZOOM = Math.max(-5, fitZoom - 2);
+          const MAX_ZOOM = fitZoom + 6;
+
+          map.setMinZoom(MIN_ZOOM);
+          map.setMaxZoom(MAX_ZOOM);
+          map.setMaxBounds(boundsLL.pad(0.1));
+
+          resolve();
+        });
+      });
+      if (DEV_MODE) {
         console.log(`MAP DEBUG: Image loaded - width=${width} height=${height}`);
-        mapState.mapInstance.invalidateSize(true); // call again to ensure size is known
-        
-        // Get map container dimensions  
-        const mapDiv = mapState.mapInstance.getContainer();
+        const mapDiv = map.getContainer();
         const mapWidth = mapDiv.clientWidth;
         const mapHeight = mapDiv.clientHeight;
         console.log(`MAP DEBUG: Map container - width=${mapWidth} height=${mapHeight}`);
-
-        // Create bounds and fit
-        const boundsLL = L.latLngBounds(bounds);
-        
-        // Clear previous constraints before fitting
-        mapState.mapInstance.setMinZoom(0);
-        mapState.mapInstance.setMaxZoom(28);
-        mapState.mapInstance.setMaxBounds(null);
-
-        // Fit the image to the viewport - this shows the ENTIRE image
-        mapState.mapInstance.fitBounds(boundsLL, { padding: [10, 10], animate: false });
-
-        // Get the zoom level that was just set
-        const fitZoom = mapState.mapInstance.getZoom();
-        console.log(`MAP DEBUG: After fitBounds, zoom=${fitZoom}`);
-
-        // Set constraints: min zoom is the fit zoom minus padding so user can slightly zoom out
-        // but can't crop the image. Max zoom allows 6 levels of zoom-in for detail.
-        const MIN_ZOOM = Math.max(-5, fitZoom - 2);  // Allow some zoom-out buffer
-        const MAX_ZOOM = fitZoom + 6;
-
-        mapState.mapInstance.setMinZoom(MIN_ZOOM);
-        mapState.mapInstance.setMaxZoom(MAX_ZOOM);
-        
-        // Set max pan bounds to allow slight panning but not seeing blank areas
-        mapState.mapInstance.setMaxBounds(boundsLL.pad(0.1));
-
-        console.log(`MAP DEBUG: Set minZoom=${MIN_ZOOM}, maxZoom=${MAX_ZOOM}, current zoom=${mapState.mapInstance.getZoom()}`);
-      }, 300);
-
-      resolve();
+      }
     };
     img.onerror = () => reject(new Error('Failed to load map image'));
     img.src = mapDef.imagePath;

@@ -1,5 +1,35 @@
 /* Copper Shores - Global Ocean + Pirate Theme */
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Crimson+Text:wght@400;600&family=Pirata+One&display=swap');
+@font-face {
+    font-family: 'Cinzel';
+    src: url('/assets/fonts/cinzel-500-700-latin.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 500 700;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Crimson Text';
+    src: url('/assets/fonts/crimson-text-400-latin.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Crimson Text';
+    src: url('/assets/fonts/crimson-text-600-latin.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Pirata One';
+    src: url('/assets/fonts/pirata-one-400-latin.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+}
 
 :root {
     --primary-color: #0d3044;
@@ -916,6 +946,87 @@ main > h1 {
 
 .footer p {
     margin: 0;
+}
+
+/* Performance-tuned visual pass:
+   Keep the theme identity while reducing expensive paint/composite effects. */
+body {
+    background:
+        radial-gradient(circle at 22% 6%, rgba(100, 201, 224, 0.1), transparent 30%),
+        linear-gradient(160deg, #04111d 0%, #082236 45%, #0a2b40 100%);
+}
+
+body::before,
+body::after {
+    display: none;
+}
+
+.navbar {
+    background: linear-gradient(95deg, rgba(8, 27, 44, 0.96), rgba(13, 48, 68, 0.95));
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.28);
+    backdrop-filter: none;
+}
+
+.hero,
+.party-overview-section,
+.panel-shell,
+.note-editor-shell,
+.player-detail-shell,
+.link-card,
+.btn,
+.nav-link.active {
+    box-shadow: none;
+}
+
+.hero,
+.party-overview-section,
+.panel-shell,
+.note-editor-shell,
+.player-detail-shell {
+    background: linear-gradient(160deg, rgba(10, 30, 45, 0.94), rgba(6, 17, 27, 0.95));
+}
+
+.link-card,
+.overview-card,
+.form-panel,
+.section-card,
+.table-shell,
+.modal-panel {
+    background: rgba(8, 23, 36, 0.86);
+}
+
+.hero::before,
+.link-card::before {
+    display: none;
+}
+
+.btn {
+    transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+}
+
+.nav-link,
+.nav-logo,
+.link-card,
+.note-row {
+    transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+}
+
+.btn:hover,
+.nav-link:hover,
+.nav-logo:hover,
+.link-card:hover,
+.note-row:hover {
+    transform: none;
+}
+
+.nav-logo:hover,
+.link-card:hover,
+.btn:hover {
+    box-shadow: none;
+}
+
+.note-row:hover {
+    background: rgba(11, 32, 48, 0.92);
 }
 
 @media (prefers-reduced-motion: reduce) {

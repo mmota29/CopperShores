@@ -7,14 +7,66 @@ const path = require('path');
 
 const app = express();
 const PORT = 3000;
+app.set('etag', 'strong');
 
 // Middleware
 app.use(cors()); // Enable CORS for local development
 app.use(express.json());
 
 // Serve static files from frontend and allmaps directories
-app.use(express.static(path.join(__dirname, '..', 'frontend')));
-app.use('/allmaps', express.static(path.join(__dirname, '..', 'allmaps')));
+const frontendPath = path.join(__dirname, '..', 'frontend');
+const allmapsPath = path.join(__dirname, '..', 'allmaps');
+
+const IMMUTABLE_STATIC_EXTENSIONS = new Set([
+  '.css',
+  '.js',
+  '.png',
+  '.jpg',
+  '.jpeg',
+  '.gif',
+  '.svg',
+  '.webp',
+  '.ico',
+  '.woff2',
+  '.woff',
+  '.ttf'
+]);
+
+app.use(express.static(frontendPath, {
+  etag: true,
+  lastModified: true,
+  setHeaders: (res, filePath) => {
+    const ext = path.extname(filePath).toLowerCase();
+    const fileName = path.basename(filePath).toLowerCase();
+
+    if (fileName === 'sw.js') {
+      res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+      return;
+    }
+
+    if (ext === '.html') {
+      res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+      return;
+    }
+
+    if (IMMUTABLE_STATIC_EXTENSIONS.has(ext)) {
+      res.setHeader('Cache-Control', 'public, max-age=2592000, immutable');
+      return;
+    }
+
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+  }
+}));
+
+app.use('/allmaps', express.static(allmapsPath, {
+  etag: true,
+  lastModified: true,
+  immutable: true,
+  maxAge: '365d',
+  setHeaders: res => {
+    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+  }
+}));
 
 // Routes
 const db = require('./db');

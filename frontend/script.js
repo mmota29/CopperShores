@@ -10,6 +10,15 @@ const DEFAULT_COIN_VALUES = {
     cp: 1
 };
 
+if ('serviceWorker' in navigator && !window.__CS_SW_REGISTERED) {
+    window.__CS_SW_REGISTERED = true;
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(err => {
+            console.warn('Service worker registration failed:', err.message);
+        });
+    });
+}
+
 async function requestJson(url, options) {
     const response = await fetch(url, options);
     const payload = await response.json().catch(() => ({

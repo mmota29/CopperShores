@@ -908,13 +908,13 @@
       {
         "id": "note_mnpet565-jiupjc",
         "title": "Fire Elemental Gem",
-        "content": "have some leftover energy from the plane of fire.\ncould do something with it\nmaterial",
+        "content": "have some leftover energy from the plane of fire.\ncould do something with it\nmaterial\ncould be used to make a flame tongue weapon, gildhammer could be where i forged but i need alot, i need 10.",
         "tags": [
           "Elemental",
           "planes"
         ],
         "createdAt": "2026-04-08T02:08:52.589Z",
-        "updatedAt": "2026-04-08T02:09:01.564Z"
+        "updatedAt": "2026-04-12T04:23:31.428Z"
       }
     ],
     "session": [],
@@ -1771,6 +1771,33 @@
         "sessionLabel": "32",
         "createdAt": "2026-04-12T03:29:14.930Z",
         "updatedAt": "2026-04-12T03:29:14.930Z"
+      },
+      {
+        "id": "txn_mnv8oshe-znd34m",
+        "date": "2026-04-12",
+        "description": "leather studded armor",
+        "type": "expense",
+        "totalCp": 4500,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 45,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "direct",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -4500,
+            "characterId": "ch_mlbhfekw-5lrtjs",
+            "shareCount": 1
+          }
+        ],
+        "createdAt": "2026-04-12T04:04:08.882Z",
+        "updatedAt": "2026-04-12T04:04:08.882Z"
       }
     ],
     "settings": {

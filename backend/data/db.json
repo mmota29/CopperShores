@@ -532,6 +532,18 @@
         "tags": [],
         "createdAt": "2026-04-12T00:34:33.727Z",
         "updatedAt": "2026-04-12T00:34:33.727Z"
+      },
+      {
+        "id": "note_mnv3fz06-vlmfay",
+        "title": "Marvin",
+        "content": "Marvin the bartender, riven boss, he is a guy, hates bill. dear god he makes my brain hurts",
+        "tags": [
+          "Marvin",
+          "Bill",
+          "quakers"
+        ],
+        "createdAt": "2026-04-12T01:37:19.350Z",
+        "updatedAt": "2026-04-12T02:26:43.537Z"
       }
     ],
     "event": [
@@ -1635,6 +1647,130 @@
         "note": "reward for killing the fire elemental",
         "createdAt": "2026-04-08T02:13:35.844Z",
         "updatedAt": "2026-04-08T02:13:35.844Z"
+      },
+      {
+        "id": "txn_mnv7d62o-fp7gzy",
+        "date": "2026-04-12",
+        "description": "mozzie message",
+        "type": "expense",
+        "totalCp": 5000,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 50,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "direct",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -5000,
+            "characterId": "ch_mlb5okkf-o7v4qu",
+            "shareCount": 1
+          }
+        ],
+        "sessionLabel": "32",
+        "createdAt": "2026-04-12T03:27:07.008Z",
+        "updatedAt": "2026-04-12T03:27:07.008Z"
+      },
+      {
+        "id": "txn_mnv7dy6i-mkzmt2",
+        "date": "2026-04-12",
+        "description": "marvin bar tab",
+        "type": "expense",
+        "totalCp": 1100,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 11,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "direct",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -1100,
+            "characterId": "ch_mlbheiog-c82mut",
+            "shareCount": 1
+          }
+        ],
+        "sessionLabel": "32",
+        "createdAt": "2026-04-12T03:27:43.434Z",
+        "updatedAt": "2026-04-12T03:27:43.434Z"
+      },
+      {
+        "id": "txn_mnv7ewr1-suiv1h",
+        "date": "2026-04-12",
+        "description": "healing potion",
+        "type": "expense",
+        "totalCp": 3000,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 30,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "custom_split",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -1000,
+            "characterId": "ch_mlb5meab-2tthli",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": -1000,
+            "characterId": "ch_mlb63uh7-tzw9ht",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": -1000,
+            "characterId": "ch_mlbhfekw-5lrtjs",
+            "shareCount": 1
+          }
+        ],
+        "sessionLabel": "32",
+        "createdAt": "2026-04-12T03:28:28.237Z",
+        "updatedAt": "2026-04-12T03:28:28.237Z"
+      },
+      {
+        "id": "txn_mnv7fws2-t7xqkn",
+        "date": "2026-04-12",
+        "description": "one copper from marvin",
+        "type": "income",
+        "totalCp": 1,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 0,
+          "sp": 0,
+          "cp": 1
+        },
+        "allocationMode": "direct",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": 1,
+            "characterId": "ch_mlb5okkf-o7v4qu",
+            "shareCount": 1
+          }
+        ],
+        "sessionLabel": "32",
+        "createdAt": "2026-04-12T03:29:14.930Z",
+        "updatedAt": "2026-04-12T03:29:14.930Z"
       }
     ],
     "settings": {

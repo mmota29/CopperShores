@@ -508,6 +508,30 @@
         ],
         "createdAt": "2026-04-08T19:46:40.897Z",
         "updatedAt": "2026-04-08T19:46:40.897Z"
+      },
+      {
+        "id": "note_mnv15aym-tyoy2u",
+        "title": "Cinder stoneheart",
+        "content": "leader of stoneheart clan",
+        "tags": [],
+        "createdAt": "2026-04-12T00:33:02.397Z",
+        "updatedAt": "2026-04-12T00:33:02.397Z"
+      },
+      {
+        "id": "note_mnv16ra1-hg0gqb",
+        "title": "bron battlehammer",
+        "content": "leader of house battlehammer of gildhammer",
+        "tags": [],
+        "createdAt": "2026-04-12T00:34:10.201Z",
+        "updatedAt": "2026-04-12T00:34:10.201Z"
+      },
+      {
+        "id": "note_mnv179fj-lbgm9p",
+        "title": "enikil ironblood",
+        "content": "leader of ironblood and father of gondrian",
+        "tags": [],
+        "createdAt": "2026-04-12T00:34:33.727Z",
+        "updatedAt": "2026-04-12T00:34:33.727Z"
       }
     ],
     "event": [
@@ -693,13 +717,12 @@
       {
         "id": "note_mm73fr67-vcildu",
         "title": "Gildhammer",
-        "content": "There was an illitid problem. Draves. Also noted as Godrian's original home. Tremors from the mountains are being sus",
+        "content": "Draves. Also noted as Godrian's original home. Tremors from the mountains are being suspected. There are three big houses: Battle Hammer, Iron Blood, and Frost Helm (Flint Frost Helm they are arctect.  stoneheart.",
         "tags": [
-          "mindflayers",
           "drawvs"
         ],
         "createdAt": "2026-03-01T01:50:58.639Z",
-        "updatedAt": "2026-04-07T23:55:51.510Z"
+        "updatedAt": "2026-04-12T00:32:19.496Z"
       },
       {
         "id": "note_mm76q9kf-ktysxe",

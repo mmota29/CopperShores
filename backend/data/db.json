@@ -199,7 +199,7 @@
       {
         "id": "note_mltt587z-oz86vm",
         "title": "Talon Malsir",
-        "content": "One of the great heroes, a wild-magic sorcerer who helped defeat the Pale Silence, now a resident celebrity living in Alsicta, mentor/master of Rhaekar. Father of Soren Malsir. Seems to have issues; best not to press. At one point, he encountered the dragonborn known as the Golden Flame, possibly the original one. He also announced the hunt for the Celestial Droplet on behalf of Alsita's government.",
+        "content": "One of the great heroes, a wild-magic sorcerer who helped defeat the Pale Silence, now a resident celebrity living in Alsicta, mentor/master of Rhaekar. Father of Soren Malsir. Seems to have issues; best not to press. At one point, he encountered the dragonborn known as the Golden Flame, possibly the original one. He also announced the hunt for the Celestial Droplet on behalf of Alsita's government.\n\nAt one point went to gildhammer to meet with frosthelm",
         "tags": [
           "Michael",
           "Rhaekar",
@@ -207,7 +207,7 @@
           "Alsicta"
         ],
         "createdAt": "2026-02-19T18:41:51.066Z",
-        "updatedAt": "2026-03-29T02:00:13.709Z"
+        "updatedAt": "2026-04-19T00:07:37.654Z"
       },
       {
         "id": "note_mltta4sz-h0wqz7",
@@ -544,6 +544,30 @@
         ],
         "createdAt": "2026-04-12T01:37:19.350Z",
         "updatedAt": "2026-04-12T02:26:43.537Z"
+      },
+      {
+        "id": "note_mo4zp5gm-5k13g4",
+        "title": "house iron hammer",
+        "content": "their house sigle is a iron hammer",
+        "tags": [
+          "iron hammer",
+          "godrian",
+          "gildhammer"
+        ],
+        "createdAt": "2026-04-18T23:50:10.917Z",
+        "updatedAt": "2026-04-18T23:50:10.917Z"
+      },
+      {
+        "id": "note_mo50s2zl-yv8230",
+        "title": "Cinder StoneHeart",
+        "content": "missing son, burn on his entire neck, size of a dwarf",
+        "tags": [
+          "gildhammer",
+          "dwarf",
+          "stoneheart"
+        ],
+        "createdAt": "2026-04-19T00:20:27.297Z",
+        "updatedAt": "2026-04-19T00:20:27.297Z"
       }
     ],
     "event": [
@@ -625,6 +649,18 @@
         ],
         "createdAt": "2026-04-05T03:04:37.376Z",
         "updatedAt": "2026-04-05T03:04:37.376Z"
+      },
+      {
+        "id": "note_mo4zrl2d-mk23bf",
+        "title": "missing dwarf son",
+        "content": "A dwarf is missing their son, the house seems to be stoneheart, the son is named cinder\n",
+        "tags": [
+          "gildhammer",
+          "the houses",
+          "frosthelm"
+        ],
+        "createdAt": "2026-04-18T23:52:04.453Z",
+        "updatedAt": "2026-04-19T00:07:15.729Z"
       }
     ],
     "enemy": [
@@ -1796,8 +1832,9 @@
             "shareCount": 1
           }
         ],
+        "sessionLabel": "32",
         "createdAt": "2026-04-12T04:04:08.882Z",
-        "updatedAt": "2026-04-12T04:04:08.882Z"
+        "updatedAt": "2026-04-18T23:42:26.636Z"
       }
     ],
     "settings": {

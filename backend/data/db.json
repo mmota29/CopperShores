@@ -128,7 +128,7 @@
       {
         "id": "note_mlbhumlh-42oy9w",
         "title": "Gill",
-        "content": "Gill, the triton artificer, came to the Copper Dawn festival to explore the city and see what inventions could be made. He met Elly and joined the party's commission for the Celestial Droplet. He often watches Riven perform by the seaside from a distance while trying to put the puzzle in his head together. The magic affecting Gill seems to be a topic banned by the Celestials. Raised by Meryll the mermaid. Gill inventions include a spear that returns to him, a upgrade to corey weapon and a turtle named robert",
+        "content": "Gill, the triton artificer, came to the Copper Dawn festival to explore the city and see what inventions could be made. He met Elly and joined the party's commission for the Celestial Droplet. He sometimes would watch Riven (not knowing him yet) perform by the seaside from a distance while trying to put the puzzle in his head together. \n\nThe magic affecting Gill seems to be a topic banned by the Celestials. Raised by Meryll the mermaid. Gill's inventions include a spear that returns to him, an upgrade to Corey's weapon, and a turtle named Robert",
         "tags": [
           "PC",
           "Michael",
@@ -137,12 +137,12 @@
           "Artificer"
         ],
         "createdAt": "2026-02-06T23:05:49.541Z",
-        "updatedAt": "2026-03-24T21:46:54.736Z"
+        "updatedAt": "2026-04-26T04:24:59.829Z"
       },
       {
         "id": "note_mlbin281-qdv0ng",
         "title": "Corelia Harrendyl",
-        "content": "Aasimar Samurai Fighter, a friend of Mozzie the devil, currently looking for an item that used to belong to her family. Helped interrogate Gill for mozzie. She has been hearing voices: \"Return the final piece, and reawaken the ship.\" They have stopped once we got the ship.\n\ndoes not let everyone call her cory, lets gill now after feeling bad about interrogating him",
+        "content": "Aasimar Samurai Fighter, a friend of Mozzie the devil, currently looking for an item that used to belong to her family. Helped interrogate Gill for mozzie. She has been hearing voices: \"Return the final piece, and reawaken the ship.\" They have stopped once we got the ship.\n\ndoes not let everyone call her Cory, lets Gill now after feeling bad about interrogating him\n\nshe has asked for our help to take care of the head of the thieves guild, a teifling by the name of Elizar",
         "tags": [
           "Aasimar",
           "Fighter",
@@ -150,7 +150,7 @@
           "PC"
         ],
         "createdAt": "2026-02-06T23:27:56.161Z",
-        "updatedAt": "2026-03-27T03:09:58.224Z"
+        "updatedAt": "2026-04-26T04:26:45.191Z"
       },
       {
         "id": "note_mld1oul0-9dqspz",
@@ -404,9 +404,12 @@
         "id": "note_mnb0sm41-x68qqu",
         "title": "Akris the firestarter",
         "content": "a otherworldly phoenix a moment to all of those looking for their place to belong",
-        "tags": [],
+        "tags": [
+          "Drifting Sprits",
+          ""
+        ],
         "createdAt": "2026-03-29T00:27:46.801Z",
-        "updatedAt": "2026-03-29T01:56:22.240Z"
+        "updatedAt": "2026-04-19T00:47:27.145Z"
       },
       {
         "id": "note_mnb1k8gp-3uibqm",
@@ -480,12 +483,12 @@
       {
         "id": "note_mnkzzfn5-h93q5m",
         "title": "Queen Prima",
-        "content": "a singer, an icon,",
+        "content": "a singer, an icon, Aaron doesn't want me to talk to her",
         "tags": [
           "singer"
         ],
         "createdAt": "2026-04-05T00:02:47.153Z",
-        "updatedAt": "2026-04-05T00:02:47.153Z"
+        "updatedAt": "2026-04-27T02:29:18.209Z"
       },
       {
         "id": "note_mnl0rrzj-4otzb5",
@@ -559,7 +562,7 @@
       },
       {
         "id": "note_mo50s2zl-yv8230",
-        "title": "Cinder StoneHeart",
+        "title": "StoneHeart",
         "content": "missing son, burn on his entire neck, size of a dwarf",
         "tags": [
           "gildhammer",
@@ -567,7 +570,15 @@
           "stoneheart"
         ],
         "createdAt": "2026-04-19T00:20:27.297Z",
-        "updatedAt": "2026-04-19T00:20:27.297Z"
+        "updatedAt": "2026-04-19T03:21:41.233Z"
+      },
+      {
+        "id": "note_mo51lz76-st58cg",
+        "title": "Frosthelm",
+        "content": "head of a house, never at his seat, rummored to fighting the anceint evil in the mountain",
+        "tags": [],
+        "createdAt": "2026-04-19T00:43:42.066Z",
+        "updatedAt": "2026-04-19T00:45:49.514Z"
       }
     ],
     "event": [
@@ -653,14 +664,14 @@
       {
         "id": "note_mo4zrl2d-mk23bf",
         "title": "missing dwarf son",
-        "content": "A dwarf is missing their son, the house seems to be stoneheart, the son is named cinder\n",
+        "content": "A dwarf is missing their son, the house seems to be stoneheart, the son is named cinder. we found him",
         "tags": [
           "gildhammer",
           "the houses",
           "frosthelm"
         ],
         "createdAt": "2026-04-18T23:52:04.453Z",
-        "updatedAt": "2026-04-19T00:07:15.729Z"
+        "updatedAt": "2026-04-26T23:30:24.793Z"
       }
     ],
     "enemy": [
@@ -747,6 +758,26 @@
         ],
         "createdAt": "2026-03-24T21:26:42.641Z",
         "updatedAt": "2026-03-24T21:26:42.641Z"
+      },
+      {
+        "id": "note_mof9i1uh-uzdi7n",
+        "title": "Eldritch abomination we fought",
+        "content": "First appearing on the road to Pinchester, a bunch of cultists attacked us and performed a ceremony where they gave their lives to summon this abomination. This creature had an aura of something frightening. We defeated it, but later, at Gildhammer, in the mines, this same beast cornered us again and had changed; it looked almost as if it had adapted or evolved.\n\nThe second time, it had acquired the ability to shoot lightning and a number of eyes. we had defeated it again but i don't belive we have seen the last of it",
+        "tags": [
+          "yuan ti",
+          "cultist",
+          ""
+        ],
+        "createdAt": "2026-04-26T04:22:17.561Z",
+        "updatedAt": "2026-04-26T04:22:17.561Z"
+      },
+      {
+        "id": "note_mogelesa-7cdhun",
+        "title": "night serpent",
+        "content": "the being worship by the cultist and yaun ti",
+        "tags": [],
+        "createdAt": "2026-04-26T23:32:38.554Z",
+        "updatedAt": "2026-04-26T23:32:38.554Z"
       }
     ],
     "location": [
@@ -841,6 +872,16 @@
         ],
         "createdAt": "2026-04-07T23:54:44.856Z",
         "updatedAt": "2026-04-07T23:54:44.856Z"
+      },
+      {
+        "id": "note_mo538p1a-i5gzxz",
+        "title": "the forge in the mountain",
+        "content": "",
+        "tags": [
+          "gildhammer"
+        ],
+        "createdAt": "2026-04-19T01:29:21.598Z",
+        "updatedAt": "2026-04-19T01:29:21.598Z"
       }
     ],
     "item": [
@@ -906,14 +947,14 @@
       {
         "id": "note_mmml8a45-ruip7m",
         "title": "Party Crasher",
-        "content": "Weapon (light hammer), (requires attunement)\n\nHidden in the rubble of the Tomb of Remembrance, Partycrasher is an expertly forged hammer engraved with goblin scripture. The hammer flies through the air with overwhelming force when thrown, being especially effective against structures and constructs.\n\nYou gain a +1 bonus to attack rolls and damage rolls made with this magic weapon.\n\nYou may make a ranged weapon attack with this weapon as a bonus action so long as the weapon isn't currently equipped. When you hit with a ranged attack using this weapon, it deals an extra 1d4 Force damage, or an extra 4d4 Force damage if the target is a Construct. Immediately after hitting or missing, the weapon reforms back in your hand (or wherever it was thrown from).\n\nSentience. Partycrasher is a sentient lawful neutral weapon with an Intelligence of 11, a Wisdom of 16, and a Charisma of 15. It has hearing and darkvision out to a range of 120 feet.\nThe weapon communicates telepathically with its wielder and can speak both Common and Goblin. While attuned or holding it, the wielder gains the ability to speak, read, and understand Goblin.\n\nHappy Weapon, happy Warrior",
+        "content": "Weapon (light hammer), (requires attunement)\n\nHidden in the rubble of the Tomb of Remembrance, Partycrasher is an expertly forged hammer engraved with goblin scripture. The hammer flies through the air with overwhelming force when thrown, being especially effective against structures and constructs.\n\nYou gain a +1 bonus to attack rolls and damage rolls made with this magic weapon.\n\nYou may make a ranged weapon attack with this weapon as a bonus action so long as the weapon isn't currently equipped. When you hit with a ranged attack using this weapon, it deals an extra 1d4 Force damage, or an extra 4d4 Force damage if the target is a Construct. Immediately after hitting or missing, the weapon reforms back in your hand (or wherever it was thrown from).\n\nSentience. Partycrasher is a sentient lawful neutral weapon with an Intelligence of 11, a Wisdom of 16, and a Charisma of 15. It has hearing and darkvision out to a range of 120 feet.\nThe weapon communicates telepathically with its wielder and can speak both Common and Goblin. While attuned or holding it, the wielder gains the ability to speak, read, and understand Goblin.\n\nHappy Weapon, happy Warrior\n\nhe remebers a weapon that was made around him, a sword",
         "tags": [
           "Gate Crasher",
           "Hammer",
           "Goblin"
         ],
         "createdAt": "2026-03-11T22:05:35.667Z",
-        "updatedAt": "2026-03-24T21:17:21.145Z"
+        "updatedAt": "2026-04-19T01:29:03.383Z"
       },
       {
         "id": "note_mmmlfddl-hvb6e1",
@@ -951,6 +992,50 @@
         ],
         "createdAt": "2026-04-08T02:08:52.589Z",
         "updatedAt": "2026-04-12T04:23:31.428Z"
+      },
+      {
+        "id": "note_mo55btof-m86qd1",
+        "title": "staff from mysterous",
+        "content": "“The Domain of Night she no longer resides.” (Abyssal) \n“She will rise but he will rule.”(Deep Speech)\n\nyuan ti? the shadowfell might be the domain. she might be shar and maybe he is the night serpent",
+        "tags": [
+          "night serpent",
+          "yuan ti"
+        ],
+        "createdAt": "2026-04-19T02:27:46.815Z",
+        "updatedAt": "2026-04-19T02:28:58.404Z"
+      },
+      {
+        "id": "note_mogehqr5-vnbs65",
+        "title": "The black door",
+        "content": "a door that is made of this black substance. You have to be either a cultist or a yuen ti to get past it. diveine but not",
+        "tags": [
+          "yuan ti",
+          "cultist",
+          "gildhammer"
+        ],
+        "createdAt": "2026-04-26T23:29:47.441Z",
+        "updatedAt": "2026-04-26T23:30:41.581Z"
+      },
+      {
+        "id": "note_mogex9u4-3lly7p",
+        "title": "poem's",
+        "content": "“In Shar’s Domain of Night I rest, So dreams may show me how I’m blessed, If screams of terror break my sleep, …. Fang’s too deep”\nThis excerpt refers to the night serpent.\n\n“The Domain of Night she no longer resides.” (Abyssal) \n“She will rise but he will rule.”(Deep Speech)\nThis excerpt is from the staff\n\ndo they fit?",
+        "tags": [
+          "cultist"
+        ],
+        "createdAt": "2026-04-26T23:41:52.012Z",
+        "updatedAt": "2026-04-26T23:43:26.628Z"
+      },
+      {
+        "id": "note_mogfxe97-jaubzz",
+        "title": "whistle stone wood",
+        "content": "Harvest on top of the hammer mountains from Gildhammer.",
+        "tags": [
+          "gildhammer",
+          "blue"
+        ],
+        "createdAt": "2026-04-27T00:09:57.355Z",
+        "updatedAt": "2026-04-27T00:39:11.934Z"
       }
     ],
     "session": [],
@@ -1023,6 +1108,17 @@
         ],
         "createdAt": "2026-04-08T00:11:15.749Z",
         "updatedAt": "2026-04-08T00:11:15.749Z"
+      },
+      {
+        "id": "note_mo54lwvd-lgv6hj",
+        "title": "the outline",
+        "content": "the man gill has seen when he has been close, he contacted gill again when he tried to touch the black stuff.",
+        "tags": [
+          "gildhammer",
+          "gill"
+        ],
+        "createdAt": "2026-04-19T02:07:37.897Z",
+        "updatedAt": "2026-04-19T03:36:22.929Z"
       }
     ]
   },
@@ -1835,6 +1931,239 @@
         "sessionLabel": "32",
         "createdAt": "2026-04-12T04:04:08.882Z",
         "updatedAt": "2026-04-18T23:42:26.636Z"
+      },
+      {
+        "id": "txn_mo58bh00-j3a9iw",
+        "date": "2026-04-19",
+        "description": "mithral armor",
+        "type": "expense",
+        "totalCp": 20000,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 200,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "direct",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -20000,
+            "characterId": "ch_mlb5okkf-o7v4qu",
+            "shareCount": 1
+          }
+        ],
+        "sessionLabel": "33",
+        "createdAt": "2026-04-19T03:51:29.232Z",
+        "updatedAt": "2026-04-19T03:51:29.232Z"
+      },
+      {
+        "id": "txn_moc5imbd-0u89kh",
+        "date": "2026-04-24",
+        "description": "drawf gold name",
+        "type": "income",
+        "totalCp": 200,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 2,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "direct",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": 200,
+            "characterId": "ch_mlbhfekw-5lrtjs",
+            "shareCount": 1
+          }
+        ],
+        "createdAt": "2026-04-24T00:07:27.097Z",
+        "updatedAt": "2026-04-24T00:07:27.097Z"
+      },
+      {
+        "id": "txn_moc82xaz-9s8nbu",
+        "date": "2026-04-24",
+        "description": "overprice biscut",
+        "type": "expense",
+        "totalCp": 1000,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 10,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "custom_split",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -500,
+            "characterId": "ch_mlb5meab-2tthli",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": -500,
+            "characterId": "ch_mlb63uh7-tzw9ht",
+            "shareCount": 1
+          }
+        ],
+        "createdAt": "2026-04-24T01:19:13.691Z",
+        "updatedAt": "2026-04-24T01:20:19.668Z"
+      },
+      {
+        "id": "txn_moggllat-y8sbod",
+        "date": "2026-04-27",
+        "description": "piano for blue",
+        "type": "expense",
+        "totalCp": 5000,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 50,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "direct",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -5000,
+            "characterId": "ch_mlb63uh7-tzw9ht",
+            "shareCount": 1
+          }
+        ],
+        "sessionLabel": "35",
+        "createdAt": "2026-04-27T00:28:46.229Z",
+        "updatedAt": "2026-04-27T00:28:46.229Z"
+      },
+      {
+        "id": "txn_mogi4256-gcih23",
+        "date": "2026-04-27",
+        "description": "gears",
+        "type": "expense",
+        "totalCp": 100,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 1,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "custom_split",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -100,
+            "characterId": "ch_mlb5meab-2tthli",
+            "shareCount": 1
+          }
+        ],
+        "createdAt": "2026-04-27T01:11:07.482Z",
+        "updatedAt": "2026-04-27T01:11:07.482Z"
+      },
+      {
+        "id": "txn_mogi4j86-9n70nn",
+        "date": "2026-04-27",
+        "description": "massage",
+        "type": "expense",
+        "totalCp": 50,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 0,
+          "sp": 5,
+          "cp": 0
+        },
+        "allocationMode": "direct",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -50,
+            "characterId": "ch_mlb5okkf-o7v4qu",
+            "shareCount": 1
+          }
+        ],
+        "sessionLabel": "35",
+        "createdAt": "2026-04-27T01:11:29.621Z",
+        "updatedAt": "2026-04-27T01:11:29.621Z"
+      },
+      {
+        "id": "txn_mogl8q3g-omrjc0",
+        "date": "2026-04-27",
+        "description": "wand of war",
+        "type": "expense",
+        "totalCp": 125000,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 1250,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "direct",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -125000,
+            "characterId": "ch_mlbheiog-c82mut",
+            "shareCount": 1
+          }
+        ],
+        "sessionLabel": "35",
+        "createdAt": "2026-04-27T02:38:43.996Z",
+        "updatedAt": "2026-04-27T02:38:43.996Z"
+      },
+      {
+        "id": "txn_mop33p0s-iuly11",
+        "date": "2026-05-03",
+        "description": "instrutment",
+        "type": "expense",
+        "totalCp": 100000,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 1000,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "custom_split",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -50000,
+            "characterId": "ch_mlb63uh7-tzw9ht",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": -50000,
+            "characterId": "ch_mlbhfekw-5lrtjs",
+            "shareCount": 1
+          }
+        ],
+        "sessionLabel": "35",
+        "createdAt": "2026-05-03T01:20:51.792Z",
+        "updatedAt": "2026-05-03T01:20:51.792Z"
       }
     ],
     "settings": {

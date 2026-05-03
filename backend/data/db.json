@@ -485,10 +485,11 @@
         "title": "Queen Prima",
         "content": "a singer, an icon, Aaron doesn't want me to talk to her",
         "tags": [
-          "singer"
+          "singer",
+          "arrorn"
         ],
         "createdAt": "2026-04-05T00:02:47.153Z",
-        "updatedAt": "2026-04-27T02:29:18.209Z"
+        "updatedAt": "2026-05-03T01:27:04.381Z"
       },
       {
         "id": "note_mnl0rrzj-4otzb5",
@@ -579,6 +580,14 @@
         "tags": [],
         "createdAt": "2026-04-19T00:43:42.066Z",
         "updatedAt": "2026-04-19T00:45:49.514Z"
+      },
+      {
+        "id": "note_mop6gcw7-zpsuhm",
+        "title": "doroik",
+        "content": "To Corelia, we are a lot more alike then you think",
+        "tags": [],
+        "createdAt": "2026-05-03T02:54:41.479Z",
+        "updatedAt": "2026-05-03T02:54:52.168Z"
       }
     ],
     "event": [
@@ -778,6 +787,18 @@
         "tags": [],
         "createdAt": "2026-04-26T23:32:38.554Z",
         "updatedAt": "2026-04-26T23:32:38.554Z"
+      },
+      {
+        "id": "note_mop3apik-ewcsuu",
+        "title": "crow jr",
+        "content": "Someone who has a bone with Talon and wants to take it out on Rhaekar.  arron says he is half elf. he is also on dreadtooth crew.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\na son of delmar",
+        "tags": [
+          "dreadtooth crew",
+          "half elf",
+          "Talon"
+        ],
+        "createdAt": "2026-05-03T01:26:19.052Z",
+        "updatedAt": "2026-05-03T01:26:36.597Z"
       }
     ],
     "location": [
@@ -2164,6 +2185,87 @@
         "sessionLabel": "35",
         "createdAt": "2026-05-03T01:20:51.792Z",
         "updatedAt": "2026-05-03T01:20:51.792Z"
+      },
+      {
+        "id": "txn_mop3ivgt-kkr29x",
+        "date": "2026-05-03",
+        "description": "Trident",
+        "type": "expense",
+        "totalCp": 500,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 5,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "direct",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -500,
+            "characterId": "ch_mlb5meab-2tthli",
+            "shareCount": 1
+          }
+        ],
+        "sessionLabel": "36",
+        "note": "a trident for a triton",
+        "createdAt": "2026-05-03T01:32:40.013Z",
+        "updatedAt": "2026-05-03T01:32:40.013Z"
+      },
+      {
+        "id": "txn_mop4ui3f-kqv1la",
+        "date": "2026-05-03",
+        "description": "hole gold",
+        "type": "income",
+        "totalCp": 50000,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 500,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "equal_split",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": 10000,
+            "characterId": "ch_mlb5meab-2tthli",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": 10000,
+            "characterId": "ch_mlb5okkf-o7v4qu",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": 10000,
+            "characterId": "ch_mlb63uh7-tzw9ht",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": 10000,
+            "characterId": "ch_mlbheiog-c82mut",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": 10000,
+            "characterId": "ch_mlbhfekw-5lrtjs",
+            "shareCount": 1
+          }
+        ],
+        "sessionLabel": "36",
+        "createdAt": "2026-05-03T02:09:42.171Z",
+        "updatedAt": "2026-05-03T02:09:42.171Z"
       }
     ],
     "settings": {

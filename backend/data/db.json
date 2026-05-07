@@ -483,13 +483,13 @@
       {
         "id": "note_mnkzzfn5-h93q5m",
         "title": "Queen Prima",
-        "content": "a singer, an icon, Aaron doesn't want me to talk to her",
+        "content": "a singer, an icon, Aaron doesn't want me to talk to her, right now is in neucroft preparing for the music festival",
         "tags": [
           "singer",
-          "arrorn"
+          "Aaron"
         ],
         "createdAt": "2026-04-05T00:02:47.153Z",
-        "updatedAt": "2026-05-03T01:27:04.381Z"
+        "updatedAt": "2026-05-04T19:42:18.415Z"
       },
       {
         "id": "note_mnl0rrzj-4otzb5",
@@ -588,6 +588,17 @@
         "tags": [],
         "createdAt": "2026-05-03T02:54:41.479Z",
         "updatedAt": "2026-05-03T02:54:52.168Z"
+      },
+      {
+        "id": "note_mopa9y7w-0wmmaz",
+        "title": "Corrina",
+        "content": "priest at the church of xerbo, healed jonik,",
+        "tags": [
+          "xerbo",
+          "priest"
+        ],
+        "createdAt": "2026-05-03T04:41:40.988Z",
+        "updatedAt": "2026-05-03T04:41:40.988Z"
       }
     ],
     "event": [
@@ -681,6 +692,14 @@
         ],
         "createdAt": "2026-04-18T23:52:04.453Z",
         "updatedAt": "2026-04-26T23:30:24.793Z"
+      },
+      {
+        "id": "note_mopac7er-roi2h4",
+        "title": "the attack of pinchester",
+        "content": "the dragonborns, kobold attack the city but not in the name rindos but in the name of the dragonlord, he looked like rhaekar, a shader kai",
+        "tags": [],
+        "createdAt": "2026-05-03T04:43:26.211Z",
+        "updatedAt": "2026-05-03T04:45:29.368Z"
       }
     ],
     "enemy": [
@@ -1330,6 +1349,16 @@
         "note": "the home of the golden (illegal mexican) flame",
         "createdAt": "2026-03-26T19:31:17.593Z",
         "updatedAt": "2026-03-26T19:31:17.593Z"
+      },
+      {
+        "id": "wp_mop93ajl-iyb1ru",
+        "mapId": "pinchester",
+        "x": 2944,
+        "y": 4194,
+        "title": "City hall of pinchester",
+        "note": "",
+        "createdAt": "2026-05-03T04:08:30.753Z",
+        "updatedAt": "2026-05-03T04:08:30.753Z"
       }
     ]
   },
@@ -2266,6 +2295,85 @@
         "sessionLabel": "36",
         "createdAt": "2026-05-03T02:09:42.171Z",
         "updatedAt": "2026-05-03T02:09:42.171Z"
+      },
+      {
+        "id": "txn_mop8vkb8-cpjo8z",
+        "date": "2026-05-03",
+        "description": "gold for carivan",
+        "type": "income",
+        "totalCp": 50000,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 500,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "equal_split",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": 10000,
+            "characterId": "ch_mlb5meab-2tthli",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": 10000,
+            "characterId": "ch_mlb5okkf-o7v4qu",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": 10000,
+            "characterId": "ch_mlb63uh7-tzw9ht",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": 10000,
+            "characterId": "ch_mlbheiog-c82mut",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": 10000,
+            "characterId": "ch_mlbhfekw-5lrtjs",
+            "shareCount": 1
+          }
+        ],
+        "sessionLabel": "36",
+        "createdAt": "2026-05-03T04:02:30.164Z",
+        "updatedAt": "2026-05-03T04:02:30.164Z"
+      },
+      {
+        "id": "txn_mopa4ru5-k7glm5",
+        "date": "2026-05-03",
+        "description": "priest gold",
+        "type": "expense",
+        "totalCp": 1300,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 13,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "direct",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -1300,
+            "characterId": "ch_mlb63uh7-tzw9ht",
+            "shareCount": 1
+          }
+        ],
+        "createdAt": "2026-05-03T04:37:39.436Z",
+        "updatedAt": "2026-05-03T04:37:39.436Z"
       }
     ],
     "settings": {

@@ -170,7 +170,7 @@
       {
         "id": "note_mm75dm8m-7hy9ky",
         "title": "Rhaekar ",
-        "content": "Student of Talon Malsir. Originally from the Shadowfell. May have noble heritage, unsure. Hears voices in his head and is prone to spontaneous teleporting and wild surges. Raven King apparently tried to warn his family. Parents are dead. insane",
+        "content": "Student of Talon Malsir. Originally from the Shadowfell. May have noble heritage, unsure. Hears voices in his head and is prone to spontaneous teleporting and wild surges. Raven King apparently tried to warn his family. Parents are dead. insane\n\nRhaekar had a strong innate magic but is being held back, he is supposed to be stronger",
         "tags": [
           "Talon",
           "ShadowFell",
@@ -179,12 +179,12 @@
           "insane"
         ],
         "createdAt": "2026-03-01T02:45:18.166Z",
-        "updatedAt": "2026-03-29T01:57:44.160Z"
+        "updatedAt": "2026-05-08T00:32:22.573Z"
       },
       {
         "id": "note_mm75ds1v-aqefid",
         "title": "Blue",
-        "content": "Sapphire dragonborn bard (Blue/Tiff, with Tiff seeming to be a personal name). Was once part of a troupe with Riven and Elly. Alandra said it feels like two people are constantly present around Blue, and Blue's dreams are very present: \"Someone is constantly betraying you, and they don't know it themselves.\"",
+        "content": "Sapphire dragonborn bard (Blue/Tiff, with Tiff seeming to be a personal name). Was once part of a troupe with Riven and Elly. Alandra said it feels like two people are constantly present around Blue, and Blue's dreams are very present: \"Someone is constantly betraying you, and they don't know it themselves.\"\n\nshe claims that there is someone behind her",
         "tags": [
           "Homeless",
           "Bard",
@@ -192,7 +192,7 @@
           "piano"
         ],
         "createdAt": "2026-03-01T02:45:25.699Z",
-        "updatedAt": "2026-03-26T01:06:28.232Z"
+        "updatedAt": "2026-05-08T00:33:51.638Z"
       }
     ],
     "npc": [
@@ -353,7 +353,7 @@
       {
         "id": "note_mn548bcv-17tqhr",
         "title": "Mozzie",
-        "content": "Rakshasa samurai and mentor to Corelia. Connected to the Wayfarer/Dahlien circle. Hates the Deepguard. Left a note telling Corelia to reject Elly's ship deal and hinted he can provide a \"real ship.\" (i am pretty sure he hates or at very least strongly dislikes gill, 75 percent sure)",
+        "content": "Rakshasa samurai and mentor to Corelia. Connected to the Wayfarer/Dahlien circle. Hates the Deepguard. Left a note telling Corelia to reject Elly's ship deal and hinted he can provide a \"real ship.\" (i am pretty sure he hates or at very least strongly dislikes gill, 75 percent sure)\n\nnow i don't know if he hates gill, after gill was talking bad about himself, mozzie told him not to talk about himself like that.",
         "tags": [
           "Mozzie",
           "Corelia",
@@ -361,7 +361,7 @@
           "Deepguard"
         ],
         "createdAt": "2026-03-24T21:17:21.145Z",
-        "updatedAt": "2026-03-26T01:09:37.390Z"
+        "updatedAt": "2026-05-08T00:31:25.432Z"
       },
       {
         "id": "note_mn548bcv-2s5i2o",
@@ -458,7 +458,7 @@
       {
         "id": "note_mnkzn7u6-vok99m",
         "title": "Elazar",
-        "content": "Son of Akris and Mira, the strongest in his family, best with the blade, leader of the thieves Guild. father of Nero. The man who stole from the dragon lord.",
+        "content": "Son of Akris and Mira, the strongest in his family, best with the blade, leader of the thieves Guild. father of Nero. The man who stole from the dragon lord. i might have to move him from the npc to enemy notes",
         "tags": [
           "Akris",
           "Mira",
@@ -466,7 +466,7 @@
           "nero"
         ],
         "createdAt": "2026-04-04T23:53:17.166Z",
-        "updatedAt": "2026-04-12T00:04:21.119Z"
+        "updatedAt": "2026-05-08T00:38:27.974Z"
       },
       {
         "id": "note_mnkzqbhy-s3w8h4",
@@ -599,6 +599,17 @@
         ],
         "createdAt": "2026-05-03T04:41:40.988Z",
         "updatedAt": "2026-05-03T04:41:40.988Z"
+      },
+      {
+        "id": "note_mow6f5as-7j5tgy",
+        "title": "Old man shadar kai",
+        "content": "He knows Rhaekar somehow, seems to be a protector, was the thief that Rhaekar had him to be executed, but Rhaekar's mother saved him so as a debt to be paid, he serves to save Rhaekar ",
+        "tags": [
+          "shadar kai",
+          "Rhaekar"
+        ],
+        "createdAt": "2026-05-08T00:28:08.212Z",
+        "updatedAt": "2026-05-08T00:30:17.015Z"
       }
     ],
     "event": [
@@ -706,26 +717,27 @@
       {
         "id": "note_mld9ubv4-r13aus",
         "title": "Shadow Demon",
-        "content": "WHAT THE FUCK WAS THAT, IT WAS AFTER BLUE AND RIVEN AND SARAH AS THEY BROKE SOMEWHERE, IT WAS SCARY, IDK. Might be connected to recurring dream/nightmare attacks around Riven.",
+        "content": "WHAT THE FUCK WAS THAT, IT WAS AFTER BLUE AND RIVEN AND SARAH AS THEY BROKE SOMEWHERE, IT WAS SCARY, IDK.",
         "tags": [
           "demon?",
           "goverment?"
         ],
         "createdAt": "2026-02-08T04:57:11.056Z",
-        "updatedAt": "2026-03-24T21:17:21.145Z"
+        "updatedAt": "2026-05-08T00:03:49.446Z"
       },
       {
         "id": "note_mm7atvg5-u3bg69",
         "title": "Dreadtooth",
-        "content": "A famous pirate who hunts those who make deals with him. He cuts ships in half. He made a deal with Elly and is now looking to talk with Gill. Arron (they/them) seems to work for/with him. He presents himself as someone of the sea and may control tides/shores through his vessel and sword.",
+        "content": "A famous pirate who hunts those who make deals with him. He cuts ships in half. He made a deal with Elly and is now looking to talk with Gill. Arron (they/them) seems to work for/with him. He presents himself as someone of the sea and may control tides/shores through his vessel and sword.\n\nSo far, we know some info of 2 of his crew members, Aaron, and a half-elf who was joking called Crow Jr ",
         "tags": [
           "Ellie",
           "Pirate",
           "Gill",
-          "Arron"
+          "Arron",
+          "problem"
         ],
         "createdAt": "2026-03-01T05:17:54.677Z",
-        "updatedAt": "2026-03-24T21:25:42.497Z"
+        "updatedAt": "2026-05-08T00:35:47.675Z"
       },
       {
         "id": "note_mm7auno4-kn2uwa",
@@ -803,9 +815,11 @@
         "id": "note_mogelesa-7cdhun",
         "title": "night serpent",
         "content": "the being worship by the cultist and yaun ti",
-        "tags": [],
+        "tags": [
+          "problem"
+        ],
         "createdAt": "2026-04-26T23:32:38.554Z",
-        "updatedAt": "2026-04-26T23:32:38.554Z"
+        "updatedAt": "2026-05-08T00:35:58.241Z"
       },
       {
         "id": "note_mop3apik-ewcsuu",
@@ -818,6 +832,29 @@
         ],
         "createdAt": "2026-05-03T01:26:19.052Z",
         "updatedAt": "2026-05-03T01:26:36.597Z"
+      },
+      {
+        "id": "note_mow5i208-adt3eo",
+        "title": "The DragonLord",
+        "content": "We believed he was the one who led the attack on Pinchester. Does he work for Rindos or does he work with, or god forbid rindos works for him?\n\nJonnick revealed he was Shadar Kai\n\nupdate:5/7/2026\nHE IS THE LEADER OF THE DRAGON CULT. We are so fucked.\n\nThe dragonlord was once a sorcerer connected to the raven queen, and he cursed the family of Rhaekar",
+        "tags": [
+          "Pinchester",
+          "shadar kai",
+          "problem"
+        ],
+        "createdAt": "2026-05-08T00:02:24.296Z",
+        "updatedAt": "2026-05-08T00:36:05.026Z"
+      },
+      {
+        "id": "note_mow5ntwa-vwivr7",
+        "title": "Aaron",
+        "content": "a guy who appears in gill's dream, they are something that dies and comes back, serving under dreadtooth, his memorys gets fucky everytime he dies. dreadtooth called him, his curse, unsure if insulting manner or maybe more.",
+        "tags": [
+          "dreadtooth crew",
+          "gill"
+        ],
+        "createdAt": "2026-05-08T00:06:53.722Z",
+        "updatedAt": "2026-05-08T00:07:08.474Z"
       }
     ],
     "location": [
@@ -1257,22 +1294,42 @@
       {
         "id": "wp_mmgqa7nx-5jnt4e",
         "mapId": "world",
-        "x": 546,
-        "y": 89,
+        "x": 529,
+        "y": 85,
         "title": "Silver reef",
         "note": "",
         "createdAt": "2026-03-07T19:40:26.829Z",
-        "updatedAt": "2026-03-07T19:40:26.829Z"
+        "updatedAt": "2026-05-08T00:49:30.483Z"
       },
       {
         "id": "wp_mnp9vfze-57qqrz",
         "mapId": "world",
-        "x": 841,
-        "y": 612,
+        "x": 832,
+        "y": 619,
         "title": "Field of Convergence",
         "note": "A field often filled with all kinds of elementals",
         "createdAt": "2026-04-07T23:50:41.833Z",
-        "updatedAt": "2026-04-07T23:52:38.857Z"
+        "updatedAt": "2026-05-08T00:49:36.355Z"
+      },
+      {
+        "id": "wp_mow7avsp-bzbpvx",
+        "mapId": "world",
+        "x": 424,
+        "y": 74,
+        "title": "Grey Silver",
+        "note": "DANGER DANGER, RIGHT NOW DREADTOOTH IS HERE",
+        "createdAt": "2026-05-08T00:52:48.889Z",
+        "updatedAt": "2026-05-08T00:52:48.889Z"
+      },
+      {
+        "id": "wp_mow7bm37-akgqfi",
+        "mapId": "world",
+        "x": 158,
+        "y": 493,
+        "title": "Neucroft",
+        "note": "music festival going on here",
+        "createdAt": "2026-05-08T00:53:22.963Z",
+        "updatedAt": "2026-05-08T00:53:22.963Z"
       }
     ],
     "alsita": [
@@ -2374,6 +2431,90 @@
         ],
         "createdAt": "2026-05-03T04:37:39.436Z",
         "updatedAt": "2026-05-03T04:37:39.436Z"
+      },
+      {
+        "id": "txn_mow5upx0-4xhuk1",
+        "date": "2026-05-08",
+        "description": "jonnik paying gold",
+        "type": "income",
+        "totalCp": 1500,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 15,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "direct",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": 1500,
+            "characterId": "ch_mlb63uh7-tzw9ht",
+            "shareCount": 1
+          }
+        ],
+        "createdAt": "2026-05-08T00:12:15.156Z",
+        "updatedAt": "2026-05-08T00:12:15.156Z"
+      },
+      {
+        "id": "txn_mow6bsz9-kfk61v",
+        "date": "2026-05-08",
+        "description": "rations",
+        "type": "expense",
+        "totalCp": 500,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 5,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "direct",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -500,
+            "characterId": "ch_mlb5meab-2tthli",
+            "shareCount": 1
+          }
+        ],
+        "sessionLabel": "36",
+        "createdAt": "2026-05-08T00:25:32.277Z",
+        "updatedAt": "2026-05-08T00:25:32.277Z"
+      },
+      {
+        "id": "txn_mow6zt5g-eiynky",
+        "date": "2026-05-08",
+        "description": "mail",
+        "type": "expense",
+        "totalCp": 6,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 0,
+          "sp": 0,
+          "cp": 6
+        },
+        "allocationMode": "direct",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -6,
+            "characterId": "ch_mlb5okkf-o7v4qu",
+            "shareCount": 1
+          }
+        ],
+        "sessionLabel": "36",
+        "note": "letters to friends",
+        "createdAt": "2026-05-08T00:44:12.244Z",
+        "updatedAt": "2026-05-08T00:44:12.244Z"
       }
     ],
     "settings": {

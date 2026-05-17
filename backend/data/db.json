@@ -306,7 +306,7 @@
           ""
         ],
         "createdAt": "2026-03-08T00:46:29.058Z",
-        "updatedAt": "2026-04-05T00:11:10.260Z"
+        "updatedAt": "2026-05-08T01:26:02.499Z"
       },
       {
         "id": "note_mmh7cs3q-lw2ssj",
@@ -366,7 +366,7 @@
       {
         "id": "note_mn548bcv-2s5i2o",
         "title": "Xim",
-        "content": "Elvish ancestry with green hair. Talks about memory/mind like puzzles and may access thoughts or dreams. About Blue: memories feel incomplete. About Riven: dreams are terrifying/alive, refuses to interact directly. Mentions someone is in the Vault and does not want to find it.",
+        "content": "Elvish ancestry with green hair. Talks about memory/mind like puzzles and may access thoughts or dreams. About Blue: memories feel incomplete. About Riven: dreams are terrifying/alive, refuses to interact directly. Mentions someone is in the Vault and does not want to find it.\n\nShe ask blue to seek them out in alsicta ",
         "tags": [
           "Xim",
           "Blue",
@@ -374,7 +374,7 @@
           "Vault"
         ],
         "createdAt": "2026-03-24T21:17:21.145Z",
-        "updatedAt": "2026-03-24T21:17:21.145Z"
+        "updatedAt": "2026-05-10T00:15:17.869Z"
       },
       {
         "id": "note_mn548bcv-wulxfy",
@@ -610,6 +610,26 @@
         ],
         "createdAt": "2026-05-08T00:28:08.212Z",
         "updatedAt": "2026-05-08T00:30:17.015Z"
+      },
+      {
+        "id": "note_moz0ffly-xgs38o",
+        "title": "samvi",
+        "content": "orc at Pinchester that worked the guild desk. had a dream where someome offer her something what unsure",
+        "tags": [
+          "pinchester",
+          "coreila",
+          ""
+        ],
+        "createdAt": "2026-05-10T00:03:42.406Z",
+        "updatedAt": "2026-05-10T00:03:42.406Z"
+      },
+      {
+        "id": "note_moz4wyk2-dgryxy",
+        "title": "Orza",
+        "content": "delviery person guy",
+        "tags": [],
+        "createdAt": "2026-05-10T02:09:18.578Z",
+        "updatedAt": "2026-05-10T02:09:18.578Z"
       }
     ],
     "event": [
@@ -728,7 +748,7 @@
       {
         "id": "note_mm7atvg5-u3bg69",
         "title": "Dreadtooth",
-        "content": "A famous pirate who hunts those who make deals with him. He cuts ships in half. He made a deal with Elly and is now looking to talk with Gill. Arron (they/them) seems to work for/with him. He presents himself as someone of the sea and may control tides/shores through his vessel and sword.\n\nSo far, we know some info of 2 of his crew members, Aaron, and a half-elf who was joking called Crow Jr ",
+        "content": "A famous pirate who hunts those who make deals with him. He cuts ships in half. He made a deal with Elly and is now looking to talk with Gill. Arron (they/them) seems to work for/with him. He presents himself as someone of the sea and may control tides/shores through his vessel and sword.\n\nSo far, we know some info of 2 of his crew members, Aaron, and a half-elf who was joking called Crow Jr \n\nDreadtooth is not the one who enforces these deals, but then who is working with him",
         "tags": [
           "Ellie",
           "Pirate",
@@ -737,19 +757,19 @@
           "problem"
         ],
         "createdAt": "2026-03-01T05:17:54.677Z",
-        "updatedAt": "2026-05-08T00:35:47.675Z"
+        "updatedAt": "2026-05-10T02:23:27.674Z"
       },
       {
         "id": "note_mm7auno4-kn2uwa",
         "title": "Rindos",
-        "content": "An ancient black dragon that is attacking the continent; he has many worshippers and a cult.",
+        "content": "An ancient black dragon that is attacking the continent; he has many worshippers and a cult.\n\nWe believe he is working with or for the Shadar Kai, known as the dragon lord",
         "tags": [
           "Dragon",
           "Black",
           "Cult"
         ],
         "createdAt": "2026-03-01T05:18:31.252Z",
-        "updatedAt": "2026-03-24T21:17:21.145Z"
+        "updatedAt": "2026-05-10T00:46:13.332Z"
       },
       {
         "id": "note_mmhayc0q-v6h1rq",
@@ -823,15 +843,15 @@
       },
       {
         "id": "note_mop3apik-ewcsuu",
-        "title": "crow jr",
-        "content": "Someone who has a bone with Talon and wants to take it out on Rhaekar.  arron says he is half elf. he is also on dreadtooth crew.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\na son of delmar",
+        "title": "Crow jr",
+        "content": "Someone who has a bone with Talon and wants to take it out on Rhaekar.  arron says he is half elf. he is also on dreadtooth crew. after a talk with Talon, it was discovered that crow jr father a man by the named of Delmar who was part of a cult was killed by the party of the drifting spirit the final blow dealt by Thea, the Paladin, after being cast with fly by talon\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\na son of delmar",
         "tags": [
           "dreadtooth crew",
           "half elf",
           "Talon"
         ],
         "createdAt": "2026-05-03T01:26:19.052Z",
-        "updatedAt": "2026-05-03T01:26:36.597Z"
+        "updatedAt": "2026-05-10T02:20:09.362Z"
       },
       {
         "id": "note_mow5i208-adt3eo",
@@ -848,13 +868,13 @@
       {
         "id": "note_mow5ntwa-vwivr7",
         "title": "Aaron",
-        "content": "a guy who appears in gill's dream, they are something that dies and comes back, serving under dreadtooth, his memorys gets fucky everytime he dies. dreadtooth called him, his curse, unsure if insulting manner or maybe more.",
+        "content": "a guy who appears in gill's dream, they are something that dies and comes back, serving under dreadtooth, his memorys gets fucky everytime he dies. dreadtooth called him, his curse, unsure if insulting manner or maybe more.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\ndear god he is a siren",
         "tags": [
           "dreadtooth crew",
           "gill"
         ],
         "createdAt": "2026-05-08T00:06:53.722Z",
-        "updatedAt": "2026-05-08T00:07:08.474Z"
+        "updatedAt": "2026-05-08T02:01:28.020Z"
       }
     ],
     "location": [
@@ -1113,6 +1133,14 @@
         ],
         "createdAt": "2026-04-27T00:09:57.355Z",
         "updatedAt": "2026-04-27T00:39:11.934Z"
+      },
+      {
+        "id": "note_mow98r5s-472ko1",
+        "title": "Soul song",
+        "content": "",
+        "tags": [],
+        "createdAt": "2026-05-08T01:47:08.800Z",
+        "updatedAt": "2026-05-08T01:47:08.800Z"
       }
     ],
     "session": [],
@@ -1130,15 +1158,16 @@
       },
       {
         "id": "note_mnf4oax8-qfnchr",
-        "title": "Gill Returning Spear (GRS)",
-        "content": "Gill has turned his once ordinary weapon into a magical spear that returns to him after throwing. i",
+        "title": "Gill Returning Trident (GRT)",
+        "content": "Gill has turned his once ordinary weapon into a magical spear that returns to him after throwing. \n\nOnce a spear, gill updated this project to be a trident ",
         "tags": [
           "Gill",
           "Infusion",
-          "Spear"
+          "Spear",
+          "trident"
         ],
         "createdAt": "2026-03-31T21:27:28.844Z",
-        "updatedAt": "2026-03-31T21:27:28.844Z"
+        "updatedAt": "2026-05-08T02:02:46.606Z"
       },
       {
         "id": "note_mnf4tpp5-uzm50d",
@@ -1157,7 +1186,7 @@
       {
         "id": "note_mnf56hur-zpmg5i",
         "title": "The mysterious magic",
-        "content": "After taking possession of the ship, the River Walker Strider, they soon found they had a new passenger: the former captain. Former saw something affecting the members Blue and Riven, then saw Gill and assumed Gill did it. But after talking with him realize gill had nothing to do with it, but refused to talk about it with gill. then in torncilce when meeting with Krokas the giant snake, he also saw magic coming from Gill and led him to investigate with sirens from a book in Alsicta. The book, unfortunately, turned out to be missing pages courtesy of one mozzie. Then, in Pinchester, an oracle told him that the subject was banned from discussion by order of the celestials. with every puzzle piece they find, they have 10 more puzzle pieces to find",
+        "content": "After taking possession of the ship, the River Walker Strider, they soon found they had a new passenger: the former captain. Former saw something affecting the members Blue and Riven, then saw Gill and assumed Gill did it. But after talking with him realize gill had nothing to do with it, but refused to talk about it with gill. then in torncilce when meeting with Krokas the giant snake, he also saw magic coming from Gill and led him to investigate with sirens from a book in Alsicta. The book, unfortunately, turned out to be missing pages courtesy of one mozzie. Then, in Pinchester, an oracle told him that the subject was banned from discussion by order of the celestials. with every puzzle piece they find, they have 10 more puzzle pieces to find. after a talk with the one known as mozzie, we have discorved this magic has name. SoulSong",
         "tags": [
           "Gill",
           "Blue",
@@ -1170,7 +1199,7 @@
           ""
         ],
         "createdAt": "2026-03-31T21:41:37.635Z",
-        "updatedAt": "2026-03-31T21:41:47.789Z"
+        "updatedAt": "2026-05-08T02:03:33.134Z"
       },
       {
         "id": "note_mnpalw2t-44i0ra",
@@ -1330,6 +1359,16 @@
         "note": "music festival going on here",
         "createdAt": "2026-05-08T00:53:22.963Z",
         "updatedAt": "2026-05-08T00:53:22.963Z"
+      },
+      {
+        "id": "wp_moz3jqd2-wqorxs",
+        "mapId": "world",
+        "x": 216,
+        "y": 318,
+        "title": "Eulis",
+        "note": "missing dragon",
+        "createdAt": "2026-05-10T01:31:01.814Z",
+        "updatedAt": "2026-05-10T01:31:01.814Z"
       }
     ],
     "alsita": [
@@ -2515,6 +2554,230 @@
         "note": "letters to friends",
         "createdAt": "2026-05-08T00:44:12.244Z",
         "updatedAt": "2026-05-08T00:44:12.244Z"
+      },
+      {
+        "id": "txn_mow8em98-dlcv7f",
+        "date": "2026-05-08",
+        "description": "bribe",
+        "type": "expense",
+        "totalCp": 50000,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 500,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "custom_split",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -10000,
+            "characterId": "ch_mlb5meab-2tthli",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": -10000,
+            "characterId": "ch_mlb5okkf-o7v4qu",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": -10000,
+            "characterId": "ch_mlb63uh7-tzw9ht",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": -10000,
+            "characterId": "ch_mlbheiog-c82mut",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": -10000,
+            "characterId": "ch_mlbhfekw-5lrtjs",
+            "shareCount": 1
+          }
+        ],
+        "sessionLabel": "36",
+        "createdAt": "2026-05-08T01:23:42.764Z",
+        "updatedAt": "2026-05-08T01:24:41.922Z"
+      },
+      {
+        "id": "txn_mow9xh0j-vmyo6e",
+        "date": "2026-05-08",
+        "description": "bribe for mozzie",
+        "type": "expense",
+        "totalCp": 20000,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 200,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "direct",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -20000,
+            "characterId": "ch_mlb63uh7-tzw9ht",
+            "shareCount": 1
+          }
+        ],
+        "createdAt": "2026-05-08T02:06:22.051Z",
+        "updatedAt": "2026-05-08T02:06:22.051Z"
+      },
+      {
+        "id": "txn_mow9xxo6-woxb5t",
+        "date": "2026-05-08",
+        "description": "bribe",
+        "type": "expense",
+        "totalCp": 100000,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 1000,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "custom_split",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -50000,
+            "characterId": "ch_mlb5meab-2tthli",
+            "shareCount": 1
+          },
+          {
+            "targetType": "character",
+            "cpDelta": -50000,
+            "characterId": "ch_mlbhfekw-5lrtjs",
+            "shareCount": 1
+          }
+        ],
+        "createdAt": "2026-05-08T02:06:43.638Z",
+        "updatedAt": "2026-05-08T02:06:43.638Z"
+      },
+      {
+        "id": "txn_moz1gmsc-2b1s0g",
+        "date": "2026-05-10",
+        "description": "silver for travel",
+        "type": "expense",
+        "totalCp": 70,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 0,
+          "sp": 7,
+          "cp": 0
+        },
+        "allocationMode": "direct",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -70,
+            "characterId": "ch_mlbheiog-c82mut",
+            "shareCount": 1
+          }
+        ],
+        "sessionLabel": "38",
+        "createdAt": "2026-05-10T00:32:37.980Z",
+        "updatedAt": "2026-05-10T00:32:37.980Z"
+      },
+      {
+        "id": "txn_moz7qpg2-rbnr4v",
+        "date": "2026-05-10",
+        "description": "terrroism book cover",
+        "type": "expense",
+        "totalCp": 10,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 0,
+          "sp": 1,
+          "cp": 0
+        },
+        "allocationMode": "direct",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -10,
+            "characterId": "ch_mlb5meab-2tthli",
+            "shareCount": 1
+          }
+        ],
+        "sessionLabel": "38",
+        "note": "book cover",
+        "createdAt": "2026-05-10T03:28:25.682Z",
+        "updatedAt": "2026-05-10T03:28:25.682Z"
+      },
+      {
+        "id": "txn_moz7xusy-0b6m9t",
+        "date": "2026-05-10",
+        "description": "pillow and tophat",
+        "type": "expense",
+        "totalCp": 606,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 6,
+          "sp": 0,
+          "cp": 6
+        },
+        "allocationMode": "direct",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -606,
+            "characterId": "ch_mlb5meab-2tthli",
+            "shareCount": 1
+          }
+        ],
+        "sessionLabel": "38",
+        "createdAt": "2026-05-10T03:33:59.218Z",
+        "updatedAt": "2026-05-10T03:33:59.218Z"
+      },
+      {
+        "id": "txn_mp92vuf9-vintb7",
+        "date": "2026-05-17",
+        "description": "mozzie fee",
+        "type": "expense",
+        "totalCp": 45000,
+        "inputCoins": {
+          "pp": 0,
+          "gp": 450,
+          "sp": 0,
+          "cp": 0
+        },
+        "allocationMode": "direct",
+        "patronEnabledAtTime": false,
+        "patronPercentAtTime": 0,
+        "patronCp": 0,
+        "allocations": [
+          {
+            "targetType": "character",
+            "cpDelta": -45000,
+            "characterId": "ch_mlb5okkf-o7v4qu",
+            "shareCount": 1
+          }
+        ],
+        "createdAt": "2026-05-17T01:10:09.093Z",
+        "updatedAt": "2026-05-17T01:10:09.093Z"
       }
     ],
     "settings": {

@@ -115,6 +115,7 @@
                         <select id="setting-default-split-mode">
                             <option value="equal_split">Even Split</option>
                             <option value="custom_split">Custom Split</option>
+                            <option value="percentage_split">Percentage Split</option>
                             <option value="direct">Direct</option>
                         </select>
                     </label>
@@ -178,6 +179,7 @@
                             <option value="direct">Direct</option>
                             <option value="equal_split">Even Split</option>
                             <option value="custom_split">Custom Split</option>
+                            <option value="percentage_split">Percentage Split</option>
                         </select>
                     </label>
                 </div>
@@ -239,6 +241,16 @@
                         <button type="button" class="chip-btn" id="btn-custom-select-all">Select All Active</button>
                     </div>
                     <div id="custom-share-list" class="share-list"></div>
+                </section>
+
+                <section id="percentage-section" class="split-section">
+                    <h4>Percentage Split</h4>
+                    <div class="split-quick-actions">
+                        <button type="button" class="chip-btn" id="btn-percentage-even">Even Percent</button>
+                        <button type="button" class="chip-btn" id="btn-percentage-clear">Clear</button>
+                        <span id="percentage-total" class="percentage-total">Total: 0%</span>
+                    </div>
+                    <div id="percentage-split-list" class="percentage-list"></div>
                 </section>
 
                 <section class="preview-panel">

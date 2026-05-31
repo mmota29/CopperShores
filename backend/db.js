@@ -443,7 +443,9 @@ const DEFAULT_TREASURY_SETTINGS = Object.freeze({
   coinValues: DEFAULT_COIN_VALUES
 });
 
-const ALLOCATION_MODES = new Set(['direct', 'equal_split', 'custom_split']);
+const ALLOCATION_MODES = new Set(['direct', 'equal_split', 'custom_split', 'percentage_split']);
+const PERCENT_SCALE = 100;
+const PERCENT_TOTAL_BASIS_POINTS = 100 * PERCENT_SCALE;
 
 function toInt(value, fallback = 0) {
   const parsed = Number(value);
@@ -458,6 +460,18 @@ function clampInt(value, min, max, fallback) {
   if (rounded < min) return min;
   if (rounded > max) return max;
   return rounded;
+}
+
+function normalizePercent(value) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed < 0 || parsed > 100) return null;
+  return Math.round(parsed * PERCENT_SCALE) / PERCENT_SCALE;
+}
+
+function percentToBasisPoints(value) {
+  const parsed = normalizePercent(value);
+  if (parsed === null) return null;
+  return Math.round(parsed * PERCENT_SCALE);
 }
 
 function todayIsoDate() {
@@ -600,8 +614,12 @@ function normalizeAllocation(alloc, type) {
         : null;
   if (!targetType) return null;
 
+  const allocationPercent = normalizePercent(
+    alloc.allocationPercent !== undefined ? alloc.allocationPercent : alloc.percent
+  );
+
   const cpDelta = toInt(alloc.cpDelta, 0);
-  if (cpDelta === 0) return null;
+  if (cpDelta === 0 && allocationPercent === null) return null;
   if (type === 'income' && cpDelta < 0) return null;
   if (type === 'expense' && cpDelta > 0) return null;
 
@@ -615,15 +633,53 @@ function normalizeAllocation(alloc, type) {
   const shareCount = toInt(alloc.shareCount, -1);
   if (shareCount >= 0) normalized.shareCount = shareCount;
 
+  if (allocationPercent !== null) normalized.allocationPercent = allocationPercent;
+
   return normalized;
 }
 
 function inferAllocationMode(allocations) {
+  const percentAllocs = allocations.filter(a => a.allocationPercent !== undefined);
+  const percentTotal = percentAllocs.reduce((sum, alloc) => {
+    const basisPoints = percentToBasisPoints(alloc.allocationPercent);
+    return sum + (basisPoints === null ? 0 : basisPoints);
+  }, 0);
+  if (percentAllocs.length > 0 && percentTotal === PERCENT_TOTAL_BASIS_POINTS) {
+    return 'percentage_split';
+  }
+
   const characterAllocs = allocations.filter(a => a.targetType === 'character');
   if (characterAllocs.length <= 1) return 'direct';
   const firstValue = characterAllocs[0].cpDelta;
   const isEven = characterAllocs.every(a => a.cpDelta === firstValue);
   return isEven ? 'equal_split' : 'custom_split';
+}
+
+function validatePercentageSplitAllocations(allocations, type) {
+  const percentageAllocations = allocations.filter(alloc => (
+    alloc.allocationPercent !== undefined ||
+    type === 'expense' ||
+    alloc.targetType === 'character'
+  ));
+
+  if (percentageAllocations.length === 0) {
+    return 'Percentage split requires at least one percentage allocation.';
+  }
+
+  let totalBasisPoints = 0;
+  for (const alloc of percentageAllocations) {
+    const basisPoints = percentToBasisPoints(alloc.allocationPercent);
+    if (basisPoints === null) {
+      return 'Percentage split allocations must include percentages between 0 and 100.';
+    }
+    totalBasisPoints += basisPoints;
+  }
+
+  if (totalBasisPoints !== PERCENT_TOTAL_BASIS_POINTS) {
+    return `Percentage split must total 100%. Current total is ${totalBasisPoints / PERCENT_SCALE}%.`;
+  }
+
+  return null;
 }
 
 function normalizeInputCoins(inputCoins, totalCp, coinValues) {
@@ -673,6 +729,11 @@ function normalizeTransactionPayload(payload, existingId = null, settings = DEFA
   const allocationMode = ALLOCATION_MODES.has(source.allocationMode)
     ? source.allocationMode
     : inferAllocationMode(normalizedAllocations);
+
+  if (allocationMode === 'percentage_split') {
+    const percentageError = validatePercentageSplitAllocations(normalizedAllocations, type);
+    if (percentageError) return { error: percentageError };
+  }
 
   const patronCp = normalizedAllocations
     .filter(alloc => alloc.targetType === 'patron' && alloc.cpDelta > 0)
@@ -729,6 +790,13 @@ function normalizeStoredTransaction(tx, settings) {
   const expected = type === 'income' ? totalCp : -totalCp;
   if (allocationTotal !== expected) return null;
 
+  const allocationMode = ALLOCATION_MODES.has(tx.allocationMode)
+    ? tx.allocationMode
+    : inferAllocationMode(normalizedAllocations);
+  if (allocationMode === 'percentage_split' && validatePercentageSplitAllocations(normalizedAllocations, type)) {
+    return null;
+  }
+
   return {
     id: typeof tx.id === 'string' && tx.id ? tx.id : generateId('txn_'),
     date: normalizeDate(tx.date),
@@ -736,7 +804,7 @@ function normalizeStoredTransaction(tx, settings) {
     type,
     totalCp,
     inputCoins: normalizeInputCoins(tx.inputCoins, totalCp, settings.coinValues),
-    allocationMode: ALLOCATION_MODES.has(tx.allocationMode) ? tx.allocationMode : inferAllocationMode(normalizedAllocations),
+    allocationMode,
     patronEnabledAtTime: Boolean(tx.patronEnabledAtTime),
     patronPercentAtTime: clampInt(tx.patronPercentAtTime, 0, 100, 0),
     patronCp: normalizedAllocations

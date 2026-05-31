@@ -150,6 +150,55 @@ function getSortedActiveCharacters() {
     });
 }
 
+const PERCENT_SCALE = 100;
+const PERCENT_TOTAL_BASIS_POINTS = 100 * PERCENT_SCALE;
+
+function percentToBasisPoints(value) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return null;
+  return Math.round(parsed * PERCENT_SCALE);
+}
+
+function basisPointsToPercent(value) {
+  return Number((value / PERCENT_SCALE).toFixed(2));
+}
+
+function formatPercent(value) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return '0%';
+  return `${parsed.toFixed(2).replace(/\.?0+$/, '')}%`;
+}
+
+function formatPercentInput(value) {
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    if (trimmed === '' || /^\d*\.?\d*$/.test(trimmed)) return trimmed;
+  }
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return '0';
+  return parsed.toFixed(2).replace(/\.?0+$/, '');
+}
+
+function formatPercentFromBasisPoints(value) {
+  return formatPercent(basisPointsToPercent(value));
+}
+
+function buildEvenPercentageMap(characters) {
+  const percentages = {};
+  if (!characters.length) return percentages;
+
+  const base = Math.floor(PERCENT_TOTAL_BASIS_POINTS / characters.length);
+  let remainder = PERCENT_TOTAL_BASIS_POINTS - (base * characters.length);
+
+  characters.forEach(character => {
+    const share = base + (remainder > 0 ? 1 : 0);
+    if (remainder > 0) remainder -= 1;
+    percentages[character.id] = basisPointsToPercent(share);
+  });
+
+  return percentages;
+}
+
 function splitByShares(totalCp, recipients) {
   const total = Math.max(0, Math.trunc(Number(totalCp) || 0));
   const ordered = recipients
@@ -173,6 +222,46 @@ function splitByShares(totalCp, recipients) {
 
   const baseAllocations = ordered.map(recipient => {
     const rawAmount = total * (recipient.shareCount / totalShares);
+    return {
+      ...recipient,
+      amountCp: Math.floor(rawAmount)
+    };
+  });
+
+  let allocated = baseAllocations.reduce((sum, allocation) => sum + allocation.amountCp, 0);
+  let remainder = total - allocated;
+  let cursor = 0;
+
+  while (remainder > 0) {
+    baseAllocations[cursor].amountCp += 1;
+    remainder -= 1;
+    cursor = (cursor + 1) % baseAllocations.length;
+  }
+
+  return baseAllocations;
+}
+
+function splitByPercentages(totalCp, recipients) {
+  const total = Math.max(0, Math.trunc(Number(totalCp) || 0));
+  const ordered = recipients
+    .map((recipient, index) => ({
+      key: recipient.key,
+      targetType: recipient.targetType,
+      characterId: recipient.characterId,
+      allocationPercent: basisPointsToPercent(recipient.percentBasisPoints),
+      percentBasisPoints: Math.max(0, Math.trunc(Number(recipient.percentBasisPoints) || 0)),
+      order: recipient.order !== undefined ? recipient.order : index
+    }))
+    .filter(recipient => recipient.percentBasisPoints > 0)
+    .sort((a, b) => {
+      if (a.order !== b.order) return a.order - b.order;
+      return a.key.localeCompare(b.key);
+    });
+
+  if (ordered.length === 0) return [];
+
+  const baseAllocations = ordered.map(recipient => {
+    const rawAmount = total * (recipient.percentBasisPoints / PERCENT_TOTAL_BASIS_POINTS);
     return {
       ...recipient,
       amountCp: Math.floor(rawAmount)
@@ -301,6 +390,19 @@ function getAllocationSummary(transaction) {
     if (shareBits.length) {
       parts.push(`Custom split: ${shareBits.join(', ')}`);
     }
+  } else if (transaction.allocationMode === 'percentage_split') {
+    const percentBits = transaction.allocations
+      .filter(alloc => alloc.allocationPercent !== undefined)
+      .map(alloc => {
+        if (alloc.targetType === 'patron') {
+          return `Patron Fund ${formatPercent(alloc.allocationPercent)}`;
+        }
+        const names = nameMap[alloc.characterId] || { characterName: alloc.characterId };
+        return `${names.characterName} ${formatPercent(alloc.allocationPercent)}`;
+      });
+    if (percentBits.length) {
+      parts.push(`Percentage split: ${percentBits.join(', ')}`);
+    }
   }
 
   if (transaction.type === 'income' && transaction.patronCp > 0) {
@@ -411,9 +513,13 @@ function buildEmptyModalForm() {
   const activeCharacters = getSortedActiveCharacters();
   const selectedMap = {};
   const customShares = {};
+  const percentageSplits = buildEvenPercentageMap(activeCharacters);
   activeCharacters.forEach(character => {
     selectedMap[character.id] = true;
     customShares[character.id] = 1;
+    if (percentageSplits[character.id] === undefined) {
+      percentageSplits[character.id] = 0;
+    }
   });
 
   const defaultSplitMode = treasuryState.settings.defaultSplitMode || 'equal_split';
@@ -430,6 +536,8 @@ function buildEmptyModalForm() {
     equalIncludePatron: false,
     customShares,
     customPatronShare: 0,
+    percentageSplits,
+    percentagePatronPercent: 0,
     patronCutEnabled: Boolean(treasuryState.settings.patronEnabled),
     patronPercent: Number(treasuryState.settings.defaultPatronPercent || 10),
     sessionLabel: '',
@@ -468,6 +576,10 @@ function formFromTransaction(transaction) {
   Object.keys(form.customShares).forEach(characterId => {
     form.customShares[characterId] = 0;
   });
+  Object.keys(form.percentageSplits).forEach(characterId => {
+    form.percentageSplits[characterId] = 0;
+  });
+  form.percentagePatronPercent = 0;
 
   const firstAlloc = allocs[0];
   if (form.allocationMode === 'direct') {
@@ -478,14 +590,26 @@ function formFromTransaction(transaction) {
     }
   }
 
+  const percentageBaseCp = transaction.type === 'income'
+    ? Math.max(0, Number(transaction.totalCp || 0) - Number(transaction.patronCp || 0))
+    : Math.max(0, Number(transaction.totalCp || 0));
+
   allocs.forEach(alloc => {
+    const storedPercent = Number(alloc.allocationPercent);
+    const fallbackPercent = percentageBaseCp > 0
+      ? (Math.abs(Number(alloc.cpDelta || 0)) / percentageBaseCp) * 100
+      : 0;
+    const allocationPercent = Number.isFinite(storedPercent) ? storedPercent : fallbackPercent;
+
     if (alloc.targetType === 'character' && characterSet.has(alloc.characterId)) {
       form.equalSelected[alloc.characterId] = true;
       form.customShares[alloc.characterId] = Math.max(0, Number(alloc.shareCount !== undefined ? alloc.shareCount : 1));
+      form.percentageSplits[alloc.characterId] = Math.max(0, Number(allocationPercent || 0));
     }
     if (alloc.targetType === 'patron' && transaction.type === 'expense') {
       form.equalIncludePatron = true;
       form.customPatronShare = Math.max(0, Number(alloc.shareCount !== undefined ? alloc.shareCount : 1));
+      form.percentagePatronPercent = Math.max(0, Number(allocationPercent || 0));
     }
   });
 
@@ -501,6 +625,17 @@ function formFromTransaction(transaction) {
       activeCharacters.forEach(character => {
         form.customShares[character.id] = 1;
       });
+    }
+  }
+
+  if (form.allocationMode === 'percentage_split') {
+    const hasPercentage = Object.values(form.percentageSplits).some(value => value > 0) ||
+      Number(form.percentagePatronPercent || 0) > 0;
+    if (!hasPercentage) {
+      form.percentageSplits = {
+        ...form.percentageSplits,
+        ...buildEvenPercentageMap(activeCharacters)
+      };
     }
   }
 
@@ -542,7 +677,8 @@ function calculateModalPreview() {
     distributableCp: 0,
     allocations: [],
     errors: [],
-    patronPercent: 0
+    patronPercent: 0,
+    percentageTotalBasisPoints: 0
   };
   if (!form) return preview;
 
@@ -671,6 +807,74 @@ function calculateModalPreview() {
         cpDelta: form.type === 'income' ? item.amountCp : -item.amountCp
       });
     });
+  } else if (form.allocationMode === 'percentage_split') {
+    const recipients = [];
+    let hasInvalidPercent = false;
+    let totalPercentBasisPoints = 0;
+
+    activeCharacters.forEach(character => {
+      const basisPoints = percentToBasisPoints(form.percentageSplits[character.id] || 0);
+      if (basisPoints === null || basisPoints < 0 || basisPoints > PERCENT_TOTAL_BASIS_POINTS) {
+        hasInvalidPercent = true;
+        return;
+      }
+
+      totalPercentBasisPoints += basisPoints;
+      if (basisPoints > 0) {
+        recipients.push({
+          key: `character:${character.id}`,
+          targetType: 'character',
+          characterId: character.id,
+          percentBasisPoints: basisPoints,
+          order: character.displayOrder || 0
+        });
+      }
+    });
+
+    if (form.type === 'expense' && treasuryState.settings.patronEnabled) {
+      const basisPoints = percentToBasisPoints(form.percentagePatronPercent || 0);
+      if (basisPoints === null || basisPoints < 0 || basisPoints > PERCENT_TOTAL_BASIS_POINTS) {
+        hasInvalidPercent = true;
+      } else {
+        totalPercentBasisPoints += basisPoints;
+        if (basisPoints > 0) {
+          recipients.push({
+            key: 'patron',
+            targetType: 'patron',
+            percentBasisPoints: basisPoints,
+            order: 9999
+          });
+        }
+      }
+    }
+
+    preview.percentageTotalBasisPoints = totalPercentBasisPoints;
+
+    if (hasInvalidPercent) {
+      preview.errors.push('Percentages must be between 0% and 100%.');
+      return preview;
+    }
+
+    if (!recipients.length) {
+      preview.errors.push('Percentage split must have at least one recipient.');
+      return preview;
+    }
+
+    if (totalPercentBasisPoints !== PERCENT_TOTAL_BASIS_POINTS) {
+      preview.errors.push(`Percentage split must total 100% (currently ${formatPercentFromBasisPoints(totalPercentBasisPoints)}).`);
+      return preview;
+    }
+
+    const baseAmount = form.type === 'income' ? distributableCp : totalCp;
+    const split = splitByPercentages(baseAmount, recipients);
+    split.forEach(item => {
+      preview.allocations.push({
+        targetType: item.targetType,
+        characterId: item.characterId,
+        allocationPercent: item.allocationPercent,
+        cpDelta: form.type === 'income' ? item.amountCp : -item.amountCp
+      });
+    });
   } else {
     preview.errors.push('Invalid allocation mode.');
     return preview;
@@ -690,16 +894,21 @@ function calculateModalPreview() {
       if (alloc.shareCount !== undefined) {
         existing.shareCount = Math.max(existing.shareCount || 0, alloc.shareCount);
       }
+      if (alloc.allocationPercent !== undefined) {
+        existing.allocationPercent = Number(existing.allocationPercent || 0) + Number(alloc.allocationPercent || 0);
+      }
     } else {
       merged.set(key, {
         targetType: alloc.targetType,
         characterId: alloc.characterId,
         cpDelta: alloc.cpDelta,
-        shareCount: alloc.shareCount
+        shareCount: alloc.shareCount,
+        allocationPercent: alloc.allocationPercent
       });
     }
   });
-  preview.allocations = Array.from(merged.values()).filter(alloc => alloc.cpDelta !== 0);
+  preview.allocations = Array.from(merged.values())
+    .filter(alloc => alloc.cpDelta !== 0 || alloc.allocationPercent !== undefined);
 
   const allocationSum = preview.allocations.reduce((sum, alloc) => sum + alloc.cpDelta, 0);
   const expected = form.type === 'income' ? totalCp : -totalCp;
@@ -743,9 +952,11 @@ function renderModal() {
   const directSection = document.getElementById('direct-section');
   const equalSection = document.getElementById('equal-section');
   const customSection = document.getElementById('custom-section');
+  const percentageSection = document.getElementById('percentage-section');
   directSection.style.display = form.allocationMode === 'direct' ? 'block' : 'none';
   equalSection.style.display = form.allocationMode === 'equal_split' ? 'block' : 'none';
   customSection.style.display = form.allocationMode === 'custom_split' ? 'block' : 'none';
+  percentageSection.style.display = form.allocationMode === 'percentage_split' ? 'block' : 'none';
 
   const directTargetSelect = document.getElementById('tx-direct-target');
   const targetOptions = activeCharacters.map(character => (
@@ -828,6 +1039,51 @@ function renderModal() {
   }
   customList.innerHTML = customRows.join('');
 
+  const percentageList = document.getElementById('percentage-split-list');
+  let percentageTotalBasisPoints = 0;
+  const percentageRows = activeCharacters.map(character => {
+    const key = `character:${character.id}`;
+    const rawPercent = form.percentageSplits[character.id] !== undefined ? form.percentageSplits[character.id] : 0;
+    const percent = Math.max(0, Number(rawPercent || 0));
+    const basisPoints = percentToBasisPoints(percent);
+    if (basisPoints !== null) percentageTotalBasisPoints += basisPoints;
+    const projected = previewAmounts.get(key) || 0;
+    return `
+      <div class="share-row percent-row">
+        <div>
+          <div>${escapeHtml(character.characterName)} <span class="wallet-player">Player: ${escapeHtml(character.playerName)}</span></div>
+          <div class="share-meta">${formatPercent(percent)} | Projected: ${formatCoins(Math.abs(projected))}</div>
+        </div>
+        <label>
+          <span>Percent</span>
+          <input type="number" min="0" max="100" step="0.01" data-percent-target="${escapeHtml(character.id)}" value="${escapeHtml(formatPercentInput(rawPercent))}">
+        </label>
+      </div>
+    `;
+  });
+
+  if (form.type === 'expense' && treasuryState.settings.patronEnabled) {
+    const rawPatronPercent = form.percentagePatronPercent !== undefined ? form.percentagePatronPercent : 0;
+    const patronPercent = Math.max(0, Number(rawPatronPercent || 0));
+    const basisPoints = percentToBasisPoints(patronPercent);
+    if (basisPoints !== null) percentageTotalBasisPoints += basisPoints;
+    const projected = Math.abs(previewAmounts.get('patron') || 0);
+    percentageRows.push(`
+      <div class="share-row percent-row">
+        <div>
+          <div>Patron Fund</div>
+          <div class="share-meta">${formatPercent(patronPercent)} | Projected: ${formatCoins(projected)}</div>
+        </div>
+        <label>
+          <span>Percent</span>
+          <input type="number" min="0" max="100" step="0.01" data-percent-target="patron" value="${escapeHtml(formatPercentInput(rawPatronPercent))}">
+        </label>
+      </div>
+    `);
+  }
+  percentageList.innerHTML = percentageRows.join('');
+  document.getElementById('percentage-total').textContent = `Total: ${formatPercentFromBasisPoints(percentageTotalBasisPoints)}`;
+
   document.getElementById('preview-total').textContent = formatCoins(preview.totalCp);
   document.getElementById('preview-patron').textContent = formatCoins(preview.patronCp);
   document.getElementById('preview-distributable').textContent = formatCoins(preview.distributableCp);
@@ -876,6 +1132,16 @@ function syncModalFormFromInputs() {
     const charId = checkbox.getAttribute('data-equal-char');
     form.equalSelected[charId] = checkbox.checked;
   });
+
+  document.querySelectorAll('[data-percent-target]').forEach(input => {
+    const target = input.getAttribute('data-percent-target');
+    const value = input.value;
+    if (target === 'patron') {
+      form.percentagePatronPercent = value;
+    } else {
+      form.percentageSplits[target] = value;
+    }
+  });
 }
 
 function adjustShare(target, delta) {
@@ -886,6 +1152,15 @@ function adjustShare(target, delta) {
     return;
   }
   form.customShares[target] = Math.max(0, Number(form.customShares[target] || 0) + intDelta);
+}
+
+function setPercentageValue(target, value) {
+  const form = treasuryState.modal.form;
+  if (target === 'patron') {
+    form.percentagePatronPercent = value;
+    return;
+  }
+  form.percentageSplits[target] = value;
 }
 
 function setAllEqualRecipients(enabled) {
@@ -913,6 +1188,23 @@ function resetCustomShares() {
   form.customPatronShare = 0;
 }
 
+function applyEvenPercentageSplit() {
+  const form = treasuryState.modal.form;
+  const evenPercentages = buildEvenPercentageMap(getSortedActiveCharacters());
+  Object.keys(form.percentageSplits).forEach(characterId => {
+    form.percentageSplits[characterId] = evenPercentages[characterId] || 0;
+  });
+  form.percentagePatronPercent = 0;
+}
+
+function clearPercentageSplit() {
+  const form = treasuryState.modal.form;
+  Object.keys(form.percentageSplits).forEach(characterId => {
+    form.percentageSplits[characterId] = 0;
+  });
+  form.percentagePatronPercent = 0;
+}
+
 function buildTransactionPayload() {
   const form = treasuryState.modal.form;
   const preview = calculateModalPreview();
@@ -935,6 +1227,7 @@ function buildTransactionPayload() {
         targetType: alloc.targetType,
         characterId: alloc.characterId,
         shareCount: alloc.shareCount,
+        allocationPercent: alloc.allocationPercent,
         cpDelta: alloc.cpDelta
       })),
       sessionLabel: form.sessionLabel.trim() || undefined,
@@ -1121,6 +1414,13 @@ function bindStaticEventListeners() {
     renderModal();
   });
 
+  document.getElementById('percentage-split-list').addEventListener('input', event => {
+    const input = event.target.closest('[data-percent-target]');
+    if (!input || !treasuryState.modal.form) return;
+    setPercentageValue(input.getAttribute('data-percent-target'), input.value);
+    renderModal();
+  });
+
   document.getElementById('btn-equal-select-all').addEventListener('click', () => {
     if (!treasuryState.modal.form) return;
     setAllEqualRecipients(true);
@@ -1144,6 +1444,18 @@ function bindStaticEventListeners() {
     getSortedActiveCharacters().forEach(character => {
       treasuryState.modal.form.customShares[character.id] = 1;
     });
+    renderModal();
+  });
+
+  document.getElementById('btn-percentage-even').addEventListener('click', () => {
+    if (!treasuryState.modal.form) return;
+    applyEvenPercentageSplit();
+    renderModal();
+  });
+
+  document.getElementById('btn-percentage-clear').addEventListener('click', () => {
+    if (!treasuryState.modal.form) return;
+    clearPercentageSplit();
     renderModal();
   });
 }

@@ -396,6 +396,7 @@
 
 .recipient-list,
 .share-list,
+.percentage-list,
 .preview-list {
     display: flex;
     flex-direction: column;
@@ -450,6 +451,22 @@
 .share-meta {
     font-size: 0.82rem;
     color: #b9c4d5;
+}
+
+.percentage-total {
+    align-self: center;
+    color: #f8e8ad;
+    font-size: 0.86rem;
+    font-weight: 700;
+}
+
+.percent-row {
+    grid-template-columns: 1fr minmax(110px, 140px);
+}
+
+.percent-row input {
+    width: 100%;
+    text-align: right;
 }
 
 .preview-panel {

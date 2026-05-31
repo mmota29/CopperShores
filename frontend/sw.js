@@ -1,4 +1,4 @@
-const SW_VERSION = 'v1';
+const SW_VERSION = 'v2';
 const STATIC_CACHE = `coppershores-static-${SW_VERSION}`;
 const MAP_CACHE = `coppershores-maps-${SW_VERSION}`;
 const RUNTIME_CACHE = `coppershores-runtime-${SW_VERSION}`;

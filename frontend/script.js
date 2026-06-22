@@ -335,8 +335,12 @@ function initPlayersPage() {
 function showMessage(msg, isError) {
     const el = document.getElementById('message') || document.getElementById('player-message');
     if (!el) return;
-    el.innerHTML = `<p class="status-message ${isError ? 'error' : 'success'}">${msg}</p>`;
-    setTimeout(()=>{ if (el) el.innerHTML=''; }, 4000);
+    el.textContent = '';
+    const p = document.createElement('p');
+    p.className = `status-message ${isError ? 'error' : 'success'}`;
+    p.textContent = msg;
+    el.appendChild(p);
+    setTimeout(()=>{ if (el) el.textContent=''; }, 4000);
 }
 
 function clearAddPlayerForm() {
@@ -452,12 +456,16 @@ function renderCurrentCharacter(player) {
     const classText = cur.className || cur.class || '';
     const detailParts = [cur.race, classText].filter(Boolean);
     const details = detailParts.length ? `${detailParts.join(' ')} (Level ${cur.level || 1})` : `Level ${cur.level || 1}`;
-    box.innerHTML = `
-        <div class="current-character-card">
-            <strong>${cur.name}</strong>
-            <div class="char-meta">${details}</div>
-        </div>
-    `;
+    const card = document.createElement('div');
+    card.className = 'current-character-card';
+    const name = document.createElement('strong');
+    name.textContent = cur.name || 'Unnamed Character';
+    const meta = document.createElement('div');
+    meta.className = 'char-meta';
+    meta.textContent = details;
+    card.appendChild(name);
+    card.appendChild(meta);
+    box.appendChild(card);
 }
 
 function renderPreviousCharacters(player) {
@@ -471,17 +479,43 @@ function renderPreviousCharacters(player) {
         const classText = c.className || c.class || '';
         const detailParts = [c.race, classText].filter(Boolean);
         const details = detailParts.length ? ` - ${detailParts.join(' ')}` : '';
-        div.innerHTML = `
-            <div>
-                <strong>${c.name}</strong>${details} (Lv ${c.level || 1})
-                <div class="char-meta">${c.status || ''}</div>
-            </div>
-            <div class="button-row">
-                <button class="btn" onclick="editCharacter('${player.id}','${c.id}')">Edit</button>
-                <button class="btn" onclick="setAsCurrent('${player.id}','${c.id}')">Set as Current</button>
-                <button class="btn" onclick="removeCharacter('${player.id}','${c.id}')">Remove</button>
-            </div>
-        `;
+        const info = document.createElement('div');
+        const name = document.createElement('strong');
+        name.textContent = c.name || 'Unnamed Character';
+        const detailText = document.createTextNode(`${details} (Lv ${c.level || 1})`);
+        const meta = document.createElement('div');
+        meta.className = 'char-meta';
+        meta.textContent = c.status || '';
+        info.appendChild(name);
+        info.appendChild(detailText);
+        info.appendChild(meta);
+
+        const actions = document.createElement('div');
+        actions.className = 'button-row';
+
+        const editBtn = document.createElement('button');
+        editBtn.className = 'btn';
+        editBtn.type = 'button';
+        editBtn.textContent = 'Edit';
+        editBtn.addEventListener('click', () => editCharacter(player.id, c.id));
+
+        const currentBtn = document.createElement('button');
+        currentBtn.className = 'btn';
+        currentBtn.type = 'button';
+        currentBtn.textContent = 'Set as Current';
+        currentBtn.addEventListener('click', () => setAsCurrent(player.id, c.id));
+
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'btn';
+        removeBtn.type = 'button';
+        removeBtn.textContent = 'Remove';
+        removeBtn.addEventListener('click', () => removeCharacter(player.id, c.id));
+
+        actions.appendChild(editBtn);
+        actions.appendChild(currentBtn);
+        actions.appendChild(removeBtn);
+        div.appendChild(info);
+        div.appendChild(actions);
         list.appendChild(div);
     });
 }

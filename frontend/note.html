@@ -26,6 +26,7 @@
                 <li><a href="map.html" class="nav-link">Interactive Map</a></li>
                 <li><a href="players.html" class="nav-link">Players</a></li>
                 <li><a href="notes.html" class="nav-link active">Notes</a></li>
+                <li><a href="content.html" class="nav-link">Library</a></li>
             </ul>
         </div>
     </nav>
@@ -188,8 +189,12 @@
 
         function showMessage(msg, isError) {
             const el = document.getElementById('message');
-            el.innerHTML = `<p class="status-message ${isError ? 'error' : 'success'}">${msg}</p>`;
-            if (!isError) setTimeout(() => { el.innerHTML = ''; }, 4000);
+            el.textContent = '';
+            const p = document.createElement('p');
+            p.className = `status-message ${isError ? 'error' : 'success'}`;
+            p.textContent = msg;
+            el.appendChild(p);
+            if (!isError) setTimeout(() => { el.textContent = ''; }, 4000);
         }
     </script>
 </body>

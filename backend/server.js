@@ -1,12 +1,14 @@
 // Copper Shores Backend - Express Server
 // This is a simple API server for the D&D Campaign Hub
 
+require('dotenv').config({ quiet: true });
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+const HOST = process.env.HOST || '0.0.0.0';
 app.set('etag', 'strong');
 
 // Middleware
@@ -71,6 +73,25 @@ app.use('/allmaps', express.static(allmapsPath, {
 // Routes
 const db = require('./db');
 
+function asyncRoute(handler) {
+  return (req, res, next) => {
+    Promise.resolve(handler(req, res, next)).catch(next);
+  };
+}
+
+function requireContentWriteAccess(req, res, next) {
+  const adminToken = process.env.ADMIN_WRITE_TOKEN;
+  if (!adminToken) return next();
+
+  const provided = req.get('x-admin-token') || '';
+  if (provided === adminToken) return next();
+
+  return res.status(401).json({
+    status: 'error',
+    message: 'Admin token is required to change content.'
+  });
+}
+
 /**
  * GET /api/gold
  * Returns placeholder data for gold spending
@@ -100,8 +121,68 @@ app.get('/api/map', (req, res) => {
   });
 });
 
+app.get('/api/config', (req, res) => {
+  res.json({
+    status: 'success',
+    data: {
+      storageMode: db.getStorageMode(),
+      adminWriteRequired: Boolean(process.env.ADMIN_WRITE_TOKEN),
+      contentTypes: db.getContentTypes()
+    }
+  });
+});
+
 /**
- * Players API (persistent JSON storage)
+ * User-generated D&D content library
+ */
+app.get('/api/content/types', (req, res) => {
+  res.json({ status: 'success', data: db.getContentTypes() });
+});
+
+app.get('/api/content', asyncRoute(async (req, res) => {
+  const entries = await db.listContentEntries({
+    type: req.query.type,
+    q: req.query.q,
+    tag: req.query.tag
+  });
+  res.json({ status: 'success', data: { entries } });
+}));
+
+app.post('/api/content', requireContentWriteAccess, asyncRoute(async (req, res) => {
+  const result = await db.createContentEntry(req.body || {});
+  if (result.error) {
+    return res.status(400).json({ status: 'error', message: result.error });
+  }
+  res.status(201).json({ status: 'success', data: result.entry });
+}));
+
+app.get('/api/content/:id', asyncRoute(async (req, res) => {
+  const entry = await db.getContentEntry(req.params.id);
+  if (!entry) {
+    return res.status(404).json({ status: 'error', message: 'Content entry not found.' });
+  }
+  res.json({ status: 'success', data: entry });
+}));
+
+app.put('/api/content/:id', requireContentWriteAccess, asyncRoute(async (req, res) => {
+  const result = await db.updateContentEntry(req.params.id, req.body || {});
+  if (result.error) {
+    const status = result.error === 'Content entry not found.' ? 404 : 400;
+    return res.status(status).json({ status: 'error', message: result.error });
+  }
+  res.json({ status: 'success', data: result.entry });
+}));
+
+app.delete('/api/content/:id', requireContentWriteAccess, asyncRoute(async (req, res) => {
+  const ok = await db.deleteContentEntry(req.params.id);
+  if (!ok) {
+    return res.status(404).json({ status: 'error', message: 'Content entry not found.' });
+  }
+  res.json({ status: 'success', message: 'Content entry deleted.' });
+}));
+
+/**
+ * Players API (persistent storage)
  */
 
 // List players
@@ -122,13 +203,14 @@ app.get('/api/players', (req, res) => {
 });
 
 // Create player
-app.post('/api/players', (req, res) => {
+app.post('/api/players', async (req, res) => {
   const { name, bio, currentCharacter } = req.body;
   if (!name || typeof name !== 'string' || name.trim() === '') {
     return res.status(400).json({ status: 'error', message: 'Player name is required' });
   }
   try {
     const player = db.createPlayer({ name: name.trim(), bio: bio || '', currentCharacter });
+    await db.flushWrites();
     res.status(201).json({ status: 'success', data: player });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
@@ -144,7 +226,7 @@ app.get('/api/players/:id', (req, res) => {
 });
 
 // Update player (name/bio)
-app.put('/api/players/:id', (req, res) => {
+app.put('/api/players/:id', async (req, res) => {
   const id = req.params.id;
   const patch = req.body || {};
   if (patch.name !== undefined && (typeof patch.name !== 'string' || patch.name.trim() === '')) {
@@ -152,19 +234,21 @@ app.put('/api/players/:id', (req, res) => {
   }
   const updated = db.updatePlayer(id, patch);
   if (!updated) return res.status(404).json({ status: 'error', message: 'Player not found' });
+  await db.flushWrites();
   res.json({ status: 'success', data: updated });
 });
 
 // Delete player
-app.delete('/api/players/:id', (req, res) => {
+app.delete('/api/players/:id', async (req, res) => {
   const id = req.params.id;
   const ok = db.deletePlayer(id);
   if (!ok) return res.status(404).json({ status: 'error', message: 'Player not found' });
+  await db.flushWrites();
   res.json({ status: 'success', message: 'Player deleted' });
 });
 
 // Add a character to player (goes to previous list by default unless status active)
-app.post('/api/players/:id/characters', (req, res) => {
+app.post('/api/players/:id/characters', async (req, res) => {
   const id = req.params.id;
   const payload = req.body || {};
   const player = db.getPlayer(id);
@@ -174,6 +258,7 @@ app.post('/api/players/:id/characters', (req, res) => {
   }
   try {
     const char = db.addCharacter(id, payload);
+    await db.flushWrites();
     res.status(201).json({ status: 'success', data: char });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
@@ -181,7 +266,7 @@ app.post('/api/players/:id/characters', (req, res) => {
 });
 
 // Set current character for player (accepts { characterId } or full object)
-app.put('/api/players/:id/current', (req, res) => {
+app.put('/api/players/:id/current', async (req, res) => {
   const id = req.params.id;
   const payload = req.body || {};
   const player = db.getPlayer(id);
@@ -196,6 +281,7 @@ app.put('/api/players/:id/current', (req, res) => {
       return res.status(400).json({ status: 'error', message: 'characterId or character object required' });
     }
     if (!result) return res.status(404).json({ status: 'error', message: 'Character not found' });
+    await db.flushWrites();
     res.json({ status: 'success', data: result });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
@@ -203,7 +289,7 @@ app.put('/api/players/:id/current', (req, res) => {
 });
 
 // Move current to previous and clear current (e.g., when character dies)
-app.post('/api/players/:id/moveCurrentToPrevious', (req, res) => {
+app.post('/api/players/:id/moveCurrentToPrevious', async (req, res) => {
   const id = req.params.id;
   const payload = req.body || {};
   const player = db.getPlayer(id);
@@ -212,6 +298,7 @@ app.post('/api/players/:id/moveCurrentToPrevious', (req, res) => {
     const status = payload.status || 'dead';
     const moved = db.moveCurrentToPrevious(id, status);
     if (!moved) return res.status(400).json({ status: 'error', message: 'No current character to move' });
+    await db.flushWrites();
     res.json({ status: 'success', data: moved });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
@@ -219,18 +306,19 @@ app.post('/api/players/:id/moveCurrentToPrevious', (req, res) => {
 });
 
 // Delete a character
-app.delete('/api/players/:id/characters/:charId', (req, res) => {
+app.delete('/api/players/:id/characters/:charId', async (req, res) => {
   const id = req.params.id;
   const charId = req.params.charId;
   const player = db.getPlayer(id);
   if (!player) return res.status(404).json({ status: 'error', message: 'Player not found' });
   const ok = db.deleteCharacter(id, charId);
   if (!ok) return res.status(404).json({ status: 'error', message: 'Character not found' });
+  await db.flushWrites();
   res.json({ status: 'success', message: 'Character removed' });
 });
 
 // Update a character (level, class, name, etc.)
-app.put('/api/players/:id/characters/:charId', (req, res) => {
+app.put('/api/players/:id/characters/:charId', async (req, res) => {
   const id = req.params.id;
   const charId = req.params.charId;
   const patch = req.body || {};
@@ -239,6 +327,7 @@ app.put('/api/players/:id/characters/:charId', (req, res) => {
   try {
     const updated = db.updateCharacter(id, charId, patch);
     if (!updated) return res.status(404).json({ status: 'error', message: 'Character not found' });
+    await db.flushWrites();
     res.json({ status: 'success', data: updated });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
@@ -288,7 +377,7 @@ app.get('/api/notes/:cat', (req, res) => {
 });
 
 // Create a note
-app.post('/api/notes/:cat', (req, res) => {
+app.post('/api/notes/:cat', async (req, res) => {
   const cat = req.params.cat;
   const { title, content, tags } = req.body || {};
   if (!title || typeof title !== 'string' || title.trim() === '') {
@@ -299,6 +388,7 @@ app.post('/api/notes/:cat', (req, res) => {
     if (!note) {
       return res.status(400).json({ status: 'error', message: 'Invalid category or note data' });
     }
+    await db.flushWrites();
     res.status(201).json({ status: 'success', data: note });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
@@ -321,7 +411,7 @@ app.get('/api/notes/:cat/:id', (req, res) => {
 });
 
 // Update a note
-app.put('/api/notes/:cat/:id', (req, res) => {
+app.put('/api/notes/:cat/:id', async (req, res) => {
   const cat = req.params.cat;
   const id = req.params.id;
   const patch = req.body || {};
@@ -330,6 +420,7 @@ app.put('/api/notes/:cat/:id', (req, res) => {
     if (!note) {
       return res.status(404).json({ status: 'error', message: 'Note not found or invalid category' });
     }
+    await db.flushWrites();
     res.json({ status: 'success', data: note });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
@@ -337,7 +428,7 @@ app.put('/api/notes/:cat/:id', (req, res) => {
 });
 
 // Delete a note
-app.delete('/api/notes/:cat/:id', (req, res) => {
+app.delete('/api/notes/:cat/:id', async (req, res) => {
   const cat = req.params.cat;
   const id = req.params.id;
   try {
@@ -345,6 +436,7 @@ app.delete('/api/notes/:cat/:id', (req, res) => {
     if (!ok) {
       return res.status(404).json({ status: 'error', message: 'Note not found' });
     }
+    await db.flushWrites();
     res.json({ status: 'success', message: 'Note deleted' });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
@@ -380,7 +472,7 @@ app.get('/api/maps/:mapId/waypoints', (req, res) => {
 });
 
 // Create a waypoint on a map
-app.post('/api/maps/:mapId/waypoints', (req, res) => {
+app.post('/api/maps/:mapId/waypoints', async (req, res) => {
   const mapId = req.params.mapId;
   const { x, y, title, note } = req.body || {};
   if (typeof x !== 'number' || typeof y !== 'number') {
@@ -391,6 +483,7 @@ app.post('/api/maps/:mapId/waypoints', (req, res) => {
     if (!waypoint) {
       return res.status(400).json({ status: 'error', message: 'Invalid map ID' });
     }
+    await db.flushWrites();
     res.status(201).json({ status: 'success', data: waypoint });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
@@ -413,7 +506,7 @@ app.get('/api/maps/:mapId/waypoints/:id', (req, res) => {
 });
 
 // Update a waypoint
-app.put('/api/maps/:mapId/waypoints/:id', (req, res) => {
+app.put('/api/maps/:mapId/waypoints/:id', async (req, res) => {
   const mapId = req.params.mapId;
   const id = req.params.id;
   const patch = req.body || {};
@@ -422,6 +515,7 @@ app.put('/api/maps/:mapId/waypoints/:id', (req, res) => {
     if (!waypoint) {
       return res.status(404).json({ status: 'error', message: 'Waypoint not found' });
     }
+    await db.flushWrites();
     res.json({ status: 'success', data: waypoint });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
@@ -429,7 +523,7 @@ app.put('/api/maps/:mapId/waypoints/:id', (req, res) => {
 });
 
 // Delete a waypoint
-app.delete('/api/maps/:mapId/waypoints/:id', (req, res) => {
+app.delete('/api/maps/:mapId/waypoints/:id', async (req, res) => {
   const mapId = req.params.mapId;
   const id = req.params.id;
   try {
@@ -437,6 +531,7 @@ app.delete('/api/maps/:mapId/waypoints/:id', (req, res) => {
     if (!ok) {
       return res.status(404).json({ status: 'error', message: 'Waypoint not found' });
     }
+    await db.flushWrites();
     res.json({ status: 'success', message: 'Waypoint deleted' });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
@@ -463,10 +558,11 @@ app.get('/api/treasury/settings', (req, res) => {
   }
 });
 
-app.put('/api/treasury/settings', (req, res) => {
+app.put('/api/treasury/settings', async (req, res) => {
   try {
     const patch = req.body || {};
     const settings = db.updateTreasurySettings(patch);
+    await db.flushWrites();
     res.json({ status: 'success', data: { settings } });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
@@ -482,12 +578,13 @@ app.get('/api/treasury/transactions', (req, res) => {
   }
 });
 
-app.post('/api/treasury/transactions', (req, res) => {
+app.post('/api/treasury/transactions', async (req, res) => {
   try {
     const result = db.addTreasuryTransaction(req.body || {});
     if (result.error) {
       return res.status(400).json({ status: 'error', message: result.error });
     }
+    await db.flushWrites();
     const treasury = db.getTreasuryState();
     res.status(201).json({ status: 'success', data: { transaction: result.transaction, treasury } });
   } catch (err) {
@@ -495,13 +592,14 @@ app.post('/api/treasury/transactions', (req, res) => {
   }
 });
 
-app.put('/api/treasury/transactions/:id', (req, res) => {
+app.put('/api/treasury/transactions/:id', async (req, res) => {
   try {
     const result = db.updateTreasuryTransaction(req.params.id, req.body || {});
     if (result.error) {
       const status = result.error === 'Transaction not found.' ? 404 : 400;
       return res.status(status).json({ status: 'error', message: result.error });
     }
+    await db.flushWrites();
     const treasury = db.getTreasuryState();
     res.json({ status: 'success', data: { transaction: result.transaction, treasury } });
   } catch (err) {
@@ -509,12 +607,13 @@ app.put('/api/treasury/transactions/:id', (req, res) => {
   }
 });
 
-app.delete('/api/treasury/transactions/:id', (req, res) => {
+app.delete('/api/treasury/transactions/:id', async (req, res) => {
   try {
     const ok = db.deleteTreasuryTransaction(req.params.id);
     if (!ok) {
       return res.status(404).json({ status: 'error', message: 'Transaction not found' });
     }
+    await db.flushWrites();
     const treasury = db.getTreasuryState();
     res.json({ status: 'success', data: { treasury } });
   } catch (err) {
@@ -572,7 +671,16 @@ app.get('/', (req, res) => {
   res.json({
     status: 'success',
     message: 'Copper Shores Backend is running',
-    version: '0.1.0'
+    version: '0.1.0',
+    storageMode: db.getStorageMode()
+  });
+});
+
+app.use((err, req, res, next) => {
+  console.error('Unhandled API error:', err);
+  res.status(500).json({
+    status: 'error',
+    message: 'Unexpected server error'
   });
 });
 
@@ -580,12 +688,13 @@ app.get('/', (req, res) => {
 async function startServer() {
   try {
     await db.ready();
-    app.listen(PORT, () => {
-      console.log('Copper Shores server is running on http://localhost:' + PORT);
+    app.listen(PORT, HOST, () => {
+      console.log('Copper Shores server is running on http://' + HOST + ':' + PORT);
       console.log('API endpoints available at http://localhost:' + PORT + '/api');
+      console.log('Storage mode: ' + db.getStorageMode());
     });
   } catch (err) {
-    console.error('Failed to initialize database cache:', err.message);
+    console.error('Failed to initialize storage:', err.message);
     process.exit(1);
   }
 }

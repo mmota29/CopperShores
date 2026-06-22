@@ -1,19 +1,82 @@
-// Simple JSON file database helpers for Copper Shores
-// Provides safe read/write and basic player/character operations
+// Persistent storage helpers for Copper Shores.
+// Uses Render/Postgres when DATABASE_URL is configured, with a JSON-file
+// fallback for local development.
 
+require('dotenv').config({ quiet: true });
 const fs = require('fs');
 const fsp = fs.promises;
 const path = require('path');
+const { Pool } = require('pg');
 
-const DB_PATH = path.join(__dirname, 'data', 'db.json');
+const DB_PATH = process.env.JSON_DB_PATH || path.join(__dirname, 'data', 'db.json');
+const MIGRATIONS_PATH = path.join(__dirname, 'db', 'migrations');
+const APP_STATE_KEY = 'main';
+
+const isPostgresEnabled = Boolean(process.env.DATABASE_URL);
+let pool = null;
 
 function createEmptyDbState() {
-  return { players: [] };
+  return { players: [], notes: {}, mapWaypoints: {}, gold: null, contentEntries: [] };
 }
 
 let dbCache = null;
 let dbInitialized = false;
 let persistChain = Promise.resolve();
+
+function getPostgresSslConfig() {
+  const sslMode = (process.env.PGSSLMODE || '').toLowerCase();
+  const databaseSsl = (process.env.DATABASE_SSL || '').toLowerCase();
+  if (sslMode === 'require' || databaseSsl === 'true') {
+    return { rejectUnauthorized: false };
+  }
+  return false;
+}
+
+function getPool() {
+  if (!isPostgresEnabled) return null;
+  if (!pool) {
+    pool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: getPostgresSslConfig()
+    });
+  }
+  return pool;
+}
+
+async function runMigrations() {
+  if (!isPostgresEnabled) return;
+
+  const client = getPool();
+  const files = (await fsp.readdir(MIGRATIONS_PATH))
+    .filter(file => file.endsWith('.sql'))
+    .sort();
+
+  for (const file of files) {
+    const sql = await fsp.readFile(path.join(MIGRATIONS_PATH, file), 'utf8');
+    await client.query(sql);
+  }
+}
+
+async function readJsonSeedState() {
+  await ensureDb();
+  const raw = await fsp.readFile(DB_PATH, 'utf8');
+  try {
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === 'object') return normalizeDbState(parsed);
+  } catch (err) {
+    console.warn('Unable to parse db.json seed file:', err.message);
+  }
+  return createEmptyDbState();
+}
+
+function normalizeDbState(state) {
+  const normalized = state && typeof state === 'object' ? state : createEmptyDbState();
+  if (!Array.isArray(normalized.players)) normalized.players = [];
+  if (!normalized.notes || typeof normalized.notes !== 'object') normalized.notes = {};
+  if (!normalized.mapWaypoints || typeof normalized.mapWaypoints !== 'object') normalized.mapWaypoints = {};
+  if (!Array.isArray(normalized.contentEntries)) normalized.contentEntries = [];
+  return normalized;
+}
 
 async function ensureDb() {
   const dir = path.dirname(DB_PATH);
@@ -27,23 +90,38 @@ async function ensureDb() {
 }
 
 async function initializeDb() {
+  if (isPostgresEnabled) {
+    await runMigrations();
+
+    const result = await getPool().query(
+      'SELECT data FROM app_state WHERE key = $1',
+      [APP_STATE_KEY]
+    );
+
+    if (result.rows.length) {
+      dbCache = normalizeDbState(result.rows[0].data);
+    } else {
+      dbCache = await readJsonSeedState();
+      await persistAppStateSnapshot(dbCache);
+    }
+
+    await seedContentEntriesFromNotes(dbCache);
+    dbInitialized = true;
+    return;
+  }
+
   await ensureDb();
   const raw = await fsp.readFile(DB_PATH, 'utf8');
 
   try {
-    dbCache = JSON.parse(raw);
+    dbCache = normalizeDbState(JSON.parse(raw));
   } catch (err) {
     // If corrupted, reset to empty DB to avoid crashes.
     dbCache = createEmptyDbState();
     await fsp.writeFile(DB_PATH, JSON.stringify(dbCache, null, 2), 'utf8');
   }
 
-  if (!dbCache || typeof dbCache !== 'object') {
-    dbCache = createEmptyDbState();
-  }
-  if (!Array.isArray(dbCache.players)) {
-    dbCache.players = [];
-  }
+  dbCache = normalizeDbState(dbCache);
 
   dbInitialized = true;
 }
@@ -56,8 +134,30 @@ function assertDbInitialized() {
   }
 }
 
+async function persistAppStateSnapshot(snapshot) {
+  const serialized = typeof snapshot === 'string' ? snapshot : JSON.stringify(snapshot);
+  await getPool().query(
+    `INSERT INTO app_state (key, data, updated_at)
+     VALUES ($1, $2::jsonb, NOW())
+     ON CONFLICT (key)
+     DO UPDATE SET data = EXCLUDED.data, updated_at = NOW()`,
+    [APP_STATE_KEY, serialized]
+  );
+}
+
 function queuePersist() {
   const snapshot = JSON.stringify(dbCache, null, 2);
+
+  if (isPostgresEnabled) {
+    persistChain = persistChain
+      .then(() => persistAppStateSnapshot(snapshot))
+      .catch(err => {
+        console.error('Failed to persist app_state:', err.message);
+      });
+
+    return persistChain;
+  }
+
   persistChain = persistChain
     .then(async () => {
       const tmpPath = DB_PATH + '.tmp';
@@ -89,6 +189,124 @@ function generateId(prefix = '') {
     '-' +
     Math.random().toString(36).slice(2, 8)
   );
+}
+
+const CONTENT_TYPES = Object.freeze({
+  monster: 'Monster',
+  npc: 'NPC',
+  item: 'Item',
+  note: 'Note',
+  spell: 'Spell',
+  location: 'Location',
+  quest: 'Quest',
+  lore: 'Lore',
+  other: 'Other'
+});
+
+function normalizeString(value, maxLength = 1000) {
+  if (typeof value !== 'string') return '';
+  return value.trim().slice(0, maxLength);
+}
+
+function normalizeTags(tags) {
+  const source = Array.isArray(tags)
+    ? tags
+    : typeof tags === 'string'
+      ? tags.split(',')
+      : [];
+
+  const seen = new Set();
+  return source
+    .map(tag => normalizeString(tag, 40))
+    .filter(Boolean)
+    .filter(tag => {
+      const key = tag.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .slice(0, 20);
+}
+
+function normalizeDetails(details) {
+  if (!details || typeof details !== 'object' || Array.isArray(details)) return {};
+
+  const normalized = {};
+  Object.entries(details).slice(0, 30).forEach(([rawKey, rawValue]) => {
+    const key = normalizeString(rawKey, 40).replace(/[^\w -]/g, '');
+    if (!key) return;
+
+    if (typeof rawValue === 'string') {
+      normalized[key] = rawValue.trim().slice(0, 2000);
+    } else if (typeof rawValue === 'number' || typeof rawValue === 'boolean' || rawValue === null) {
+      normalized[key] = rawValue;
+    } else if (Array.isArray(rawValue)) {
+      normalized[key] = rawValue
+        .filter(item => ['string', 'number', 'boolean'].includes(typeof item))
+        .slice(0, 30);
+    }
+  });
+
+  return normalized;
+}
+
+function validateContentPayload(payload, existing = {}) {
+  const source = payload || {};
+  const type = normalizeString(source.type || existing.type || 'note', 30).toLowerCase();
+  if (!CONTENT_TYPES[type]) {
+    return { error: 'Invalid content type.' };
+  }
+
+  const title = normalizeString(
+    source.title !== undefined ? source.title : existing.title,
+    140
+  );
+  if (!title) {
+    return { error: 'Title is required.' };
+  }
+
+  const content = normalizeString(
+    source.content !== undefined ? source.content : existing.content,
+    20000
+  );
+  const summary = normalizeString(
+    source.summary !== undefined ? source.summary : existing.summary,
+    500
+  );
+  const createdByName = normalizeString(
+    source.createdByName !== undefined ? source.createdByName : existing.createdByName,
+    80
+  );
+  const tags = source.tags !== undefined ? normalizeTags(source.tags) : normalizeTags(existing.tags);
+  const details = source.details !== undefined ? normalizeDetails(source.details) : normalizeDetails(existing.details);
+
+  return {
+    value: {
+      type,
+      title,
+      summary,
+      content,
+      tags,
+      details,
+      createdByName
+    }
+  };
+}
+
+function rowToContentEntry(row) {
+  if (!row) return null;
+  return {
+    id: row.id,
+    type: row.type,
+    title: row.title,
+    summary: row.summary || '',
+    content: row.content || '',
+    tags: Array.isArray(row.tags) ? row.tags : [],
+    details: row.details && typeof row.details === 'object' ? row.details : {},
+    createdByName: row.created_by_name || '',
+    createdAt: row.created_at instanceof Date ? row.created_at.toISOString() : row.created_at,
+    updatedAt: row.updated_at instanceof Date ? row.updated_at.toISOString() : row.updated_at
+  };
 }
 
 // Player helpers
@@ -1250,6 +1468,264 @@ function listLegacySpendingLogFromTransactions() {
     });
 }
 
+function noteCategoryToContentType(category) {
+  if (category === 'npc') return 'npc';
+  if (category === 'item') return 'item';
+  if (category === 'location') return 'location';
+  if (category === 'enemy') return 'monster';
+  return 'note';
+}
+
+async function seedContentEntriesFromNotes(state) {
+  if (!isPostgresEnabled) return { inserted: 0 };
+
+  const countResult = await getPool().query('SELECT COUNT(*)::int AS count FROM content_entries');
+  if (countResult.rows[0].count > 0) return { inserted: 0 };
+
+  const notesRoot = state.notes || {};
+  let inserted = 0;
+
+  for (const [category, notes] of Object.entries(notesRoot)) {
+    if (!Array.isArray(notes)) continue;
+
+    for (const note of notes) {
+      if (!note || !note.title) continue;
+      const normalized = validateContentPayload({
+        type: noteCategoryToContentType(category),
+        title: note.title,
+        summary: '',
+        content: note.content || '',
+        tags: note.tags || [],
+        details: { source: 'campaign_notes', category },
+        createdByName: ''
+      });
+      if (normalized.error) continue;
+
+      await getPool().query(
+        `INSERT INTO content_entries (
+          id, type, title, summary, content, tags, details, created_by_name, created_at, updated_at
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8, $9, $10)
+        ON CONFLICT (id) DO NOTHING`,
+        [
+          note.id || generateId('entry_'),
+          normalized.value.type,
+          normalized.value.title,
+          normalized.value.summary,
+          normalized.value.content,
+          normalized.value.tags,
+          JSON.stringify(normalized.value.details),
+          normalized.value.createdByName,
+          note.createdAt || new Date().toISOString(),
+          note.updatedAt || note.createdAt || new Date().toISOString()
+        ]
+      );
+      inserted += 1;
+    }
+  }
+
+  return { inserted };
+}
+
+async function seedFromJson({ force = false } = {}) {
+  if (!isPostgresEnabled) {
+    return { message: 'DATABASE_URL is not configured; local JSON fallback is already active.' };
+  }
+
+  const existing = await getPool().query('SELECT key FROM app_state WHERE key = $1', [APP_STATE_KEY]);
+  if (existing.rows.length && !force) {
+    await seedContentEntriesFromNotes(dbCache || (await readJsonSeedState()));
+    return { message: 'Postgres already has app_state. Use npm run seed -- --force to overwrite it from db.json.' };
+  }
+
+  const state = await readJsonSeedState();
+  await persistAppStateSnapshot(state);
+  dbCache = state;
+  dbInitialized = true;
+  const seeded = await seedContentEntriesFromNotes(state);
+  return { message: `Seeded app_state from db.json and inserted ${seeded.inserted} content entries.` };
+}
+
+function getContentTypes() {
+  return CONTENT_TYPES;
+}
+
+async function listContentEntries(filters = {}) {
+  if (!isPostgresEnabled) {
+    const db = readDB();
+    const entries = Array.isArray(db.contentEntries) ? db.contentEntries : [];
+    return entries
+      .filter(entry => !filters.type || entry.type === filters.type)
+      .filter(entry => {
+        if (!filters.q) return true;
+        const needle = filters.q.toLowerCase();
+        return [entry.title, entry.summary, entry.content, ...(entry.tags || [])]
+          .filter(Boolean)
+          .some(value => String(value).toLowerCase().includes(needle));
+      })
+      .sort((a, b) => String(b.updatedAt || '').localeCompare(String(a.updatedAt || '')));
+  }
+
+  const params = [];
+  const clauses = [];
+  const type = normalizeString(filters.type, 30).toLowerCase();
+  const q = normalizeString(filters.q, 120);
+  const tag = normalizeString(filters.tag, 40);
+
+  if (type && CONTENT_TYPES[type]) {
+    params.push(type);
+    clauses.push(`type = $${params.length}`);
+  }
+
+  if (q) {
+    params.push(`%${q}%`);
+    clauses.push(`(title ILIKE $${params.length} OR summary ILIKE $${params.length} OR content ILIKE $${params.length})`);
+  }
+
+  if (tag) {
+    params.push(tag);
+    clauses.push(`tags @> ARRAY[$${params.length}]::TEXT[]`);
+  }
+
+  const where = clauses.length ? `WHERE ${clauses.join(' AND ')}` : '';
+  const result = await getPool().query(
+    `SELECT id, type, title, summary, content, tags, details, created_by_name, created_at, updated_at
+     FROM content_entries
+     ${where}
+     ORDER BY updated_at DESC, title ASC
+     LIMIT 500`,
+    params
+  );
+  return result.rows.map(rowToContentEntry);
+}
+
+async function getContentEntry(id) {
+  if (!id) return null;
+  if (!isPostgresEnabled) {
+    const db = readDB();
+    const entries = Array.isArray(db.contentEntries) ? db.contentEntries : [];
+    return entries.find(entry => entry.id === id) || null;
+  }
+
+  const result = await getPool().query(
+    `SELECT id, type, title, summary, content, tags, details, created_by_name, created_at, updated_at
+     FROM content_entries
+     WHERE id = $1`,
+    [id]
+  );
+  return rowToContentEntry(result.rows[0]);
+}
+
+async function createContentEntry(payload) {
+  const normalized = validateContentPayload(payload);
+  if (normalized.error) return { error: normalized.error };
+
+  const now = new Date().toISOString();
+  const entry = {
+    id: generateId('entry_'),
+    ...normalized.value,
+    createdAt: now,
+    updatedAt: now
+  };
+
+  if (!isPostgresEnabled) {
+    const db = readDB();
+    if (!Array.isArray(db.contentEntries)) db.contentEntries = [];
+    db.contentEntries.push(entry);
+    writeDB(db);
+    await flushWrites();
+    return { entry };
+  }
+
+  const result = await getPool().query(
+    `INSERT INTO content_entries (
+      id, type, title, summary, content, tags, details, created_by_name, created_at, updated_at
+    )
+    VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8, $9, $10)
+    RETURNING id, type, title, summary, content, tags, details, created_by_name, created_at, updated_at`,
+    [
+      entry.id,
+      entry.type,
+      entry.title,
+      entry.summary,
+      entry.content,
+      entry.tags,
+      JSON.stringify(entry.details),
+      entry.createdByName,
+      entry.createdAt,
+      entry.updatedAt
+    ]
+  );
+  return { entry: rowToContentEntry(result.rows[0]) };
+}
+
+async function updateContentEntry(id, payload) {
+  const existing = await getContentEntry(id);
+  if (!existing) return { error: 'Content entry not found.' };
+
+  const normalized = validateContentPayload(payload, existing);
+  if (normalized.error) return { error: normalized.error };
+
+  if (!isPostgresEnabled) {
+    const db = readDB();
+    const entries = Array.isArray(db.contentEntries) ? db.contentEntries : [];
+    const idx = entries.findIndex(entry => entry.id === id);
+    if (idx === -1) return { error: 'Content entry not found.' };
+    entries[idx] = {
+      ...existing,
+      ...normalized.value,
+      updatedAt: new Date().toISOString()
+    };
+    db.contentEntries = entries;
+    writeDB(db);
+    await flushWrites();
+    return { entry: entries[idx] };
+  }
+
+  const result = await getPool().query(
+    `UPDATE content_entries
+     SET type = $2,
+         title = $3,
+         summary = $4,
+         content = $5,
+         tags = $6,
+         details = $7::jsonb,
+         created_by_name = $8,
+         updated_at = NOW()
+     WHERE id = $1
+     RETURNING id, type, title, summary, content, tags, details, created_by_name, created_at, updated_at`,
+    [
+      id,
+      normalized.value.type,
+      normalized.value.title,
+      normalized.value.summary,
+      normalized.value.content,
+      normalized.value.tags,
+      JSON.stringify(normalized.value.details),
+      normalized.value.createdByName
+    ]
+  );
+  return { entry: rowToContentEntry(result.rows[0]) };
+}
+
+async function deleteContentEntry(id) {
+  if (!id) return false;
+  if (!isPostgresEnabled) {
+    const db = readDB();
+    const entries = Array.isArray(db.contentEntries) ? db.contentEntries : [];
+    const idx = entries.findIndex(entry => entry.id === id);
+    if (idx === -1) return false;
+    entries.splice(idx, 1);
+    db.contentEntries = entries;
+    writeDB(db);
+    await flushWrites();
+    return true;
+  }
+
+  const result = await getPool().query('DELETE FROM content_entries WHERE id = $1', [id]);
+  return result.rowCount > 0;
+}
+
 function ready() {
   return dbReadyPromise;
 }
@@ -1258,9 +1734,24 @@ function flushWrites() {
   return persistChain;
 }
 
+function getStorageMode() {
+  return isPostgresEnabled ? 'postgres' : 'json-file';
+}
+
+async function close() {
+  await flushWrites();
+  if (pool) {
+    await pool.end();
+    pool = null;
+  }
+}
+
 module.exports = {
   ready,
+  close,
   flushWrites,
+  seedFromJson,
+  getStorageMode,
   readDB,
   writeDB,
   listPlayers,
@@ -1304,5 +1795,12 @@ module.exports = {
   getTreasuryAccounts,
   getLegacyWalletSnapshotFromLedger,
   listLegacyLootLogFromTransactions,
-  listLegacySpendingLogFromTransactions
+  listLegacySpendingLogFromTransactions,
+  // User-generated content library
+  getContentTypes,
+  listContentEntries,
+  getContentEntry,
+  createContentEntry,
+  updateContentEntry,
+  deleteContentEntry
 };

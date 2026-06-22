@@ -1,4 +1,4 @@
-const SW_VERSION = 'v2';
+const SW_VERSION = 'v3';
 const STATIC_CACHE = `coppershores-static-${SW_VERSION}`;
 const MAP_CACHE = `coppershores-maps-${SW_VERSION}`;
 const RUNTIME_CACHE = `coppershores-runtime-${SW_VERSION}`;
@@ -10,12 +10,14 @@ const APP_SHELL_URLS = [
   '/map.html',
   '/players.html',
   '/notes.html',
+  '/content.html',
   '/styles.css',
   '/gold.css',
   '/map.css',
   '/script.js',
   '/gold.js',
   '/map.js',
+  '/content.js',
   '/assets/jollyrogercoppershores.png',
   '/assets/fonts/cinzel-500-700-latin.woff2',
   '/assets/fonts/crimson-text-400-latin.woff2',

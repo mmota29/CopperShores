@@ -142,7 +142,7 @@
       {
         "id": "note_mlbin281-qdv0ng",
         "title": "Corelia Harrendyl",
-        "content": "Aasimar Samurai Fighter, a friend of Mozzie the devil, currently looking for an item that used to belong to her family. Helped interrogate Gill for mozzie. She has been hearing voices: \"Return the final piece, and reawaken the ship.\" They have stopped once we got the ship.\n\ndoes not let everyone call her Cory, lets Gill now after feeling bad about interrogating him\n\nshe has asked for our help to take care of the head of the thieves guild, a teifling by the name of Elizar",
+        "content": "Aasimar Samurai Fighter, a friend of Mozzie the devil, currently looking for an item that used to belong to her family. Helped interrogate Gill for mozzie. She has been hearing voices: \"Return the final piece, and reawaken the ship.\" They have stopped once we got the ship.\n\ndoes not let everyone call her Cory, lets Gill now after feeling bad about interrogating him\n\nshe has asked for our help to take care of the head of the thieves guild, a teifling by the name of Elizar\n\nbecause of the shadow demons, she has been marked and now she can be follow",
         "tags": [
           "Aasimar",
           "Fighter",
@@ -150,7 +150,7 @@
           "PC"
         ],
         "createdAt": "2026-02-06T23:27:56.161Z",
-        "updatedAt": "2026-04-26T04:26:45.191Z"
+        "updatedAt": "2026-06-21T03:07:16.158Z"
       },
       {
         "id": "note_mld1oul0-9dqspz",
@@ -547,7 +547,7 @@
           "quakers"
         ],
         "createdAt": "2026-04-12T01:37:19.350Z",
-        "updatedAt": "2026-04-12T02:26:43.537Z"
+        "updatedAt": "2026-06-17T01:36:02.916Z"
       },
       {
         "id": "note_mo4zp5gm-5k13g4",
@@ -630,6 +630,14 @@
         "tags": [],
         "createdAt": "2026-05-10T02:09:18.578Z",
         "updatedAt": "2026-05-10T02:09:18.578Z"
+      },
+      {
+        "id": "note_mqd2wpn4-wt0ko9",
+        "title": "jax",
+        "content": "guy we are looking for ",
+        "tags": [],
+        "createdAt": "2026-06-14T01:01:36.591Z",
+        "updatedAt": "2026-06-14T01:01:36.591Z"
       }
     ],
     "event": [
@@ -1172,7 +1180,7 @@
       {
         "id": "note_mnf4tpp5-uzm50d",
         "title": "Robert De Turtle",
-        "content": "After reading a book written by a woman named Shelly, Gill got the idea for his most proud creation: a mechanical turtle made from the scraps Gill had found over the years. Robert is his most powerful creation by far, capable of great speed and bite power like no other tomower. Do not get on this turtle's bad side.\n\nThere is something weird about this turtle and gill, gill has swrone he has heard it talk before but everyone claims is a normal turtle\n\nGill:\"i am not crazy i am not Rhaekar, that turtle is talking i swear\"",
+        "content": "After reading a book written by a woman named Shelly, Gill got the idea for his most proud creation: a mechanical turtle made from the scraps Gill had found over the years. Robert is his most powerful creation by far, capable of great speed and bite power like no other tomower. Do not get on this turtle's bad side.\n\nThere is something weird about this turtle and gill, gill has swrone he has heard it talk before but everyone claims is a normal turtle\n\nGill:\"i am not crazy i am not Rhaekar, that turtle is talking i swear\"\n\nWe are on 1.8",
         "tags": [
           "Gill",
           "turtle",
@@ -1181,7 +1189,7 @@
           ""
         ],
         "createdAt": "2026-03-31T21:31:41.273Z",
-        "updatedAt": "2026-03-31T21:31:41.273Z"
+        "updatedAt": "2026-06-21T03:06:41.410Z"
       },
       {
         "id": "note_mnf56hur-zpmg5i",
@@ -1199,7 +1207,7 @@
           ""
         ],
         "createdAt": "2026-03-31T21:41:37.635Z",
-        "updatedAt": "2026-05-08T02:03:33.134Z"
+        "updatedAt": "2026-06-17T01:34:46.966Z"
       },
       {
         "id": "note_mnpalw2t-44i0ra",
@@ -1369,6 +1377,36 @@
         "note": "missing dragon",
         "createdAt": "2026-05-10T01:31:01.814Z",
         "updatedAt": "2026-05-10T01:31:01.814Z"
+      },
+      {
+        "id": "wp_mq30g8g8-teqz4w",
+        "mapId": "world",
+        "x": 517,
+        "y": 396,
+        "title": "Vigel island",
+        "note": "",
+        "createdAt": "2026-06-06T23:55:06.824Z",
+        "updatedAt": "2026-06-07T03:42:40.949Z"
+      },
+      {
+        "id": "wp_mq38kskv-anwmzc",
+        "mapId": "world",
+        "x": 466,
+        "y": 372,
+        "title": "Fey Haven",
+        "note": "",
+        "createdAt": "2026-06-07T03:42:36.462Z",
+        "updatedAt": "2026-06-07T03:42:36.462Z"
+      },
+      {
+        "id": "wp_mqhee5k7-qx5i8o",
+        "mapId": "world",
+        "x": 445,
+        "y": 364,
+        "title": "Monkey lizard island",
+        "note": "DANGER MONKEY",
+        "createdAt": "2026-06-17T01:34:10.855Z",
+        "updatedAt": "2026-06-17T01:34:10.855Z"
       }
     ],
     "alsita": [

@@ -36,19 +36,19 @@ Write-Host ""
 Write-Host "Opening all sections in your default browser..." -ForegroundColor Yellow
 
 # Main dashboard
-Start-Process "http://localhost:3000/index.html"
+Start-Process "http://localhost:3000/"
 
 # Map section
-Start-Process "http://localhost:3000/map.html"
+Start-Process "http://localhost:3000/maps/"
 
 # Gold/Treasure section
-Start-Process "http://localhost:3000/gold.html"
+Start-Process "http://localhost:3000/treasury/"
 
 # Notes section
-Start-Process "http://localhost:3000/notes.html"
+Start-Process "http://localhost:3000/notes/"
 
 # Players section
-Start-Process "http://localhost:3000/players.html"
+Start-Process "http://localhost:3000/players/"
 
 Write-Host ""
 Write-Host "To stop the server, close the command window." -ForegroundColor Yellow

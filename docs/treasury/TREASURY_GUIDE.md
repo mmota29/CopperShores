@@ -1,7 +1,7 @@
-# Gold & Treasury Management System
+# 💰 Gold & Treasury Management System
 
 ## Overview
-The enhanced Gold & Treasury Management System is a complete solution for managing party finances, loot tracking, and spending in your D&D campaign. It replaces the placeholder gold system with a fully-featured toolkit designed to be both **easy to use**.
+The enhanced Gold & Treasury Management System is a complete solution for managing party finances, loot tracking, and spending in your D&D campaign. It replaces the placeholder gold system with a fully-featured toolkit designed to be both **fun and easy to use**.
 
 ## Features
 

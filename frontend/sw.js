@@ -1,28 +1,27 @@
-const SW_VERSION = 'v3';
+const SW_VERSION = 'v4';
 const STATIC_CACHE = `coppershores-static-${SW_VERSION}`;
 const MAP_CACHE = `coppershores-maps-${SW_VERSION}`;
 const RUNTIME_CACHE = `coppershores-runtime-${SW_VERSION}`;
 
 const APP_SHELL_URLS = [
   '/',
-  '/index.html',
-  '/gold.html',
-  '/map.html',
-  '/players.html',
-  '/notes.html',
-  '/content.html',
-  '/styles.css',
-  '/gold.css',
-  '/map.css',
-  '/script.js',
-  '/gold.js',
-  '/map.js',
-  '/content.js',
-  '/assets/jollyrogercoppershores.png',
-  '/assets/fonts/cinzel-500-700-latin.woff2',
-  '/assets/fonts/crimson-text-400-latin.woff2',
-  '/assets/fonts/crimson-text-600-latin.woff2',
-  '/assets/fonts/pirata-one-400-latin.woff2'
+  '/treasury/',
+  '/maps/',
+  '/players/',
+  '/notes/',
+  '/library/',
+  '/shared/styles/global.css',
+  '/shared/scripts/app.js',
+  '/treasury/treasury.css',
+  '/treasury/treasury.js',
+  '/maps/maps.css',
+  '/maps/maps.js',
+  '/library/library.js',
+  '/shared/assets/jollyrogercoppershores.png',
+  '/shared/assets/fonts/cinzel-500-700-latin.woff2',
+  '/shared/assets/fonts/crimson-text-400-latin.woff2',
+  '/shared/assets/fonts/crimson-text-600-latin.woff2',
+  '/shared/assets/fonts/pirata-one-400-latin.woff2'
 ];
 
 self.addEventListener('install', event => {
@@ -92,7 +91,7 @@ async function networkFirstPage(request) {
   } catch (err) {
     const cached = await cache.match(request);
     if (cached) return cached;
-    const home = await cache.match('/index.html');
+    const home = await cache.match('/');
     if (home) return home;
     return new Response('Offline', { status: 503, statusText: 'Offline' });
   }
@@ -113,12 +112,12 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  if (url.pathname.startsWith('/allmaps/')) {
+  if (url.pathname.startsWith('/maps/assets/')) {
     event.respondWith(cacheFirst(request, MAP_CACHE));
     return;
   }
 
-  if (url.pathname.startsWith('/assets/fonts/')) {
+  if (url.pathname.startsWith('/shared/assets/fonts/')) {
     event.respondWith(cacheFirst(request, STATIC_CACHE));
     return;
   }

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Copper Shores - D&amp;D Campaign Hub</title>
+    <link rel="stylesheet" href="/shared/styles/global.css">
+    <link rel="preload" href="/shared/assets/fonts/crimson-text-400-latin.woff2" as="font" type="font/woff2">
+    <link rel="preload" href="/shared/assets/fonts/crimson-text-600-latin.woff2" as="font" type="font/woff2">
+    <link rel="preload" href="/shared/assets/fonts/cinzel-500-700-latin.woff2" as="font" type="font/woff2">
+    <link rel="preload" href="/shared/assets/fonts/pirata-one-400-latin.woff2" as="font" type="font/woff2">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a class="nav-logo" href="/" title="Home">
+                    <img src="/shared/assets/jollyrogercoppershores.png" alt="Copper Shores Home">
+                </a>
+                <h1 class="nav-title">The Copper Shores</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/" class="nav-link active">Home</a></li>
+                <li><a href="/treasury/" class="nav-link">Treasury</a></li>
+                <li><a href="/maps/" class="nav-link">Interactive Map</a></li>
+                <li><a href="/players/" class="nav-link">Players</a></li>
+                <li><a href="/notes/" class="nav-link">Notes</a></li>
+                <li><a href="/library/" class="nav-link">Library</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        <div class="hero">
+            <h1>Welcome to The Copper Shores</h1>
+            <p>Your campaign harbor for storms, secrets, and legendary treasure hunts.</p>
+        </div>
+
+        <section class="party-overview-section" aria-labelledby="party-overview-title">
+            <div class="party-overview-header">
+                <h2 id="party-overview-title">Current Party</h2>
+                <p>Meet the active crew and check a quick wallet snapshot before heading into the next scene.</p>
+            </div>
+
+            <div class="party-overview-grid">
+                <article class="overview-card">
+                    <h3>Party Banner</h3>
+                    <div id="party-banner" class="party-list">
+                        <p class="overview-loading">Gathering adventurers...</p>
+                    </div>
+                </article>
+
+                <article class="overview-card">
+                    <h3>Wallet Preview</h3>
+                    <div id="wallet-preview" class="wallet-preview">
+                        <p class="overview-loading">Counting coins...</p>
+                    </div>
+                    <a href="/treasury/" class="btn wallet-preview-link">Open Gold Ledger</a>
+                </article>
+            </div>
+        </section>
+
+        <!-- Quick Links Grid -->
+        <section class="quick-links">
+            <h2>Quick Navigation</h2>
+            <div class="links-grid">
+                <div class="link-card">
+                    <h3>Treasury Ledger</h3>
+                    <p>Track your party's treasures and expenses.</p>
+                    <a href="/treasury/" class="btn">View</a>
+                </div>
+                <div class="link-card">
+                    <h3>Interactive Map</h3>
+                    <p>Explore the world and mark important locations.</p>
+                    <a href="/maps/" class="btn">View</a>
+                </div>
+                <div class="link-card">
+                    <h3>Players</h3>
+                    <p>Meet the crew and their current heroes.</p>
+                    <a href="/players/" class="btn">View</a>
+                </div>
+                <div class="link-card">
+                    <h3>Notes</h3>
+                    <p>Keep track of lore, quests, and campaign mysteries.</p>
+                    <a href="/notes/" class="btn">View</a>
+                </div>
+                <div class="link-card">
+                    <h3>D&amp;D Library</h3>
+                    <p>Add monsters, NPCs, items, spells, and table-made lore.</p>
+                    <a href="/library/" class="btn">View</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 The Copper Shores. Version 0.1.0</p>
+    </footer>
+
+    <script src="/shared/scripts/app.js"></script>
+</body>
+</html>
+

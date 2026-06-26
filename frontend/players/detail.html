@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Details - The Copper Shores</title>
+    <link rel="stylesheet" href="/shared/styles/global.css">
+    <link rel="preload" href="/shared/assets/fonts/crimson-text-400-latin.woff2" as="font" type="font/woff2">
+    <link rel="preload" href="/shared/assets/fonts/crimson-text-600-latin.woff2" as="font" type="font/woff2">
+    <link rel="preload" href="/shared/assets/fonts/cinzel-500-700-latin.woff2" as="font" type="font/woff2">
+    <link rel="preload" href="/shared/assets/fonts/pirata-one-400-latin.woff2" as="font" type="font/woff2">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a class="nav-logo" href="/" title="Home">
+                    <img src="/shared/assets/jollyrogercoppershores.png" alt="Copper Shores Home">
+                </a>
+                <h1 class="nav-title">The Copper Shores</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/treasury/" class="nav-link">Treasury</a></li>
+                <li><a href="/maps/" class="nav-link">Interactive Map</a></li>
+                <li><a href="/players/" class="nav-link active">Players</a></li>
+                <li><a href="/notes/" class="nav-link">Notes</a></li>
+                <li><a href="/library/" class="nav-link">Library</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div id="player-container" class="player-detail-shell">
+            <h1 id="player-name">Player</h1>
+            <div id="player-message"></div>
+
+            <section class="section-card">
+                <h2>Bio / Notes</h2>
+                <textarea id="player-bio" rows="6"></textarea>
+                <div class="actions-row">
+                    <button id="save-bio" class="btn">Save Bio</button>
+                    <a href="/players/" class="btn btn-secondary">Back to Players</a>
+                </div>
+            </section>
+
+            <section class="section-card">
+                <h2>Current Character</h2>
+                <div id="current-character-box">
+                    <!-- Filled by JS -->
+                </div>
+                <div class="actions-row">
+                    <button id="move-current-to-previous" class="btn btn-secondary">Move Current to Previous</button>
+                    <button id="add-current-manual" class="btn">Add / Set Current Character</button>
+                </div>
+            </section>
+
+            <section class="section-card">
+                <h2>Previous Characters</h2>
+                <div id="previous-characters-list">
+                    <!-- list of previous characters -->
+                </div>
+                <div class="actions-row">
+                    <button id="add-previous-character" class="btn">+ Add Character</button>
+                </div>
+            </section>
+
+            <!-- Edit Character Modal -->
+            <div id="edit-character-modal" class="modal-panel">
+                <h3>Edit Character</h3>
+                <div class="field-stack">
+                    <label>
+                        <span>Character Name</span>
+                        <input id="edit-char-name" type="text">
+                    </label>
+                    <label>
+                        <span>Race</span>
+                        <input id="edit-char-race" type="text">
+                    </label>
+                    <label>
+                        <span>Class</span>
+                        <input id="edit-char-class" type="text">
+                    </label>
+                    <label>
+                        <span>Level</span>
+                        <input id="edit-char-level" type="number" min="1">
+                    </label>
+                    <label>
+                        <span>Status</span>
+                        <select id="edit-char-status">
+                            <option value="active">Active</option>
+                            <option value="retired">Retired</option>
+                            <option value="dead">Dead</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="button-row">
+                    <button id="save-edit-char" class="btn">Save</button>
+                    <button id="cancel-edit-char" class="btn btn-secondary">Cancel</button>
+                </div>
+            </div>
+            <div id="edit-modal-overlay" class="modal-overlay"></div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 The Copper Shores. Version 0.1.0</p>
+    </footer>
+
+    <script src="/shared/scripts/app.js"></script>
+    <script>
+    // Inline handlers for player.html-specific UI
+    document.addEventListener('DOMContentLoaded', function() {
+        const params = new URLSearchParams(location.search);
+        const id = params.get('id');
+        if (!id) {
+            document.getElementById('player-container').innerHTML = '<p class="status-message error">No player id provided.</p>';
+            return;
+        }
+        window.__PLAYER_ID = id;
+        loadPlayerDetail(id);
+
+        document.getElementById('save-bio').addEventListener('click', function() {
+            const bio = document.getElementById('player-bio').value;
+            updatePlayerBio(id, bio);
+        });
+
+        document.getElementById('add-previous-character').addEventListener('click', function() {
+            openAddCharacterForm(false);
+        });
+
+        document.getElementById('add-current-manual').addEventListener('click', function() {
+            openAddCharacterForm(true);
+        });
+
+        document.getElementById('move-current-to-previous').addEventListener('click', function() {
+            if (!confirm('Move current character to previous (mark as dead by default)?')) return;
+            fetch(`${API_BASE_URL}/players/${id}/moveCurrentToPrevious`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: 'dead' })
+            })
+                .then(r => r.json())
+                .then(resp => {
+                    if (resp.status === 'success') loadPlayerDetail(id);
+                    else showMessage(resp.message || 'Error');
+                })
+                .catch(() => showMessage('Network error'));
+        });
+
+        document.getElementById('cancel-edit-char').addEventListener('click', closeEditModal);
+        document.getElementById('edit-modal-overlay').addEventListener('click', closeEditModal);
+        document.getElementById('save-edit-char').addEventListener('click', function() {
+            saveEditCharacter(id);
+        });
+    });
+
+    function closeEditModal() {
+        document.getElementById('edit-character-modal').style.display = 'none';
+        document.getElementById('edit-modal-overlay').style.display = 'none';
+    }
+    </script>
+</body>
+</html>
+
+

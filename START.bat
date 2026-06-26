@@ -26,19 +26,19 @@ REM Open multiple browser tabs for different sections
 echo Opening all sections in your default browser...
 
 REM Main dashboard
-start http://localhost:3000/index.html
+start http://localhost:3000/
 
 REM Map section
-start http://localhost:3000/map.html
+start http://localhost:3000/maps/
 
 REM Gold/Treasure section
-start http://localhost:3000/gold.html
+start http://localhost:3000/treasury/
 
 REM Notes section
-start http://localhost:3000/notes.html
+start http://localhost:3000/notes/
 
 REM Players section
-start http://localhost:3000/players.html
+start http://localhost:3000/players/
 
 echo.
 echo To stop the server, close the command window.

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes - The Copper Shores</title>
+    <link rel="stylesheet" href="/shared/styles/global.css">
+    <link rel="preload" href="/shared/assets/fonts/crimson-text-400-latin.woff2" as="font" type="font/woff2">
+    <link rel="preload" href="/shared/assets/fonts/crimson-text-600-latin.woff2" as="font" type="font/woff2">
+    <link rel="preload" href="/shared/assets/fonts/cinzel-500-700-latin.woff2" as="font" type="font/woff2">
+    <link rel="preload" href="/shared/assets/fonts/pirata-one-400-latin.woff2" as="font" type="font/woff2">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a class="nav-logo" href="/" title="Home">
+                    <img src="/shared/assets/jollyrogercoppershores.png" alt="Copper Shores Home">
+                </a>
+                <h1 class="nav-title">The Copper Shores</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/treasury/" class="nav-link">Treasury</a></li>
+                <li><a href="/maps/" class="nav-link">Interactive Map</a></li>
+                <li><a href="/players/" class="nav-link">Players</a></li>
+                <li><a href="/notes/" class="nav-link active">Notes</a></li>
+                <li><a href="/library/" class="nav-link">Library</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        <section class="panel-shell">
+            <header class="page-header">
+                <div class="title-stack">
+                    <h1>Campaign Notes</h1>
+                    <p class="page-subtitle">Organize your campaign lore, rumors, and clues.</p>
+                </div>
+            </header>
+
+            <div id="categories-grid" class="links-grid">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 The Copper Shores. Version 0.1.0</p>
+    </footer>
+
+    <script src="/shared/scripts/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Notes hub loaded');
+            loadCategoriesHub();
+        });
+
+        function loadCategoriesHub() {
+            fetch(`${API_BASE_URL}/notes/categories`)
+                .then(r => r.json())
+                .then(resp => {
+                    if (resp.status !== 'success') {
+                        console.error('Failed to load categories:', resp.message);
+                        return;
+                    }
+                    const cats = resp.data;
+                    const categoryDescriptions = {
+                        gillcorner: 'Gill current inventions and mysterious magic'
+                    };
+                    const grid = document.getElementById('categories-grid');
+                    grid.innerHTML = '';
+                    Object.entries(cats).forEach(([key, label]) => {
+                        const description = categoryDescriptions[key] || `Manage your ${label.toLowerCase()}`;
+                        const card = document.createElement('div');
+                        card.className = 'link-card category-card';
+                        card.onclick = () => { window.location = `/notes/category.html?cat=${key}`; };
+                        card.innerHTML = `
+                            <h3>${label}</h3>
+                            <p>${description}</p>
+                            <a href="/notes/category.html?cat=${key}" class="btn">Browse</a>
+                        `;
+                        grid.appendChild(card);
+                    });
+                })
+                .catch(err => console.error('Network error:', err));
+        }
+    </script>
+</body>
+</html>
+

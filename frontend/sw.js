@@ -1,4 +1,4 @@
-const SW_VERSION = 'v4';
+const SW_VERSION = 'v5';
 const STATIC_CACHE = `coppershores-static-${SW_VERSION}`;
 const MAP_CACHE = `coppershores-maps-${SW_VERSION}`;
 const RUNTIME_CACHE = `coppershores-runtime-${SW_VERSION}`;
@@ -15,7 +15,7 @@ const APP_SHELL_URLS = [
   '/treasury/treasury.css',
   '/treasury/treasury.js',
   '/maps/maps.css',
-  '/maps/maps.js',
+  '/maps/maps.js?v=5',
   '/library/library.js',
   '/shared/assets/jollyrogercoppershores.png',
   '/shared/assets/fonts/cinzel-500-700-latin.woff2',

@@ -46,6 +46,12 @@ const CITY_MARKERS = {
       mapId: 'pinchester',
       coords: [614, 860], // TODO: Update coordinates
       icon: '🏰'
+    },
+    {
+      name: 'Neucroft',
+      mapId: 'neucroft',
+      coords: [493, 158],
+      icon: '🏰'
     }
   ]
 };
@@ -75,7 +81,8 @@ const PER_MAP_OVERRIDES = {
   // Example: Alsita shows full map by default (fitZoomDelta: 0)
   alsita: { center: null, fitZoomDelta: 0 },
   tosatina: { center: null, fitZoomDelta: 0 },
-  tormsicle: { center: null, fitZoomDelta: 0 }
+  tormsicle: { center: null, fitZoomDelta: 0 },
+  neucroft: { center: null, fitZoomDelta: 0 }
 };
 
 // ============================================================================

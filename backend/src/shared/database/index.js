@@ -576,7 +576,8 @@ const MAPS_DEFINITION = [
   { id: 'alsita', name: 'Alsita', imagePath: '/maps/assets/Alsita.PNG' },
   { id: 'tosatina', name: 'Tosatina', imagePath: '/maps/assets/Tosatina.PNG' },
   { id: 'tormsicle', name: 'Tormsicle', imagePath: '/maps/assets/Tormsicle.png' },
-  { id: 'pinchester', name: 'Pinchester', imagePath: '/maps/assets/Pinchester.PNG' }
+  { id: 'pinchester', name: 'Pinchester', imagePath: '/maps/assets/Pinchester.PNG' },
+  { id: 'neucroft', name: 'Neucroft', imagePath: '/maps/assets/neucroft.png' }
 ];
 
 function getMapsDefinition() {

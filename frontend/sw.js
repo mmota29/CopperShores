@@ -1,4 +1,4 @@
-const SW_VERSION = 'v5';
+const SW_VERSION = 'v6';
 const STATIC_CACHE = `coppershores-static-${SW_VERSION}`;
 const MAP_CACHE = `coppershores-maps-${SW_VERSION}`;
 const RUNTIME_CACHE = `coppershores-runtime-${SW_VERSION}`;
@@ -106,6 +106,9 @@ self.addEventListener('fetch', event => {
 
   // Never cache API calls in the service worker.
   if (url.pathname.startsWith('/api/')) return;
+
+  // Admin pages and assets always require a live server and are never cached.
+  if (url.pathname.startsWith('/admin')) return;
 
   if (request.mode === 'navigate') {
     event.respondWith(networkFirstPage(request));

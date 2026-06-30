@@ -26,3 +26,9 @@ commands.
 - `backend/database/migrations/` contains separate MySQL and PostgreSQL schemas.
 
 See [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) for the complete layout.
+
+## Backups
+
+Configure `ADMIN_WRITE_TOKEN`, restart the server, and open `/admin/` to export
+or restore all user-created data. See [backend/README.md](backend/README.md) for
+the restore safety rules.

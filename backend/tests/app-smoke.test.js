@@ -1,5 +1,18 @@
 const { after, before, test } = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+
+const testDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'copper-shores-smoke-'));
+const testDbPath = path.join(testDirectory, 'db.json');
+fs.copyFileSync(path.resolve(__dirname, '..', 'data', 'db.json'), testDbPath);
+
+process.env.DB_HOST = '';
+process.env.DB_USER = '';
+process.env.DB_NAME = '';
+process.env.DATABASE_URL = '';
+process.env.JSON_DB_PATH = testDbPath;
 
 const app = require('../src/app');
 const database = require('../src/shared/database');
@@ -18,6 +31,7 @@ before(async () => {
 after(async () => {
   await new Promise(resolve => server.close(resolve));
   await database.close();
+  fs.rmSync(testDirectory, { recursive: true, force: true });
 });
 
 for (const path of [
@@ -27,6 +41,7 @@ for (const path of [
   '/players/',
   '/notes/',
   '/library/',
+  '/admin/login/',
   '/api/health',
   '/api/config',
   '/api/players',

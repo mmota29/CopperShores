@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Copper Shores</title>
+    <link rel="stylesheet" href="/shared/styles/global.css">
+    <link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body class="admin-body">
+    <main class="admin-login-shell">
+        <section class="admin-card admin-login-card" aria-labelledby="admin-login-title">
+            <a class="admin-home-link" href="/">&larr; Copper Shores</a>
+            <h1 id="admin-login-title">Admin Access</h1>
+            <p>Enter the server's admin token to manage backups.</p>
+
+            <form id="admin-login-form">
+                <label for="admin-token">Admin token</label>
+                <input
+                    id="admin-token"
+                    name="token"
+                    type="password"
+                    autocomplete="current-password"
+                    required
+                    autofocus
+                >
+                <button class="btn" type="submit">Sign In</button>
+            </form>
+            <p id="login-message" class="admin-message" role="status"></p>
+        </section>
+    </main>
+    <script src="/admin/login.js"></script>
+</body>
+</html>

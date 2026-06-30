@@ -78,8 +78,8 @@ async function runMigrations() {
   }
 }
 
-async function hasStoredState() {
-  const [rows] = await getPool().execute(
+async function hasStoredState(database = getPool()) {
+  const [rows] = await database.execute(
     `SELECT metadata_key
      FROM storage_metadata
      WHERE metadata_key = 'initialized'`
@@ -87,10 +87,9 @@ async function hasStoredState() {
   return rows.length > 0;
 }
 
-async function loadState() {
-  if (!(await hasStoredState())) return null;
+async function loadState(database = getPool()) {
+  if (!(await hasStoredState(database))) return null;
 
-  const database = getPool();
   const [
     [playerRows],
     [characterRows],
@@ -193,11 +192,44 @@ async function loadState() {
   return { players, notes, mapWaypoints, gold, contentEntries };
 }
 
-async function saveState(state) {
+async function getSnapshot() {
+  const connection = await getPool().getConnection();
+  try {
+    await connection.query('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ');
+    await connection.beginTransaction();
+    const state = await loadState(connection);
+    await connection.commit();
+    return state;
+  } catch (error) {
+    await connection.rollback();
+    throw error;
+  } finally {
+    connection.release();
+  }
+}
+
+async function saveState(state, { requireEmpty = false } = {}) {
   const connection = await getPool().getConnection();
 
   try {
     await connection.beginTransaction();
+
+    if (requireEmpty) {
+      const [rows] = await connection.query(
+        `SELECT (
+           (SELECT COUNT(*) FROM players) +
+           (SELECT COUNT(*) FROM notes) +
+           (SELECT COUNT(*) FROM map_waypoints) +
+           (SELECT COUNT(*) FROM treasury_transactions) +
+           (SELECT COUNT(*) FROM content_entries)
+         ) AS record_count`
+      );
+      if (Number(rows[0].record_count) > 0) {
+        const error = new Error('Target database is not empty.');
+        error.code = 'TARGET_NOT_EMPTY';
+        throw error;
+      }
+    }
 
     await connection.query('DELETE FROM content_entries');
     await connection.query('DELETE FROM treasury_transactions');
@@ -355,6 +387,7 @@ module.exports = {
   isConfigured,
   runMigrations,
   loadState,
+  getSnapshot,
   saveState,
   close
 };

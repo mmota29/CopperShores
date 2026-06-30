@@ -25,6 +25,7 @@ function createEmptyDbState() {
 let dbCache = null;
 let dbInitialized = false;
 let persistChain = Promise.resolve();
+let maintenanceActive = false;
 
 function getPostgresSslConfig() {
   const sslMode = (process.env.PGSSLMODE || '').toLowerCase();
@@ -165,38 +166,31 @@ async function persistAppStateSnapshot(snapshot) {
 
 function queuePersist() {
   const snapshot = JSON.stringify(dbCache, null, 2);
+  let operation;
 
   if (isMySqlEnabled) {
-    persistChain = persistChain
-      .then(() => mysqlStore.saveState(JSON.parse(snapshot)))
-      .catch(err => {
-        console.error('Failed to persist MySQL state:', err.message);
-      });
-
-    return persistChain;
-  }
-
-  if (isPostgresEnabled) {
-    persistChain = persistChain
-      .then(() => persistAppStateSnapshot(snapshot))
-      .catch(err => {
-        console.error('Failed to persist app_state:', err.message);
-      });
-
-    return persistChain;
-  }
-
-  persistChain = persistChain
-    .then(async () => {
+    operation = persistChain
+      .catch(() => {})
+      .then(() => mysqlStore.saveState(JSON.parse(snapshot)));
+  } else if (isPostgresEnabled) {
+    operation = persistChain
+      .catch(() => {})
+      .then(() => persistAppStateSnapshot(snapshot));
+  } else {
+    operation = persistChain
+      .catch(() => {})
+      .then(async () => {
       const tmpPath = DB_PATH + '.tmp';
       await fsp.writeFile(tmpPath, snapshot, 'utf8');
       await fsp.rename(tmpPath, DB_PATH);
-    })
-    .catch(err => {
-      console.error('Failed to persist db.json:', err.message);
     });
+  }
 
-  return persistChain;
+  persistChain = operation;
+  operation.catch(err => {
+    console.error('Failed to persist database state:', err.message);
+  });
+  return operation;
 }
 
 function readDB() {
@@ -208,6 +202,165 @@ function writeDB(data) {
   assertDbInitialized();
   dbCache = data;
   queuePersist();
+}
+
+function stateHasRecords(state) {
+  const source = state || {};
+  const players = Array.isArray(source.players) ? source.players : [];
+  const noteCount = Object.values(source.notes || {})
+    .reduce((sum, notes) => sum + (Array.isArray(notes) ? notes.length : 0), 0);
+  const waypointCount = Object.values(source.mapWaypoints || {})
+    .reduce((sum, waypoints) => sum + (Array.isArray(waypoints) ? waypoints.length : 0), 0);
+  const transactionCount = source.gold && Array.isArray(source.gold.transactions)
+    ? source.gold.transactions.length
+    : 0;
+  const contentCount = Array.isArray(source.contentEntries)
+    ? source.contentEntries.length
+    : 0;
+  return players.length + noteCount + waypointCount + transactionCount + contentCount > 0;
+}
+
+async function getPostgresBackupState() {
+  const client = await getPool().connect();
+  try {
+    await client.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+    const [stateResult, contentResult] = await Promise.all([
+      client.query('SELECT data FROM app_state WHERE key = $1', [APP_STATE_KEY]),
+      client.query(
+        `SELECT id, type, title, summary, content, tags, details,
+                created_by_name, created_at, updated_at
+         FROM content_entries
+         ORDER BY created_at, id`
+      )
+    ]);
+    await client.query('COMMIT');
+    const state = stateResult.rows.length
+      ? normalizeDbState(stateResult.rows[0].data)
+      : createEmptyDbState();
+    state.contentEntries = contentResult.rows.map(rowToContentEntry);
+    return state;
+  } catch (error) {
+    await client.query('ROLLBACK').catch(() => {});
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+async function getBackupState() {
+  assertDbInitialized();
+  await flushWrites();
+  if (isMySqlEnabled) {
+    return normalizeDbState(await mysqlStore.getSnapshot());
+  }
+  if (isPostgresEnabled) {
+    return getPostgresBackupState();
+  }
+  return normalizeDbState(JSON.parse(JSON.stringify(dbCache)));
+}
+
+async function replacePostgresState(state, { requireEmpty }) {
+  const client = await getPool().connect();
+  try {
+    await client.query('BEGIN');
+    const [stateResult, contentResult] = await Promise.all([
+      client.query(
+        'SELECT data FROM app_state WHERE key = $1 FOR UPDATE',
+        [APP_STATE_KEY]
+      ),
+      client.query('SELECT id FROM content_entries FOR UPDATE')
+    ]);
+    if (requireEmpty) {
+      const currentState = stateResult.rows.length
+        ? normalizeDbState(stateResult.rows[0].data)
+        : createEmptyDbState();
+      currentState.contentEntries = contentResult.rows;
+      if (stateHasRecords(currentState)) {
+        const error = new Error('Target database is not empty.');
+        error.code = 'TARGET_NOT_EMPTY';
+        throw error;
+      }
+    }
+
+    const appState = {
+      ...state,
+      contentEntries: []
+    };
+    await client.query(
+      `INSERT INTO app_state (key, data, updated_at)
+       VALUES ($1, $2::jsonb, NOW())
+       ON CONFLICT (key)
+       DO UPDATE SET data = EXCLUDED.data, updated_at = NOW()`,
+      [APP_STATE_KEY, JSON.stringify(appState)]
+    );
+    await client.query('DELETE FROM content_entries');
+    for (const entry of state.contentEntries || []) {
+      await client.query(
+        `INSERT INTO content_entries (
+           id, type, title, summary, content, tags, details,
+           created_by_name, created_at, updated_at
+         )
+         VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8, $9, $10)`,
+        [
+          entry.id,
+          entry.type,
+          entry.title,
+          entry.summary || '',
+          entry.content || '',
+          entry.tags || [],
+          JSON.stringify(entry.details || {}),
+          entry.createdByName || '',
+          entry.createdAt || new Date().toISOString(),
+          entry.updatedAt || entry.createdAt || new Date().toISOString()
+        ]
+      );
+    }
+    await client.query('COMMIT');
+  } catch (error) {
+    await client.query('ROLLBACK').catch(() => {});
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+async function replaceBackupState(state, { requireEmpty = true } = {}) {
+  assertDbInitialized();
+  if (maintenanceActive) {
+    const error = new Error('Database maintenance is already in progress.');
+    error.code = 'MAINTENANCE_ACTIVE';
+    throw error;
+  }
+
+  maintenanceActive = true;
+  try {
+    await flushWrites();
+    const normalized = normalizeDbState(JSON.parse(JSON.stringify(state)));
+    if (isMySqlEnabled) {
+      await mysqlStore.saveState(normalized, { requireEmpty });
+    } else if (isPostgresEnabled) {
+      await replacePostgresState(normalized, { requireEmpty });
+    } else {
+      if (requireEmpty && stateHasRecords(dbCache)) {
+        const error = new Error('Target database is not empty.');
+        error.code = 'TARGET_NOT_EMPTY';
+        throw error;
+      }
+      const snapshot = JSON.stringify(normalized, null, 2);
+      const tmpPath = `${DB_PATH}.import.tmp`;
+      await fsp.writeFile(tmpPath, snapshot, 'utf8');
+      JSON.parse(await fsp.readFile(tmpPath, 'utf8'));
+      await fsp.rename(tmpPath, DB_PATH);
+    }
+    dbCache = normalized;
+    return getBackupState();
+  } finally {
+    maintenanceActive = false;
+  }
+}
+
+function isMaintenanceActive() {
+  return maintenanceActive;
 }
 
 function generateId(prefix = '') {
@@ -1797,6 +1950,9 @@ module.exports = {
   flushWrites,
   seedFromJson,
   getStorageMode,
+  getBackupState,
+  replaceBackupState,
+  isMaintenanceActive,
   readDB,
   writeDB,
   listPlayers,

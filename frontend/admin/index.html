@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Backups - Copper Shores</title>
+    <link rel="stylesheet" href="/shared/styles/global.css">
+    <link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body class="admin-body">
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a class="nav-logo" href="/" title="Home">
+                    <img src="/shared/assets/jollyrogercoppershores.png" alt="Copper Shores">
+                </a>
+                <h1 class="nav-title">Admin Backups</h1>
+            </div>
+            <button id="logout-button" class="btn btn-secondary" type="button">Sign Out</button>
+        </div>
+    </nav>
+
+    <main class="admin-main">
+        <section class="admin-card">
+            <div class="admin-card-heading">
+                <div>
+                    <h2>Current Database</h2>
+                    <p id="storage-mode">Loading storage information…</p>
+                </div>
+                <button id="refresh-status" class="btn btn-secondary" type="button">Refresh</button>
+            </div>
+            <div id="current-counts" class="count-grid" aria-live="polite"></div>
+        </section>
+
+        <section class="admin-card">
+            <h2>Export Backup</h2>
+            <p>
+                Download a complete, checksummed JSON backup. Keep it outside Render in at
+                least two safe locations.
+            </p>
+            <button id="export-button" class="btn" type="button">Download Backup</button>
+            <p id="export-message" class="admin-message" role="status"></p>
+        </section>
+
+        <section class="admin-card">
+            <h2>Import Backup</h2>
+            <p>
+                The file is validated before any data changes. Automatic record merging is
+                intentionally disabled.
+            </p>
+
+            <label for="backup-file">Copper Shores backup file</label>
+            <input
+                id="backup-file"
+                type="file"
+                accept=".json,application/json"
+            >
+            <button id="validate-button" class="btn btn-secondary" type="button" disabled>
+                Validate File
+            </button>
+
+            <div id="preview-panel" class="preview-panel" hidden>
+                <h3>Validation Preview</h3>
+                <dl id="backup-metadata" class="metadata-list"></dl>
+                <div id="source-counts" class="count-grid"></div>
+
+                <fieldset class="restore-mode">
+                    <legend>Restore mode</legend>
+                    <label>
+                        <input id="mode-empty" name="restore-mode" type="radio" value="empty" checked>
+                        Restore only if the target is empty
+                    </label>
+                    <label>
+                        <input id="mode-replace" name="restore-mode" type="radio" value="replace">
+                        Replace all current user-created data
+                    </label>
+                </fieldset>
+
+                <div id="replace-confirmation" class="danger-panel" hidden>
+                    <p>
+                        Replace mode deletes current database content before restoring this
+                        snapshot. First use “Download Backup” above.
+                    </p>
+                    <label for="confirmation-phrase">
+                        Type <strong>REPLACE COPPER SHORES DATA</strong>
+                    </label>
+                    <input
+                        id="confirmation-phrase"
+                        type="text"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+                </div>
+
+                <button id="restore-button" class="btn btn-danger" type="button">
+                    Restore Backup
+                </button>
+            </div>
+            <p id="import-message" class="admin-message" role="status"></p>
+        </section>
+    </main>
+    <script src="/admin/admin.js"></script>
+</body>
+</html>
